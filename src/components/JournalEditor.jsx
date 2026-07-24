@@ -12,7 +12,6 @@ function JournalEditor({
   error,
   setTargetLanguage,
 }) {
-  console.log(journalTitle.length)
   return (
     <div className="journal-editor">
       <Stack spacing={2}>
@@ -24,7 +23,7 @@ function JournalEditor({
             onChange={(event) => setJournalTitle(event.target.value)}
             size={Math.max(journalTitle.length, 1)}
             placeholder="Name your journal"
-            maxLength={70}
+            maxLength={80}
           />
         </label>
 
