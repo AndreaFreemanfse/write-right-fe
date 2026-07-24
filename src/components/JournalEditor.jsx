@@ -12,19 +12,19 @@ function JournalEditor({
   error,
   setTargetLanguage,
 }) {
+  console.log(journalTitle.length)
   return (
     <div className="journal-editor">
       <Stack spacing={2}>
         <label className="journal-title-group">
-          <span className="journal-title-label">Journal name</span>
-
           <input
             type="text"
             className="journal-title-input"
             value={journalTitle}
             onChange={(event) => setJournalTitle(event.target.value)}
+            size={Math.max(journalTitle.length, 1)}
             placeholder="Name your journal"
-            maxLength={80}
+            maxLength={70}
           />
         </label>
 
@@ -47,9 +47,7 @@ function JournalEditor({
         />
 
         <div className="editor-footer">
-          <span className="character-count">
-            {text.length} characters
-          </span>
+          <span className="character-count">{text.length} characters</span>
 
           <button
             type="button"
