@@ -5,6 +5,8 @@ import TopNav from "./components/NavBar.jsx";
 import Write from "./pages/Write.jsx";
 import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
+import SignUpPage from "./pages/SignUpPage.jsx";
+import SignInPage from "./pages/SignInPage.jsx";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
@@ -102,9 +104,17 @@ function App() {
 
   return (
     <div className="App">
-      <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)}/>
+      <TopNav
+        setNativeLanguage={setNativeLanguage}
+        onOpenDictionary={() => setDictionaryOpen(true)}
+      />
       <AchievementOverlay achievement={achievement} />
-      <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
+      <DictionaryModal
+        isOpen={dictionaryOpen}
+        onClose={() => setDictionaryOpen(false)}
+        nativeLanguage={nativeLanguage}
+        targetLanguage={targetLanguage}
+      />
       <Routes>
         <Route
           path="/"
@@ -122,6 +132,8 @@ function App() {
             />
           }
         />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/signin" element={<SignInPage />} />
         <Route path="/flashcards" element={<FlashcardReviewPage />} />
       </Routes>
     </div>
