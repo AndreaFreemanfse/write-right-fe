@@ -9,6 +9,8 @@ function Write({
   onAnalyze,
   loading,
   corrections,
+  journalTitle,
+  setJournalTitle,
   onBack,
   error,
   reviewMode,
@@ -48,11 +50,13 @@ function Write({
     return;
   }
 
+  const trimmedTitle = journalTitle.trim();
+
   setSavingSet(true);
   setSaveMessage("");
 
   const flashcardSet = {
-    name: "Journal Corrections",
+    name: trimmedTitle,
     language: flashcards[0]?.language ?? "Unknown",
     source_type: "journal",
     journal_entry_id: null,
@@ -95,6 +99,8 @@ function Write({
         <JournalEditor
           text={text}
           setText={setText}
+          journalTitle={journalTitle}
+          setJournalTitle={setJournalTitle}
           onAnalyze={onAnalyze}
           loading={loading}
           error={error}
