@@ -8,6 +8,7 @@ function Write({
   setText,
   onAnalyze,
   loading,
+  loadingMessage,
   corrections,
   journalTitle,
   setJournalTitle,
@@ -103,6 +104,7 @@ function Write({
           setJournalTitle={setJournalTitle}
           onAnalyze={onAnalyze}
           loading={loading}
+          loadingMessage={loadingMessage}
           error={error}
           setTargetLanguage={setTargetLanguage}
         />

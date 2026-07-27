@@ -9,6 +9,7 @@ function JournalEditor({
   setJournalTitle,
   onAnalyze,
   loading,
+  loadingMessage,
   error,
   setTargetLanguage,
 }) {
@@ -38,12 +39,26 @@ function JournalEditor({
           />
         </Stack>
 
-        <textarea
-          className="journal-textarea"
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          placeholder="Write about your day..."
-        />
+        <div className="journal-container">
+          <textarea
+            className="journal-textarea"
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            placeholder="Write about your day..."
+            disabled={loading}
+            style={{
+              opacity: loading ? 0.35 : 1,
+              transition: "opacity 0.3s ease"
+            }}
+          />
+
+          {loading && (
+            <div className="loading-overlay">
+              <div className="spinner"></div>
+              <p>{loadingMessage}</p>
+            </div>
+          )}
+        </div>
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>
