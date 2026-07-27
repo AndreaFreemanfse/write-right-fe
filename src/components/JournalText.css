@@ -58,3 +58,25 @@
     min-height: 200px;
     overflow: visible;
 }
+
+.journal-title-input{
+    border:none;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 0;
+    font-size: x-large;
+    margin: 0;
+}
+
+.journal-title-input:hover{
+    color:#6d28d9;
+    cursor: pointer;
+    border:none;
+}
+
+.journal-title-input:focus{
+    color:#6d28d9;
+    border:none;
+    outline: none;
+    border: none;
+}

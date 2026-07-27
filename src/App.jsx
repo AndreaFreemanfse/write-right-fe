@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
+import HelpModal from "./components/HelpModal";
 
 import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import CheckEmailPage from "./pages/CheckEmailPage.jsx";
@@ -41,11 +42,16 @@ function App() {
   // Dictionary modal state
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
+  // Help modal state
+  const [helpOpen, setHelpOpen] = useState(false);
+
   // Sets the users native language
   const [nativeLanguage, setNativeLanguage] = useState("english");
 
   // Sets the users target language
   const [targetLanguage, setTargetLanguage] = useState("english");
+
+  const [journalTitle, setJournalTitle] = useState("Untitled Journal");
 
   // --------------------------------------------------------------
   // Helper functions
@@ -57,6 +63,13 @@ function App() {
     // Prevent empty submissions
     if (!journalText.trim()) {
       setApiError("Please enter some text first.");
+      return;
+    }
+
+    const trimmedTitle = journalTitle.trim();
+
+    if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
+      window.alert("Please rename your journal before analyzing your writing.");
       return;
     }
 
@@ -106,17 +119,10 @@ function App() {
 
   return (
     <div className="App">
-      <TopNav
-        setNativeLanguage={setNativeLanguage}
-        onOpenDictionary={() => setDictionaryOpen(true)}
-      />
+      <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)} onOpenHelp={() => setHelpOpen(true)}/>
       <AchievementOverlay achievement={achievement} />
-      <DictionaryModal
-        isOpen={dictionaryOpen}
-        onClose={() => setDictionaryOpen(false)}
-        nativeLanguage={nativeLanguage}
-        targetLanguage={targetLanguage}
-      />
+      <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
+      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)}/>
       <Routes>
         <Route
           path="/"
@@ -125,6 +131,8 @@ function App() {
               text={journalText}
               setText={setJournalText}
               onAnalyze={analyzeJournal}
+              journalTitle={journalTitle}
+              setJournalTitle={setJournalTitle}
               loading={loading}
               corrections={corrections}
               onBack={returnToEditor}
