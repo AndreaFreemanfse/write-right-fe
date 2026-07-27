@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "./DictionaryModal.css";
 
@@ -67,26 +67,15 @@ function DictionaryModal({
   targetLanguage,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedNativeLanguage, setSelectedNativeLanguage] = useState(
-    nativeLanguage || "english",
-  );
-  const [selectedTargetLanguage, setSelectedTargetLanguage] = useState(
-    targetLanguage || "english",
-  );
+  const currentNativeLanguage = nativeLanguage || "english";
+  const currentTargetLanguage = targetLanguage || "english";
 
   const [translationResult, setTranslationResult] = useState(null);
   const [dictionaryResult, setDictionaryResult] = useState(null);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
-
-  useEffect(() => {
-    setSelectedNativeLanguage(nativeLanguage || "english");
-  }, [nativeLanguage]);
-
-  useEffect(() => {
-    setSelectedTargetLanguage(targetLanguage || "english");
-  }, [targetLanguage]);
+  const previousTargetLanguage = useRef(currentTargetLanguage);
 
   useEffect(() => {
     if (!isOpen) {
@@ -102,6 +91,57 @@ function DictionaryModal({
     return null;
   }
 
+useEffect(() => {
+  const targetLanguageChanged =
+    previousTargetLanguage.current !== currentTargetLanguage;
+
+  previousTargetLanguage.current = currentTargetLanguage;
+
+  if (
+    !targetLanguageChanged ||
+    !isOpen ||
+    !searchTerm.trim() ||
+    !translationResult
+  ) {
+    return;
+  }
+
+  async function refreshDictionary() {
+    setSearchLoading(true);
+    setSearchError("");
+    setTranslationResult(null);
+    setDictionaryResult(null);
+
+    try {
+      const translatedWord = await translateWord(
+        searchTerm.trim(),
+      );
+
+      setTranslationResult(translatedWord);
+
+      const definitionResult = await lookUpDefinition(
+        translatedWord.translation,
+      );
+
+      setDictionaryResult(definitionResult);
+    } catch (error) {
+      console.error(
+        "Dictionary refresh failed:",
+        error,
+      );
+
+      setSearchError(
+        error.message ||
+          "Something went wrong while updating the dictionary.",
+      );
+    } finally {
+      setSearchLoading(false);
+    }
+  }
+
+  refreshDictionary();
+}, [currentTargetLanguage]);
+
 async function translateWord(word) {
   const response = await fetch(`${API_BASE_URL}/translate`, {
     method: "POST",
@@ -110,8 +150,8 @@ async function translateWord(word) {
     },
     body: JSON.stringify({
       text: word,
-      source_language: selectedNativeLanguage,
-      target_language: selectedTargetLanguage,
+      source_language: currentNativeLanguage,
+      target_language: currentTargetLanguage,
     }),
   });
 
@@ -135,7 +175,7 @@ async function translateWord(word) {
 
   async function lookUpDefinition(word) {
     const languageCode =
-      LANGUAGE_CODES[selectedTargetLanguage.toLowerCase()];
+      LANGUAGE_CODES[currentTargetLanguage.toLowerCase()];
 
     if (!languageCode) {
       return null;
@@ -198,11 +238,11 @@ async function translateWord(word) {
   }
 
   const nativeLanguageTitle = formatLanguageName(
-    selectedNativeLanguage,
+    currentNativeLanguage,
   );
 
   const targetLanguageTitle = formatLanguageName(
-    selectedTargetLanguage,
+    currentTargetLanguage,
   );
 
 const spellingWasCorrected =
@@ -253,7 +293,7 @@ const spellingWasCorrected =
               onChange={(event) =>
                 setSearchTerm(event.target.value)
               }
-              placeholder={`Enter a word in ${selectedNativeLanguage}`}
+              placeholder={`Enter a word in ${currentNativeLanguage}`}
               autoComplete="off"
             />
 
