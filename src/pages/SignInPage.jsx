@@ -1,22 +1,25 @@
 import { useState } from "react";
 import { signIn } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setMessage("");
 
     try {
       await signIn(email, password);
-      setMessage("Successful.");
+
+      navigate("/", { replace: true });
     } catch (error) {
       setMessage(error.message);
     }
   }
+
   return (
     <div>
       <h2>Create Account</h2>

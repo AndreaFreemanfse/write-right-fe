@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import TopNav from "./components/NavBar.jsx";
-import Write from "./pages/Write.jsx";
-import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
+import DictionaryModal from "./components/DictionaryModal.jsx";
+import TopNav from "./components/NavBar.jsx";
+
+import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
+import CheckEmailPage from "./pages/CheckEmailPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
-import DictionaryModal from "./components/DictionaryModal.jsx";
+import Write from "./pages/Write.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -135,6 +137,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/flashcards" element={<FlashcardReviewPage />} />
+        <Route path="/check-email" element={<CheckEmailPage />} />
       </Routes>
     </div>
   );

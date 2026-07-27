@@ -1,29 +1,36 @@
 import { useState } from "react";
 import { signUp } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  
 
-  async function handleSubmit(event) {
+  const navigate = useNavigate();
+
+  async function handleSignUp(event) {
     event.preventDefault();
     setMessage("");
 
     try {
-      console.log("Email being sent:", email);
       await signUp(email, password);
-      setMessage("Account created! Check your email to verify.");
+
+      navigate("/check-email", {
+        state: {
+          email,
+        },
+      });
     } catch (error) {
       setMessage(error.message);
     }
   }
+
   return (
     <div>
       <h2>Create Account</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSignUp}>
         <input
           type="email"
           placeholder="Email"
