@@ -87,9 +87,6 @@ function DictionaryModal({
     }
   }, [isOpen]);
 
-  if (!isOpen) {
-    return null;
-  }
 
 useEffect(() => {
   const targetLanguageChanged =
@@ -141,6 +138,11 @@ useEffect(() => {
 
   refreshDictionary();
 }, [currentTargetLanguage]);
+
+
+  if (!isOpen) {
+    return null;
+  }
 
 async function translateWord(word) {
   const response = await fetch(`${API_BASE_URL}/translate`, {
