@@ -6,6 +6,7 @@ import Write from "./pages/Write.jsx";
 import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
+import HelpModal from "./components/HelpModal";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -38,6 +39,10 @@ function App() {
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
   // Sets the user's native language
+  // Help modal state
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  // Sets the users native language
   const [nativeLanguage, setNativeLanguage] = useState("english");
 
   // Sets the user's target language
@@ -139,6 +144,10 @@ function App() {
         targetLanguage={targetLanguage}
       />
 
+      <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)} onOpenHelp={() => setHelpOpen(true)}/>
+      <AchievementOverlay achievement={achievement} />
+      <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
+      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)}/>
       <Routes>
         <Route
           path="/"
