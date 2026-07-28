@@ -28,7 +28,7 @@ function AnalysisLoading({ targetLanguage, loadingMessage }) {
         <h1>Analyzing your journal</h1>
 
         <p className="analysis-loading__message">
-          <p>{loadingMessage}</p>
+          {loadingMessage}
         </p>
 
         <div className="analysis-loading__dots" aria-hidden="true">
