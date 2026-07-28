@@ -9,6 +9,7 @@ function Write({
   setText,
   onAnalyze,
   loading,
+  loadingMessage,
   corrections,
   journalTitle,
   setJournalTitle,
@@ -105,11 +106,15 @@ function Write({
           setJournalTitle={setJournalTitle}
           onAnalyze={onAnalyze}
           loading={loading}
+          loadingMessage={loadingMessage}
           error={error}
           setTargetLanguage={setTargetLanguage}
         />
       ) : loading ? (
-        <AnalysisLoading targetLanguage={targetLanguage} />
+        <AnalysisLoading
+          targetLanguage={targetLanguage}
+          loadingMessage={loadingMessage}
+        />
       ) : (
         <>
           <JournalText
