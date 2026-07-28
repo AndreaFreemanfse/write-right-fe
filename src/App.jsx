@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import TopNav from "./components/NavBar.jsx";
@@ -28,6 +28,36 @@ function App() {
 
   // Loading state
   const [loading, setLoading] = useState(false);
+
+  // Loading messages
+  const loadingMessages = [
+    "Checking for mistakes...",
+    "Generating explanations...",
+    "Preparing corrected journal...",
+    "Almost finished...",
+    "Almost finished...",
+    "Taking longer than expected, please be patient..."
+  ];
+
+  const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
+
+  useEffect(() => {
+      if (!loading) return;
+
+      let i = 0;
+
+      const interval = setInterval(() => {
+        if (i < loadingMessages.length - 1) {
+            i++;
+            setLoadingMessage(loadingMessages[i]);
+        } else {
+            clearInterval(interval);
+        }
+      }, 5000);
+
+      return () => clearInterval(interval);
+
+  }, [loading]);
 
   // API error state to handle errors from the backend
   const [apiError, setApiError] = useState(null);
@@ -70,7 +100,7 @@ function App() {
     const trimmedTitle = journalTitle.trim();
 
     if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
-      window.alert("Please rename your journal before analyzing your writing.");
+      setApiError("Please rename your journal before analyzing your writing.");
       return;
     }
 
@@ -80,6 +110,7 @@ function App() {
     setApiError("");
 
     // Immediately show the loading screen
+    setLoadingMessage("Checking for mistakes...");
     setLoading(true);
     setReviewMode(true);
 
@@ -155,6 +186,7 @@ function App() {
               journalTitle={journalTitle}
               setJournalTitle={setJournalTitle}
               loading={loading}
+              loadingMessage={loadingMessage}
               corrections={corrections}
               accuracy={accuracy}
               onBack={returnToEditor}
