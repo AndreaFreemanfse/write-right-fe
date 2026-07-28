@@ -3,6 +3,8 @@ import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
 import AnalysisLoading from "../components/AnalysisLoading.jsx";
+import AccuracySummary from "../components/accuracy/AccuracySummary";
+import AccuracyModal from "../components/accuracy/AccuracyModal";
 
 function Write({
   text,
@@ -10,6 +12,7 @@ function Write({
   onAnalyze,
   loading,
   corrections,
+  accuracy,
   journalTitle,
   setJournalTitle,
   onBack,
@@ -21,6 +24,21 @@ function Write({
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
+
+  const accuracyDetails = {
+      score: 86,
+      summary:
+        "Your meaning was clear, with a few opportunities to strengthen grammar and vocabulary.",
+      categories: {
+        grammar: 82,
+        vocabulary: 88,
+        spelling: 94,
+        sentenceStructure: 79,
+      },
+      improvementNote:
+        "Focus on sentence structure and grammar in your next journal entry.",
+    };
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -112,6 +130,12 @@ function Write({
         <AnalysisLoading targetLanguage={targetLanguage} />
       ) : (
         <>
+      {corrections.length > 0 && (
+        <AccuracySummary
+           onOpenDetails={() => setAccuracyModalOpen(true)}
+           score={accuracyDetails.score}
+        />
+        )}
           <JournalText
             text={text}
             corrections={corrections}
@@ -126,6 +150,11 @@ function Write({
             onSaveSet={handleSaveFlashcardSet}
             savingSet={savingSet}
             saveMessage={saveMessage}
+          />
+          <AccuracyModal
+            isOpen={accuracyModalOpen}
+            onClose={() => setAccuracyModalOpen(false)}
+            accuracy={accuracyDetails}
           />
         </>
       )}
