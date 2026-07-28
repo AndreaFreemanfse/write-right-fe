@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { vocabulary } from "../data/vocabulary.js";
 import "./AnalysisLoading.css";
 
-function AnalysisLoading({ targetLanguage }) {
+function AnalysisLoading({ targetLanguage, loadingMessage }) {
   const selectedWord = useMemo(() => {
     const normalizedLanguage = targetLanguage?.toLowerCase() || "english";
 
@@ -28,7 +28,7 @@ function AnalysisLoading({ targetLanguage }) {
         <h1>Analyzing your journal</h1>
 
         <p className="analysis-loading__message">
-          We’re reviewing your writing and preparing personalized feedback.
+          {loadingMessage}
         </p>
 
         <div className="analysis-loading__dots" aria-hidden="true">
