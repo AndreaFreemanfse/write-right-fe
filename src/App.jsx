@@ -130,20 +130,6 @@ function App() {
 
   return (
     <div className="App">
-      <TopNav
-        setNativeLanguage={setNativeLanguage}
-        onOpenDictionary={() => setDictionaryOpen(true)}
-      />
-
-      <AchievementOverlay achievement={achievement} />
-
-      <DictionaryModal
-        isOpen={dictionaryOpen}
-        onClose={() => setDictionaryOpen(false)}
-        nativeLanguage={nativeLanguage}
-        targetLanguage={targetLanguage}
-      />
-
       <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)} onOpenHelp={() => setHelpOpen(true)}/>
       <AchievementOverlay achievement={achievement} />
       <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
