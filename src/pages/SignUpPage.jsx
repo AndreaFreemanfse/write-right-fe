@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signUp } from "../services/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "./SignUpPage.css";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -27,28 +28,40 @@ function SignUpPage() {
   }
 
   return (
-    <div>
-      <h2>Create Account</h2>
+    <div className="auth-page">
+      <div className="auth-modal">
+        <h2>Create Account</h2>
 
-      <form onSubmit={handleSignUp}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
+        <p className="auth-subtitle">Start improving your writing today.</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
+        <form onSubmit={handleSignUp}>
+          <input
+            className="auth-input"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
 
-        <button type="submit">Sign Up</button>
-      </form>
+          <input
+            className="auth-input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
 
-      {message && <p>{message}</p>}
+          <button className="auth-button" type="submit">
+            Create Account
+          </button>
+        </form>
+
+        {message && <p className="auth-error">{message}</p>}
+
+        <p className="auth-switch">
+          Already have an account? <Link to="/signin">Sign In</Link>
+        </p>
+      </div>
     </div>
   );
 }
