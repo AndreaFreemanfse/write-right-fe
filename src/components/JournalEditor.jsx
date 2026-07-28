@@ -39,6 +39,7 @@ function JournalEditor({
           />
         </Stack>
 
+        {/* This section is no longer relevant, replaced with AnalysisLoading screen */}
         <div className="journal-container">
           <textarea
             className="journal-textarea"
