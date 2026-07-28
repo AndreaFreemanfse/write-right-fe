@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "../services/auth";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,7 +22,21 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
   const menuId = `${id}-menu`;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [settingsOpen, setSettingsOpen] = React.useState(false);
+  const [message, setMessage] = React.useState("");
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+
+  // sign out user
+  async function handleSignOut(event) {
+    try {
+      setAnchorEl(null);
+      await signOut();
+
+      navigate("/signin");
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
 
   // manage opening and closing menu
   const handleClick = (event) => {
@@ -124,22 +140,38 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
           Settings
         </MenuItem>
         <MenuItem
-        className="drop-down-menu-item"
-        key="help"
-        onClick={() => {
-          onOpenHelp();
-          handleClose();
-        }}
-        sx={{
-          color: "#555555",
-          "&:hover": {
-            backgroundColor: "#6d28d9",
-            color: "white",
-          },
-        }}
-      >
-        Help
-      </MenuItem>
+          className="drop-down-menu-item"
+          key="help"
+          onClick={() => {
+            onOpenHelp();
+            handleClose();
+          }}
+          sx={{
+            color: "#555555",
+            "&:hover": {
+              backgroundColor: "#6d28d9",
+              color: "white",
+            },
+          }}
+        >
+          Help
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleSignOut();
+          }}
+          className="drop-down-menu-item"
+          key="sign-out"
+          sx={{
+            color: "#555555",
+            "&:hover": {
+              backgroundColor: "#6d28d9",
+              color: "white",
+            },
+          }}
+        >
+          Sign Out
+        </MenuItem>
       </Menu>
 
       {/* Settings dialog */}

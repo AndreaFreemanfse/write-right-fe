@@ -1,0 +1,87 @@
+.check-email-page {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(
+        180deg,
+        #edf6ff 0%,
+        #f8fbff 50%,
+        #ffffff 100%
+    );
+    padding: 2rem;
+}
+
+.check-email-card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.email-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.check-email-card h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.email-message {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.user-email {
+  display: block;
+  color: #7c5cff;
+  font-size: 1.05rem;
+  margin-bottom: 1.2rem;
+  word-break: break-word;
+}
+
+.instruction {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+.login-button {
+  width: 100%;
+
+  margin-top: .5rem;
+
+  padding: .9rem;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #4b8ed6;
+
+  color: white;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .2s;
+  
+  text-decoration: none;
+}
+
+.login-button:hover {
+  background: #3c7dc2;
+
+  transform: translateY(-1px);
+}
