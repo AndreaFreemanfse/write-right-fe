@@ -2,6 +2,7 @@ import { useState } from "react";
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
+import AnalysisLoading from "../components/AnalysisLoading.jsx";
 
 function Write({
   text,
@@ -14,7 +15,8 @@ function Write({
   onBack,
   error,
   reviewMode,
-  setTargetLanguage
+  targetLanguage,
+  setTargetLanguage,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -106,6 +108,8 @@ function Write({
           error={error}
           setTargetLanguage={setTargetLanguage}
         />
+      ) : loading ? (
+        <AnalysisLoading targetLanguage={targetLanguage} />
       ) : (
         <>
           <JournalText
@@ -116,12 +120,12 @@ function Write({
           />
 
           <FlashcardStudy
-             mistakes={flashcards}
-             corrections={corrections}
-             onCreateStudySet={handleCreateStudySet}
-             onSaveSet={handleSaveFlashcardSet}
-             savingSet={savingSet}
-             saveMessage={saveMessage}
+            mistakes={flashcards}
+            corrections={corrections}
+            onCreateStudySet={handleCreateStudySet}
+            onSaveSet={handleSaveFlashcardSet}
+            savingSet={savingSet}
+            saveMessage={saveMessage}
           />
         </>
       )}

@@ -30,7 +30,7 @@ function App() {
   // The user's current review mode
   const [reviewMode, setReviewMode] = useState(false);
 
-  // Loading spinner
+  // Loading state
   const [loading, setLoading] = useState(false);
 
   // API error state to handle errors from the backend
@@ -42,15 +42,17 @@ function App() {
   // Dictionary modal state
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
+  // Sets the user's native language
   // Help modal state
   const [helpOpen, setHelpOpen] = useState(false);
 
   // Sets the users native language
   const [nativeLanguage, setNativeLanguage] = useState("english");
 
-  // Sets the users target language
+  // Sets the user's target language
   const [targetLanguage, setTargetLanguage] = useState("english");
 
+  // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
 
   // --------------------------------------------------------------
@@ -73,8 +75,13 @@ function App() {
       return;
     }
 
-    setLoading(true);
+    // Clear previous results before starting a new analysis
+    setCorrections([]);
     setApiError("");
+
+    // Immediately show the loading screen
+    setLoading(true);
+    setReviewMode(true);
 
     try {
       const response = await handleCorrectJournal(
@@ -85,10 +92,11 @@ function App() {
 
       console.log("Backend response:", response);
 
-      setCorrections(response.mistakes);
-      setReviewMode(true);
+      const mistakes = response.mistakes ?? [];
 
-      if (response.mistakes.length === 0) {
+      setCorrections(mistakes);
+
+      if (mistakes.length === 0) {
         celebrate();
 
         setAchievement({
@@ -103,7 +111,13 @@ function App() {
       }
     } catch (err) {
       console.error(err);
-      setApiError("Something went wrong while analyzing your journal.");
+
+      setApiError(
+        "Something went wrong while analyzing your journal.",
+      );
+
+      // Return to the editor so the user can see the error
+      setReviewMode(false);
     } finally {
       setLoading(false);
     }
@@ -111,6 +125,7 @@ function App() {
 
   function returnToEditor() {
     setReviewMode(false);
+    setApiError(null);
   }
 
   // --------------------------------------------------------------
@@ -119,6 +134,20 @@ function App() {
 
   return (
     <div className="App">
+      <TopNav
+        setNativeLanguage={setNativeLanguage}
+        onOpenDictionary={() => setDictionaryOpen(true)}
+      />
+
+      <AchievementOverlay achievement={achievement} />
+
+      <DictionaryModal
+        isOpen={dictionaryOpen}
+        onClose={() => setDictionaryOpen(false)}
+        nativeLanguage={nativeLanguage}
+        targetLanguage={targetLanguage}
+      />
+
       <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)} onOpenHelp={() => setHelpOpen(true)}/>
       <AchievementOverlay achievement={achievement} />
       <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
@@ -138,6 +167,7 @@ function App() {
               onBack={returnToEditor}
               error={apiError}
               reviewMode={reviewMode}
+              targetLanguage={targetLanguage}
               setTargetLanguage={setTargetLanguage}
             />
           }
