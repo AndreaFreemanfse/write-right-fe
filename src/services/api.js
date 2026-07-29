@@ -1,3 +1,6 @@
+import { supabase } from "../lib/supabase";
+
+
 // Send the text to the backend for analysis
 const {
   data: { session },
@@ -21,6 +24,8 @@ export async function handleCorrectJournal(
       target_language: targetLanguage,
     }),
   });
+
+  console.log(response)
 
   return await response.json();
 }
