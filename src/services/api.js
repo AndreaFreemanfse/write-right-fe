@@ -1,4 +1,7 @@
 // Send the text to the backend for analysis
+const {
+  data: { session },
+} = await supabase.auth.getSession();
 
 export async function handleCorrectJournal(
   text,
@@ -7,7 +10,11 @@ export async function handleCorrectJournal(
 ) {
   const response = await fetch("http://localhost:8000/journal/analyze", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+
     body: JSON.stringify({
       text,
       native_language: nativeLanguage,
