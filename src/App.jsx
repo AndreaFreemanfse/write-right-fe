@@ -86,6 +86,9 @@ function App() {
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
 
+  // Accuracy state
+  const [accuracy, setAccuracy] = useState(null);
+
   // --------------------------------------------------------------
   // Helper functions
   // --------------------------------------------------------------
@@ -108,6 +111,7 @@ function App() {
 
     // Clear previous results before starting a new analysis
     setCorrections([]);
+    setAccuracy(null);
     setApiError("");
 
     // Immediately show the loading screen
@@ -123,10 +127,16 @@ function App() {
       );
 
       console.log("Backend response:", response);
+      console.log("Mistakes:", response.mistakes);
+      console.log("First mistake:", response.mistakes?.[0]);
+      console.log("Accuracy:", response.accuracy);
+      console.log("Response keys:", Object.keys(response));
 
       const mistakes = response.mistakes ?? [];
+      const accuracyResult = response.accuracy ?? null;
 
       setCorrections(mistakes);
+      setAccuracy(accuracyResult);
 
       if (mistakes.length === 0) {
         celebrate();
@@ -178,37 +188,32 @@ function App() {
       />
       <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
       <Routes>
-        {/* Public Routes */}
-        <Route element={<PublicRoute />}>
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/check-email" element={<CheckEmailPage />} />
-        </Route>
+        <Route
+          path="/"
+          element={
+            <Write
+              text={journalText}
+              setText={setJournalText}
+              onAnalyze={analyzeJournal}
+              journalTitle={journalTitle}
+              setJournalTitle={setJournalTitle}
+              loading={loading}
+              loadingMessage={loadingMessage}
+              corrections={corrections}
+              accuracy={accuracy}
+              onBack={returnToEditor}
+              error={apiError}
+              reviewMode={reviewMode}
+              targetLanguage={targetLanguage}
+              setTargetLanguage={setTargetLanguage}
+            />
+          }
+        />
 
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route
-            path="/"
-            element={
-              <Write
-                text={journalText}
-                setText={setJournalText}
-                onAnalyze={analyzeJournal}
-                journalTitle={journalTitle}
-                setJournalTitle={setJournalTitle}
-                loading={loading}
-                loadingMessage={loadingMessage}
-                corrections={corrections}
-                onBack={returnToEditor}
-                error={apiError}
-                reviewMode={reviewMode}
-                targetLanguage={targetLanguage}
-                setTargetLanguage={setTargetLanguage}
-              />
-            }
-          />
-          <Route path="/flashcards" element={<FlashcardReviewPage />} />
-        </Route>
+        <Route
+          path="/flashcards"
+          element={<FlashcardReviewPage />}
+        />
       </Routes>
     </div>
   );
