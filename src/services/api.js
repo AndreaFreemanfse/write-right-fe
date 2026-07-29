@@ -1,11 +1,6 @@
 import { supabase } from "../lib/supabase";
 
 // Send the text to the backend for analysis
-const {
-  data: { session },
-} = await supabase.auth.getSession();
-
-// Send the text to the backend for analysis
 export async function handleCorrectJournal(
   text,
   nativeLanguage,
