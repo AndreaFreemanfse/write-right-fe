@@ -1,0 +1,25 @@
+.auth-switch {
+  margin-top: 1.75rem;
+
+  text-align: center;
+
+  color: #6b7c93;
+
+  font-size: .95rem;
+}
+
+.auth-switch a {
+  color: #4b8ed6;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition: color .2s;
+}
+
+.auth-switch a:hover {
+  color: #2f6fb6;
+
+  text-decoration: underline;
+}

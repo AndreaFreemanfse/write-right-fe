@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import TopNav from "./components/NavBar.jsx";
-import Write from "./pages/Write.jsx";
-import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
+import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import PublicRoute from "./components/PublicRoute.jsx";
+
+import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
+import CheckEmailPage from "./pages/CheckEmailPage.jsx";
+import SignUpPage from "./pages/SignUpPage.jsx";
+import SignInPage from "./pages/SignInPage.jsx";
+import Write from "./pages/Write.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -36,27 +42,26 @@ function App() {
     "Preparing corrected journal...",
     "Almost finished...",
     "Almost finished...",
-    "Taking longer than expected, please be patient..."
+    "Taking longer than expected, please be patient...",
   ];
 
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
 
   useEffect(() => {
-      if (!loading) return;
+    if (!loading) return;
 
-      let i = 0;
+    let i = 0;
 
-      const interval = setInterval(() => {
-        if (i < loadingMessages.length - 1) {
-            i++;
-            setLoadingMessage(loadingMessages[i]);
-        } else {
-            clearInterval(interval);
-        }
-      }, 5000);
+    const interval = setInterval(() => {
+      if (i < loadingMessages.length - 1) {
+        i++;
+        setLoadingMessage(loadingMessages[i]);
+      } else {
+        clearInterval(interval);
+      }
+    }, 5000);
 
-      return () => clearInterval(interval);
-
+    return () => clearInterval(interval);
   }, [loading]);
 
   // API error state to handle errors from the backend
@@ -149,9 +154,7 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError(
-        "Something went wrong while analyzing your journal.",
-      );
+      setApiError("Something went wrong while analyzing your journal.");
 
       // Return to the editor so the user can see the error
       setReviewMode(false);
@@ -171,10 +174,19 @@ function App() {
 
   return (
     <div className="App">
-      <TopNav setNativeLanguage={setNativeLanguage}  onOpenDictionary={() => setDictionaryOpen(true)} onOpenHelp={() => setHelpOpen(true)}/>
+      <TopNav
+        setNativeLanguage={setNativeLanguage}
+        onOpenDictionary={() => setDictionaryOpen(true)}
+        onOpenHelp={() => setHelpOpen(true)}
+      />
       <AchievementOverlay achievement={achievement} />
-      <DictionaryModal isOpen={dictionaryOpen} onClose={() => setDictionaryOpen(false)} nativeLanguage={nativeLanguage} targetLanguage={targetLanguage}/>
-      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)}/>
+      <DictionaryModal
+        isOpen={dictionaryOpen}
+        onClose={() => setDictionaryOpen(false)}
+        nativeLanguage={nativeLanguage}
+        targetLanguage={targetLanguage}
+      />
+      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
       <Routes>
         <Route
           path="/"

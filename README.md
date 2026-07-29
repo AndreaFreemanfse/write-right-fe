@@ -35,6 +35,7 @@ npm install @mui/material @emotion/react @emotion/styled
 npm install @mui/icons-material
 npm install fontsource-roboto
 npm install canvas-confetti
+npm install @supabase/supabase-js
 
 npm run dev
 ```
