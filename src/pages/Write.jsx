@@ -27,19 +27,19 @@ function Write({
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
 
-  const accuracyDetails = {
-      score: 86,
-      summary:
-        "Your meaning was clear, with a few opportunities to strengthen grammar and vocabulary.",
-      categories: {
-        grammar: 82,
-        vocabulary: 88,
-        spelling: 94,
-        sentenceStructure: 79,
-      },
-      improvementNote:
-        "Focus on sentence structure and grammar in your next journal entry.",
-    };
+  // const accuracyDetails = {
+  //     score: 86,
+  //     summary:
+  //       "Your meaning was clear, with a few opportunities to strengthen grammar and vocabulary.",
+  //     categories: {
+  //       grammar: 82,
+  //       vocabulary: 88,
+  //       spelling: 94,
+  //       sentenceStructure: 79,
+  //     },
+  //     improvementNote:
+  //       "Focus on sentence structure and grammar in your next journal entry.",
+  //   };
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -135,12 +135,12 @@ function Write({
         />
       ) : (
         <>
-      {corrections.length > 0 && (
+      {corrections.length > 0 && accuracy && (
         <AccuracySummary
-           onOpenDetails={() => setAccuracyModalOpen(true)}
-           score={accuracyDetails.score}
+          onOpenDetails={() => setAccuracyModalOpen(true)}
+          score={accuracy.score}
         />
-        )}
+      )}
           <JournalText
             text={text}
             corrections={corrections}
@@ -159,7 +159,7 @@ function Write({
           <AccuracyModal
             isOpen={accuracyModalOpen}
             onClose={() => setAccuracyModalOpen(false)}
-            accuracy={accuracyDetails}
+            accuracy={accuracy}
           />
         </>
       )}
