@@ -188,32 +188,40 @@ function App() {
       />
       <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Write
-              text={journalText}
-              setText={setJournalText}
-              onAnalyze={analyzeJournal}
-              journalTitle={journalTitle}
-              setJournalTitle={setJournalTitle}
-              loading={loading}
-              loadingMessage={loadingMessage}
-              corrections={corrections}
-              accuracy={accuracy}
-              onBack={returnToEditor}
-              error={apiError}
-              reviewMode={reviewMode}
-              targetLanguage={targetLanguage}
-              setTargetLanguage={setTargetLanguage}
-            />
-          }
-        />
+        {/* Public Routes */}
+        <Route element={<PublicRoute />}>
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/check-email" element={<CheckEmailPage />} />
+        </Route>
 
-        <Route
-          path="/flashcards"
-          element={<FlashcardReviewPage />}
-        />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/"
+            element={
+              <Write
+                text={journalText}
+                setText={setJournalText}
+                onAnalyze={analyzeJournal}
+                journalTitle={journalTitle}
+                setJournalTitle={setJournalTitle}
+                loading={loading}
+                loadingMessage={loadingMessage}
+                corrections={corrections}
+                accuracy={accuracy}
+                accuracy={accuracy}
+                onBack={returnToEditor}
+                error={apiError}
+                reviewMode={reviewMode}
+                targetLanguage={targetLanguage}
+                setTargetLanguage={setTargetLanguage}
+              />
+            }
+          />
+
+          <Route path="/flashcards" element={<FlashcardReviewPage />} />
+        </Route>
       </Routes>
     </div>
   );
