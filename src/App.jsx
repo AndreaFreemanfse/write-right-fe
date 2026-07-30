@@ -62,7 +62,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [loading]);
+  }, [loading, loadingMessages, loadingMessages.length]);
 
   // API error state to handle errors from the backend
   const [apiError, setApiError] = useState(null);
