@@ -210,7 +210,6 @@ function App() {
                 loadingMessage={loadingMessage}
                 corrections={corrections}
                 accuracy={accuracy}
-                accuracy={accuracy}
                 onBack={returnToEditor}
                 error={apiError}
                 reviewMode={reviewMode}
