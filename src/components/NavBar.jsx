@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 // import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import DropDownMenu from "./DropDownMenu";
 
-import "./Navbar.css";
+import "./NavBar.css";
 
 function Navbar({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
   return (
