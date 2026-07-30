@@ -126,6 +126,7 @@ function Write({
           loading={loading}
           loadingMessage={loadingMessage}
           error={error}
+          targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
         />
       ) : loading ? (
