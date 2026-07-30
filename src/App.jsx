@@ -81,7 +81,7 @@ function App() {
   const [nativeLanguage, setNativeLanguage] = useState("english");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("english");
+  const [targetLanguage, setTargetLanguage] = useState("");
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
@@ -175,6 +175,7 @@ function App() {
   return (
     <div className="App">
       <TopNav
+        nativeLanguage={nativeLanguage}
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={() => setDictionaryOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}

@@ -16,7 +16,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
-function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
+function DropDownMenu({ nativeLanguage, setNativeLanguage, onOpenDictionary, onOpenHelp }) {
   const id = React.useId();
   const buttonId = `${id}-button`;
   const menuId = `${id}-menu`;
@@ -189,6 +189,7 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
 
         <DialogContent>
           <LanguageSelectionDropdown
+            value={nativeLanguage}
             onChange={setNativeLanguage}
             displayText={"Native Language"}
           />
