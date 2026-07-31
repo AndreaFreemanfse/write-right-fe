@@ -47,7 +47,7 @@ function JournalEditor({
             {targetLanguage.toUpperCase()}
           </button>
         ) : (
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} alignitems="center">
             <p className="editor-subtitle">
               Practice writing in your target language:
             </p>
