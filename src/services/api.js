@@ -1,6 +1,5 @@
 import { supabase } from "../lib/supabase";
 
-// Send the text to the backend for analysis
 export async function handleCorrectJournal(
   text,
   nativeLanguage,
@@ -13,9 +12,6 @@ export async function handleCorrectJournal(
   if (!session) {
     throw new Error("User is not authenticated.");
   }
-
-  console.log(session.access_token);
-  console.log("SESSION:", session);
 
   const response = await fetch("http://localhost:8000/journal/analyze", {
     method: "POST",
@@ -31,7 +27,9 @@ export async function handleCorrectJournal(
     }),
   });
 
-  console.log(response)
+  if (!response.ok) {
+    throw new Error("Journal analysis failed");
+  }
 
   return await response.json();
 }
