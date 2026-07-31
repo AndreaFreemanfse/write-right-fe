@@ -6,7 +6,7 @@ import DropDownMenu from "./DropDownMenu";
 
 import "./NavBar.css";
 
-function Navbar({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
+function Navbar({ nativeLanguage, setNativeLanguage, onOpenDictionary, onOpenHelp }) {
   return (
     <div className="navbar">
       <Stack direction="row" spacing={2}>
@@ -31,7 +31,7 @@ function Navbar({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
       >
         Flashcards
       </NavLink>
-      <DropDownMenu setNativeLanguage={setNativeLanguage} onOpenDictionary={onOpenDictionary} onOpenHelp={onOpenHelp} />
+      <DropDownMenu nativeLanguage={nativeLanguage} setNativeLanguage={setNativeLanguage} onOpenDictionary={onOpenDictionary} onOpenHelp={onOpenHelp} />
     </div>
   );
 }
