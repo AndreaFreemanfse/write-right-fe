@@ -62,7 +62,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [loading]);
+  }, [loading, loadingMessages, loadingMessages.length]);
 
   // API error state to handle errors from the backend
   const [apiError, setApiError] = useState(null);
@@ -81,10 +81,13 @@ function App() {
   const [nativeLanguage, setNativeLanguage] = useState("english");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("english");
+  const [targetLanguage, setTargetLanguage] = useState("");
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
+
+  // Accuracy state
+  const [accuracy, setAccuracy] = useState(null);
 
   // --------------------------------------------------------------
   // Helper functions
@@ -108,6 +111,7 @@ function App() {
 
     // Clear previous results before starting a new analysis
     setCorrections([]);
+    setAccuracy(null);
     setApiError("");
 
     // Immediately show the loading screen
@@ -123,10 +127,16 @@ function App() {
       );
 
       console.log("Backend response:", response);
+      console.log("Mistakes:", response.mistakes);
+      console.log("First mistake:", response.mistakes?.[0]);
+      console.log("Accuracy:", response.accuracy);
+      console.log("Response keys:", Object.keys(response));
 
       const mistakes = response.mistakes ?? [];
+      const accuracyResult = response.accuracy ?? null;
 
       setCorrections(mistakes);
+      setAccuracy(accuracyResult);
 
       if (mistakes.length === 0) {
         celebrate();
@@ -165,6 +175,7 @@ function App() {
   return (
     <div className="App">
       <TopNav
+        nativeLanguage={nativeLanguage}
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={() => setDictionaryOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}
@@ -204,6 +215,7 @@ function App() {
                 loading={loading}
                 loadingMessage={loadingMessage}
                 corrections={corrections}
+                accuracy={accuracy}
                 onBack={returnToEditor}
                 error={apiError}
                 reviewMode={reviewMode}
@@ -212,6 +224,7 @@ function App() {
               />
             }
           />
+
           <Route path="/flashcards" element={<FlashcardReviewPage />} />
         </Route>
       </Routes>

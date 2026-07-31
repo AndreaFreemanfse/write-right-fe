@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 // import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import DropDownMenu from "./DropDownMenu";
 
-import "./Navbar.css";
+import "./NavBar.css";
 
 function Navbar({
   setNativeLanguage,
@@ -14,7 +14,8 @@ function Navbar({
   onOpenDictionary,
   onOpenHelp,
   setCorrections,
-  setReviewMode
+  setReviewMode,
+  nativeLanguage
 }) {
   return (
     <div className="navbar">
@@ -49,6 +50,7 @@ function Navbar({
         setTargetLanguage={setTargetLanguage}
         setCorrections={setCorrections}
         setReviewMode={setReviewMode}
+        nativeLanguage={nativeLanguage}
       />
     </div>
   );

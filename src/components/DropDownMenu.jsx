@@ -25,6 +25,7 @@ function DropDownMenu({
   onOpenHelp,
   setCorrections,
   setReviewMode,
+  nativeLanguage,
 }) {
   const id = React.useId();
   const buttonId = `${id}-button`;
@@ -206,6 +207,7 @@ function DropDownMenu({
 
         <DialogContent>
           <LanguageSelectionDropdown
+            value={nativeLanguage}
             onChange={setNativeLanguage}
             displayText={"Native Language"}
           />
