@@ -16,7 +16,16 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
-function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
+function DropDownMenu({
+  setNativeLanguage,
+  setTargetLanguage,
+  setJournalText,
+  setJournalTitle,
+  onOpenDictionary,
+  onOpenHelp,
+  setCorrections,
+  setReviewMode,
+}) {
   const id = React.useId();
   const buttonId = `${id}-button`;
   const menuId = `${id}-menu`;
@@ -31,6 +40,14 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
     try {
       setAnchorEl(null);
       await signOut();
+      //set everything back to when user logs out
+      setJournalText("");
+      setJournalTitle("Untitled Journal");
+      setCorrections([]);
+      setReviewMode(false);
+      // change this to persist based on user settings
+      setNativeLanguage("english");
+      setTargetLanguage("english");
 
       navigate("/signin");
     } catch (error) {

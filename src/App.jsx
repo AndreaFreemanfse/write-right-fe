@@ -168,6 +168,11 @@ function App() {
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={() => setDictionaryOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}
+        setJournalText={setJournalText}
+        setJournalTitle={setJournalTitle}
+        setTargetLanguage={setTargetLanguage}
+        setCorrections={setCorrections}
+        setReviewMode={setReviewMode}
       />
       <AchievementOverlay achievement={achievement} />
       <DictionaryModal
