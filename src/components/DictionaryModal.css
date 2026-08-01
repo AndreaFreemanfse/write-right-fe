@@ -14,11 +14,11 @@
 
 
 .dictionary-modal {
-  width: min(900px, 92vw);
+  width: clamp(320px, 40vw, 500px);
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   border-radius: 22px;
-  background: linear-gradient(180deg, #ffffffe7 0%, #f8fafc 100%);
+  background: linear-gradient(180deg, #ffffffe7 0%, rgb(246, 232, 248), #ede4f7 100%);
   box-shadow:
     0 25px 60px rgba(0,0,0,.25),
     0 0 0 1px rgba(255,255,255,.4);
