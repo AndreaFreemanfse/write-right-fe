@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
@@ -58,61 +59,65 @@ function Write({
   }
 
   function handleCreateStudySet() {
-  if (!corrections?.length) {
-    return;
-  }
+    if (!corrections?.length) {
+      return;
+    }
 
-  setFlashcards(corrections);
-  setSaveMessage("");
-}
+    setFlashcards(corrections);
+    setSaveMessage("");
+  }
 
   async function handleSaveFlashcardSet() {
-  if (!flashcards.length) {
-    return;
-  }
+    if (!flashcards.length) {
+      return;
+    }
 
-  const trimmedTitle = journalTitle.trim();
+    const trimmedTitle = journalTitle.trim();
 
-  setSavingSet(true);
-  setSaveMessage("");
+    setSavingSet(true);
+    setSaveMessage("");
 
-  const flashcardSet = {
-    name: trimmedTitle,
-    language: flashcards[0]?.language ?? "Unknown",
-    source_type: "journal",
-    journal_entry_id: null,
-    flashcards: flashcards.map((card) => ({
-      front: card.original,
-      back: card.corrected_text ?? card.corrected,
-      language: card.language ?? null,
-    })),
-  };
+    const flashcardSet = {
+      name: trimmedTitle,
+      language: flashcards[0]?.language ?? "Unknown",
+      source_type: "journal",
+      journal_entry_id: null,
+      flashcards: flashcards.map((card) => ({
+        front: card.original,
+        back: card.corrected_text ?? card.corrected,
+        language: card.language ?? null,
+      })),
+    };
 
-  try {
-    const response = await fetch(
-      "http://localhost:8000/flashcard-sets",
-      {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error("User is not authenticated.");
+      }
+      const response = await fetch("http://localhost:8000/flashcard-sets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(flashcardSet),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to save flashcard set.");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Unable to save flashcard set.");
+      setSaveMessage("Flashcard set added to your vault.");
+    } catch (saveError) {
+      console.error(saveError);
+      setSaveMessage("The flashcard set could not be saved.");
+    } finally {
+      setSavingSet(false);
     }
-
-    setSaveMessage("Flashcard set added to your vault.");
-  } catch (saveError) {
-    console.error(saveError);
-    setSaveMessage("The flashcard set could not be saved.");
-  } finally {
-    setSavingSet(false);
   }
-}
-
 
   return (
     <>

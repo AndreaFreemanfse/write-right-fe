@@ -6,8 +6,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./DropDownMenu.css";
 import {
-  Popover,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -17,10 +15,15 @@ import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
 function DropDownMenu({
-  nativeLanguage,
   setNativeLanguage,
+  setTargetLanguage,
+  setJournalText,
+  setJournalTitle,
   onOpenDictionary,
   onOpenHelp,
+  setCorrections,
+  setReviewMode,
+  nativeLanguage,
 }) {
   const id = React.useId();
   const buttonId = `${id}-button`;
@@ -36,6 +39,14 @@ function DropDownMenu({
     try {
       setAnchorEl(null);
       await signOut();
+      //set everything back to when user logs out
+      setJournalText("");
+      setJournalTitle("Untitled Journal");
+      setCorrections([]);
+      setReviewMode(false);
+      // change this to persist based on user settings
+      setNativeLanguage("english");
+      setTargetLanguage("english");
 
       navigate("/signin");
     } catch (error) {
