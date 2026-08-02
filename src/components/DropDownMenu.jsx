@@ -34,22 +34,25 @@ function DropDownMenu({
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
+
   // sign out user
-  async function handleSignOut(event) {
+  async function handleSignOut() {
     try {
       setAnchorEl(null);
+
       await signOut();
-      //set everything back to when user logs out
+
+      // Reset user-specific app state
       setJournalText("");
       setJournalTitle("Untitled Journal");
       setCorrections([]);
       setReviewMode(false);
-      // change this to persist based on user settings
       setNativeLanguage("english");
-      setTargetLanguage("english");
+      setTargetLanguage("");
 
-      navigate("/signin");
+      navigate("/", { replace: true });
     } catch (error) {
+      console.error("Sign out failed:", error);
       setMessage(error.message);
     }
   }

@@ -1,0 +1,348 @@
+.landing-page {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  overflow: hidden;
+  padding: 2rem;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(196, 181, 253, 0.22),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #2e1065,
+      #5b21b6 55%,
+      #7c3aed
+    );
+  color: #ffffff;
+  background-size: 115% 115%;
+  animation: landing-background-shift 14s ease-in-out infinite alternate;
+}
+
+.landing-content {
+  position: relative;
+  z-index: 1;
+  width: min(680px, 100%);
+  text-align: center;
+}
+
+.landing-ink {
+  position: absolute;
+  z-index: -1;
+  width: clamp(280px, 55vw, 560px);
+  aspect-ratio: 1;
+  top: 42%;
+  left: 50%;
+  border-radius:
+    42% 58% 63% 37% /
+    45% 39% 61% 55%;
+  background:
+    radial-gradient(
+      circle at 42% 38%,
+      rgba(221, 214, 254, 0.5),
+      rgba(167, 139, 250, 0.28) 34%,
+      rgba(109, 40, 217, 0.2) 55%,
+      transparent 74%
+    );
+  filter: blur(18px);
+  opacity: 0;
+  transform:
+    translate(-50%, -50%)
+    scale(0.72)
+    rotate(-8deg);
+  animation:
+    landing-ink-bloom 1.5s ease-out 120ms forwards,
+    landing-ink-pulse 5s ease-in-out 1.7s infinite alternate;
+}
+
+.landing-logo {
+  font-size: clamp(3.5rem, 8vw, 5.5rem);
+  line-height: 1;
+  opacity: 0;
+  transform:
+    translateY(18px)
+    rotate(-8deg)
+    scale(0.92);
+  animation:
+    landing-logo-rise 700ms ease-out forwards;
+}
+
+.landing-title-wrap {
+  position: relative;
+  width: fit-content;
+  margin: 0.5rem auto 0;
+}
+
+.landing-title {
+  margin: 0;
+  font-size: clamp(3rem, 9vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  opacity: 0;
+  transform: translateY(20px);
+  animation:
+    landing-rise 700ms ease-out 180ms forwards;
+}
+
+.landing-pen-stroke {
+  display: block;
+  width: min(320px, 70vw);
+  height: auto;
+  margin: 0.4rem auto 0;
+  overflow: visible;
+}
+
+.landing-pen-stroke path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.92);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(
+    0 0 8px rgba(255, 255, 255, 0.18)
+  );
+  animation:
+    landing-draw-stroke 900ms ease-out 700ms forwards;
+}
+
+.landing-tagline {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+  font-family:
+    "Brush Script MT",
+    "Segoe Script",
+    cursive;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 400;
+}
+
+.landing-tagline span {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+  border-right: 2px solid transparent;
+  animation:
+    landing-handwrite 800ms ease-out forwards,
+    landing-cursor 800ms step-end forwards;
+}
+
+.landing-tagline span:nth-child(1) {
+  --written-width: 5.3ch;
+  animation-delay: 700ms;
+}
+
+.landing-tagline span:nth-child(2) {
+  --written-width: 5.4ch;
+  animation-delay: 1.55s;
+}
+
+.landing-tagline span:nth-child(3) {
+  --written-width: 8.6ch;
+  animation-delay: 2.4s;
+}
+
+.landing-description {
+  max-width: 560px;
+  margin: 1.4rem auto 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+  opacity: 0;
+  animation:
+    landing-fade 600ms ease-out 3.25s forwards;
+}
+
+.landing-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  opacity: 0;
+  transform: translateY(12px);
+  animation:
+    landing-rise 600ms ease-out 3.45s forwards;
+}
+
+.landing-button {
+  min-width: 150px;
+  padding: 0.9rem 1.4rem;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.landing-button:hover {
+  transform: translateY(-2px);
+}
+
+.landing-button:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 4px;
+}
+
+.landing-button-primary {
+  background: #ffffff;
+  color: #5b21b6;
+  box-shadow:
+    0 12px 28px rgba(20, 10, 40, 0.28);
+}
+
+.landing-button-primary:hover {
+  box-shadow:
+    0 16px 34px rgba(20, 10, 40, 0.34);
+}
+
+.landing-button-secondary {
+  border-color: rgba(255, 255, 255, 0.68);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.landing-button-secondary:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+@keyframes landing-logo-rise {
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      rotate(-8deg)
+      scale(1);
+  }
+}
+
+@keyframes landing-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landing-draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes landing-ink-bloom {
+  to {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1)
+      rotate(0deg);
+  }
+}
+
+@keyframes landing-ink-pulse {
+  from {
+    opacity: 0.72;
+    transform:
+      translate(-50%, -50%)
+      scale(1)
+      rotate(0deg);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.08)
+      rotate(2deg);
+  }
+}
+
+@keyframes landing-handwrite {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: var(--written-width);
+  }
+}
+
+@keyframes landing-cursor {
+  0%,
+  85% {
+    border-right-color: rgba(255, 255, 255, 0.85);
+  }
+
+  100% {
+    border-right-color: transparent;
+  }
+}
+
+@keyframes landing-background-shift {
+  from {
+    background-position: 0% 0%;
+  }
+
+  to {
+    background-position: 5% 4%;
+  }
+}
+
+@media (max-width: 560px) {
+  .landing-page {
+    padding: 1.5rem;
+  }
+
+  .landing-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .landing-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page,
+  .landing-logo,
+  .landing-title,
+  .landing-description,
+  .landing-actions,
+  .landing-ink,
+  .landing-pen-stroke path {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .landing-tagline span {
+    width: auto;
+    opacity: 1;
+    border-right: none;
+    animation: none;
+  }
+
+  .landing-pen-stroke path {
+    stroke-dashoffset: 0;
+  }
+}
