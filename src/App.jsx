@@ -86,6 +86,9 @@ function App() {
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
 
+  // Journal ID state
+  const [journalEntryId, setJournalEntryId] = useState(null); 
+
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
 
@@ -134,9 +137,11 @@ function App() {
 
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
+      const savedJournalEntryId = response.journal_entry_id ?? null;
 
       setCorrections(mistakes);
       setAccuracy(accuracyResult);
+      setJournalEntryId(savedJournalEntryId);
 
       if (mistakes.length === 0) {
         celebrate();
@@ -216,6 +221,7 @@ function App() {
                 loadingMessage={loadingMessage}
                 corrections={corrections}
                 accuracy={accuracy}
+                journalEntryId={journalEntryId}
                 onBack={returnToEditor}
                 error={apiError}
                 reviewMode={reviewMode}

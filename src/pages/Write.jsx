@@ -15,6 +15,7 @@ function Write({
   loadingMessage,
   corrections,
   accuracy,
+  journalEntryId,
   journalTitle,
   setJournalTitle,
   onBack,
@@ -81,7 +82,7 @@ function Write({
       name: trimmedTitle,
       language: flashcards[0]?.language ?? "Unknown",
       source_type: "journal",
-      journal_entry_id: null,
+      journal_entry_id: journalEntryId,
       flashcards: flashcards.map((card) => ({
         front: card.original,
         back: card.corrected_text ?? card.corrected,
@@ -106,14 +107,24 @@ function Write({
         body: JSON.stringify(flashcardSet),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error("Unable to save flashcard set.");
+        throw new Error(
+          result.detail || "Unable to save flashcard set.",
+        );
       }
 
-      setSaveMessage("Flashcard set added to your vault.");
+      setSaveMessage(
+        result.message || "Flashcards saved successfully.",
+      );
     } catch (saveError) {
-      console.error(saveError);
-      setSaveMessage("The flashcard set could not be saved.");
+        console.error(saveError);
+
+        setSaveMessage(
+          saveError.message ||
+            "The flashcard set could not be saved.",
+        );
     } finally {
       setSavingSet(false);
     }
