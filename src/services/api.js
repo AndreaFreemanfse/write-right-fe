@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 
 export async function handleCorrectJournal(
   text,
@@ -13,7 +14,7 @@ export async function handleCorrectJournal(
     throw new Error("User is not authenticated.");
   }
 
-  const response = await fetch("http://localhost:8000/journal/analyze", {
+  const response = await fetch(`${API_BASE_URL}/journal/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

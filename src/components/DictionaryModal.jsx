@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 
 import "./DictionaryModal.css";
 
@@ -50,7 +51,6 @@ const LANGUAGE_CODES = {
   swahili: "sw",
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function formatLanguageName(language = "") {
   return language.charAt(0).toUpperCase() + language.slice(1);

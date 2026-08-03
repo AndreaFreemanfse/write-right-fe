@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
@@ -29,19 +30,6 @@ function Write({
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
 
-  // const accuracyDetails = {
-  //     score: 86,
-  //     summary:
-  //       "Your meaning was clear, with a few opportunities to strengthen grammar and vocabulary.",
-  //     categories: {
-  //       grammar: 82,
-  //       vocabulary: 88,
-  //       spelling: 94,
-  //       sentenceStructure: 79,
-  //     },
-  //     improvementNote:
-  //       "Focus on sentence structure and grammar in your next journal entry.",
-  //   };
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -98,7 +86,7 @@ function Write({
       if (!session) {
         throw new Error("User is not authenticated.");
       }
-      const response = await fetch("http://localhost:8000/flashcard-sets", {
+      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
