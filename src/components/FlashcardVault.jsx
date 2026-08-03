@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 import "./FlashcardVault.css";
 
 function FlashcardVault() {
@@ -18,7 +19,7 @@ function FlashcardVault() {
         if (!session) {
           throw new Error("User is not authenticated.");
         }
-        const response = await fetch("http://localhost:8000/flashcard-sets", {
+        const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
@@ -89,7 +90,7 @@ function FlashcardVault() {
       }
 
       const response = await fetch(
-        `http://localhost:8000/flashcard-sets/${flashcardSetId}`,
+        `${API_BASE_URL}/flashcard-sets/${flashcardSetId}`,
         {
           method: "DELETE",
           headers: {
