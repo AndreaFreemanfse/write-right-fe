@@ -5,6 +5,7 @@ import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 
@@ -230,7 +231,7 @@ function App() {
               />
             }
           />
-
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/flashcards" element={<FlashcardReviewPage />} />
         </Route>
       </Routes>

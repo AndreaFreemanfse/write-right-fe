@@ -88,6 +88,11 @@ function DropDownMenu({
     handleClose();
   }
 
+  function openProfile() {
+    navigate("/profile");
+    handleClose();
+  }
+
   return (
     <div>
       <Button
@@ -128,6 +133,20 @@ function DropDownMenu({
       >
         <MenuItem
           className="drop-down-menu-item"
+          key="profile"
+          onClick={openProfile}
+          sx={{
+            color: "#555555",
+            "&:hover": {
+              backgroundColor: "#6d28d9",
+              color: "white",
+            },
+          }}
+        >
+          Profile
+        </MenuItem>
+        <MenuItem
+          className="drop-down-menu-item"
           key="dictionary"
           onClick={openDictionary}
           sx={{
@@ -147,7 +166,6 @@ function DropDownMenu({
           sx={{
             color: "#555555",
             "&:hover": {
-              color: "#5555",
               backgroundColor: "#6d28d9",
               color: "white",
             },
