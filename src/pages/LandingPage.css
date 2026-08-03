@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap");
+
 .landing-page {
   position: relative;
   display: grid;
@@ -115,10 +117,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.15rem;
-  font-family:
-    "Brush Script MT",
-    "Segoe Script",
-    cursive;
+  font-family: "Kalam", cursive;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 400;
 }
@@ -146,7 +145,7 @@
 }
 
 .landing-tagline span:nth-child(3) {
-  --written-width: 8.6ch;
+  --written-width: 9.2ch;
   animation-delay: 2.4s;
 }
 

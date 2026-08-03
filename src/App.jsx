@@ -210,9 +210,9 @@ function App() {
     </>
       )}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
