@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
+import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
@@ -47,6 +48,17 @@ function App() {
   ];
 
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
+
+  const location = useLocation();
+
+  const publicPaths = [
+    "/",
+    "/signup",
+    "/signin",
+    "/check-email",
+  ];
+
+  const isPublicPage = publicPaths.includes(location.pathname);
 
   useEffect(() => {
     if (!loading) return;
@@ -180,6 +192,8 @@ function App() {
 
   return (
     <div className="App">
+      {!isPublicPage && (
+    <>
       <TopNav
         nativeLanguage={nativeLanguage}
         setNativeLanguage={setNativeLanguage}
@@ -199,9 +213,12 @@ function App() {
         targetLanguage={targetLanguage}
       />
       <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+    </>
+      )}
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
@@ -210,7 +227,7 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
-            path="/"
+            path="/write"
             element={
               <Write
                 text={journalText}

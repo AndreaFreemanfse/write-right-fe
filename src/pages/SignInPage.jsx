@@ -15,7 +15,7 @@ function SignInPage() {
     try {
       await signIn(email, password);
 
-      navigate("/", { replace: true });
+      navigate("/write", { replace: true });
     } catch (error) {
       setMessage(error.message);
     }
