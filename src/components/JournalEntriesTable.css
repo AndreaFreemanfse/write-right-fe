@@ -1,0 +1,56 @@
+.journal-page {
+  padding: 2rem;
+}
+
+
+.journal-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1.5rem;
+}
+
+
+.journal-search {
+  width:100%;
+  max-width:400px;
+  padding:12px;
+  margin-bottom:20px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+
+.journal-table {
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+
+.journal-table th,
+.journal-table td {
+  padding:1rem;
+  text-align:left;
+  border-bottom:1px solid #eee;
+}
+
+
+.journal-table tbody tr {
+  cursor:pointer;
+}
+
+
+.journal-table tbody tr:hover {
+  background:#fafafa;
+}
+
+
+.pagination {
+  margin-top:2rem;
+  display:flex;
+  justify-content:center;
+  gap:1rem;
+}

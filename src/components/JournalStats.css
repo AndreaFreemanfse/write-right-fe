@@ -1,0 +1,23 @@
+.journal-stats {
+  display:grid;
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap:1rem;
+  margin-bottom:2rem;
+}
+
+
+.stat-card {
+  background:white;
+  padding:1.5rem;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+
+.stat-card h3 {
+  font-size:2rem;
+  margin:.5rem 0;
+}
