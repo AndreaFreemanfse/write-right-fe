@@ -198,3 +198,23 @@
         transform: rotate(360deg);
     }
 }
+
+.selected-language-button {
+  width: fit-content;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  color: purple;
+  cursor: pointer;
+}
+
+.selected-language-button:hover {
+  text-decoration: underline;
+}
+
+.selected-language-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}

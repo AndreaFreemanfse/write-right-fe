@@ -1,6 +1,6 @@
 import { languages } from "../utils/constants/languages";
 
-function LanguageSelectionDropdown({ onChange, displayText }) {
+function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
   const handleChange = (event) => {
     onChange(event.target.value);
   };
@@ -9,7 +9,7 @@ function LanguageSelectionDropdown({ onChange, displayText }) {
     <select
       id="language-selection"
       name="languages"
-      defaultValue=""
+      value={value}
       onChange={handleChange}
     >
       <option value="" disabled hidden>

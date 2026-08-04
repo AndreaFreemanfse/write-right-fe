@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 import "./FlashcardVault.css";
 
 function FlashcardVault() {
@@ -11,9 +13,18 @@ function FlashcardVault() {
   useEffect(() => {
     async function loadFlashcardSets() {
       try {
-        const response = await fetch(
-          "http://localhost:8000/flashcard-sets"
-        );
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error("User is not authenticated.");
+        }
+        const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Unable to load flashcard sets.");
@@ -53,110 +64,112 @@ function FlashcardVault() {
     );
   }
 
-
-
-function handleFlipCard(cardId) {
-  setFlippedCards((currentCards) => ({
-    ...currentCards,
-    [cardId]: !currentCards[cardId],
-  }));
-}
+  function handleFlipCard(cardId) {
+    setFlippedCards((currentCards) => ({
+      ...currentCards,
+      [cardId]: !currentCards[cardId],
+    }));
+  }
 
   async function handleDeleteSet(flashcardSetId) {
-  const shouldDelete = window.confirm(
-    "Delete this flashcard set and all of its cards?"
-  );
-
-  if (!shouldDelete) {
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `http://localhost:8000/flashcard-sets/${flashcardSetId}`,
-      {
-        method: "DELETE",
-      }
+    const shouldDelete = window.confirm(
+      "Delete this flashcard set and all of its cards?",
     );
 
-    if (!response.ok) {
-      throw new Error("Unable to delete flashcard set.");
+    if (!shouldDelete) {
+      return;
     }
 
-    setFlashcardSets((currentSets) =>
-      currentSets.filter(
-        (flashcardSet) => flashcardSet.id !== flashcardSetId
-      )
-    );
-  } catch (deleteError) {
-    console.error(deleteError);
-    setError("The flashcard set could not be deleted.");
-  }
-}
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
+      if (!session) {
+        throw new Error("User is not authenticated.");
+      }
 
-if (selectedSet) {
-  console.log("Selected flashcard set:", selectedSet);
-  return (
-    <section className="flashcard-vault">
-      <button
-        type="button"
-        className="edit-card-button"
-        onClick={() => setSelectedSet(null)}
-      >
-        ← Back to Vault
-      </button>
-
-      <h2>{selectedSet.name}</h2>
-
-      <p>
-        {selectedSet.flashcards.length}{" "}
-        {selectedSet.flashcards.length === 1 ? "card" : "cards"}
-      </p>
-
-      <div className="vault-grid">
-      {selectedSet.flashcards.map((card, index) => {
-      const cardKey = card.id ?? `${selectedSet.id}-${index}`;
-      const isFlipped = Boolean(flippedCards[cardKey]);
-
-      return (
-        <button
-          key={cardKey}
-          type="button"
-          className="study-card-container"
-          onClick={() => handleFlipCard(cardKey)}
-          aria-label={
-            isFlipped
-              ? "Show front of flashcard"
-              : "Show answer"
-          }
-        >
-          <div
-            className={`study-card-inner ${
-              isFlipped ? "is-flipped" : ""
-            }`}
-          >
-            <div className="study-card-face study-card-front">
-              <h3>{card.front}</h3>
-              <p className="study-card-hint">
-                Click to reveal answer
-              </p>
-            </div>
-
-            <div className="study-card-face study-card-back">
-              <h3>{card.back}</h3>
-              <p className="study-card-hint">
-                Click to see prompt
-              </p>
-            </div>
-          </div>
-        </button>
+      const response = await fetch(
+        `${API_BASE_URL}/flashcard-sets/${flashcardSetId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        },
       );
-    })}
-      </div>
-    </section>
-  );
-}
+
+      if (!response.ok) {
+        throw new Error("Unable to delete flashcard set.");
+      }
+
+      setFlashcardSets((currentSets) =>
+        currentSets.filter(
+          (flashcardSet) => flashcardSet.id !== flashcardSetId,
+        ),
+      );
+    } catch (deleteError) {
+      console.error(deleteError);
+      setError("The flashcard set could not be deleted.");
+    }
+  }
+
+  if (selectedSet) {
+    console.log("Selected flashcard set:", selectedSet);
+    return (
+      <section className="flashcard-vault">
+        <button
+          type="button"
+          className="edit-card-button"
+          onClick={() => setSelectedSet(null)}
+        >
+          ← Back to Vault
+        </button>
+
+        <h2>{selectedSet.name}</h2>
+
+        <p>
+          {selectedSet.flashcards.length}{" "}
+          {selectedSet.flashcards.length === 1 ? "card" : "cards"}
+        </p>
+
+        <div className="vault-grid">
+          {selectedSet.flashcards.map((card, index) => {
+            const cardKey = card.id ?? `${selectedSet.id}-${index}`;
+            const isFlipped = Boolean(flippedCards[cardKey]);
+
+            return (
+              <button
+                key={cardKey}
+                type="button"
+                className="study-card-container"
+                onClick={() => handleFlipCard(cardKey)}
+                aria-label={
+                  isFlipped ? "Show front of flashcard" : "Show answer"
+                }
+              >
+                <div
+                  className={`study-card-inner ${
+                    isFlipped ? "is-flipped" : ""
+                  }`}
+                >
+                  <div className="study-card-face study-card-front">
+                    <h3>{card.front}</h3>
+                    <p className="study-card-hint">Click to reveal answer</p>
+                  </div>
+
+                  <div className="study-card-face study-card-back">
+                    <h3>{card.back}</h3>
+                    <p className="study-card-hint">Click to see prompt</p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flashcard-vault">
@@ -166,8 +179,7 @@ if (selectedSet) {
           <h2>Flashcard Vault</h2>
 
           <p className="vault-count">
-            {flashcardSets.length}{" "}
-            {flashcardSets.length === 1 ? "set" : "sets"}
+            {flashcardSets.length} {flashcardSets.length === 1 ? "set" : "sets"}
           </p>
         </div>
       </header>
@@ -179,8 +191,8 @@ if (selectedSet) {
           <h3>Your vault is empty</h3>
 
           <p>
-            Complete a journal correction or Conquer Cards session to save
-            your first flashcard set.
+            Complete a journal correction or Conquer Cards session to save your
+            first flashcard set.
           </p>
         </div>
       ) : (
@@ -188,9 +200,7 @@ if (selectedSet) {
           {flashcardSets.map((flashcardSet) => (
             <article className="vault-card" key={flashcardSet.id}>
               <div className="vault-card-top">
-                <span className="vault-language">
-                  {flashcardSet.language}
-                </span>
+                <span className="vault-language">{flashcardSet.language}</span>
 
                 <span className="vault-status learning">
                   {flashcardSet.source_type || "manual"}
@@ -204,9 +214,7 @@ if (selectedSet) {
 
                 <p className="vault-card-back">
                   {flashcardSet.flashcards?.length ?? 0}{" "}
-                  {flashcardSet.flashcards?.length === 1
-                    ? "card"
-                    : "cards"}
+                  {flashcardSet.flashcards?.length === 1 ? "card" : "cards"}
                 </p>
               </div>
 
@@ -220,12 +228,12 @@ if (selectedSet) {
                 </button>
 
                 <button
-                type="button"
-                className="delete-card-button"
-                onClick={() => handleDeleteSet(flashcardSet.id)}
-              >
-                Delete
-              </button>
+                  type="button"
+                  className="delete-card-button"
+                  onClick={() => handleDeleteSet(flashcardSet.id)}
+                >
+                  Delete
+                </button>
               </div>
             </article>
           ))}

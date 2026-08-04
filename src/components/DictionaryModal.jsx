@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 
 import "./DictionaryModal.css";
 
@@ -49,8 +51,6 @@ const LANGUAGE_CODES = {
   swahili: "sw",
 };
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function formatLanguageName(language = "") {
   return language.charAt(0).toUpperCase() + language.slice(1);
@@ -60,12 +60,7 @@ function normalizeWord(word = "") {
   return word.trim().toLocaleLowerCase();
 }
 
-function DictionaryModal({
-  isOpen,
-  onClose,
-  nativeLanguage,
-  targetLanguage,
-}) {
+function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
   const [searchTerm, setSearchTerm] = useState("");
   const currentNativeLanguage = nativeLanguage || "english";
   const currentTargetLanguage = targetLanguage || "english";
@@ -87,97 +82,98 @@ function DictionaryModal({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const targetLanguageChanged =
+      previousTargetLanguage.current !== currentTargetLanguage;
 
-useEffect(() => {
-  const targetLanguageChanged =
-    previousTargetLanguage.current !== currentTargetLanguage;
+    previousTargetLanguage.current = currentTargetLanguage;
 
-  previousTargetLanguage.current = currentTargetLanguage;
-
-  if (
-    !targetLanguageChanged ||
-    !isOpen ||
-    !searchTerm.trim() ||
-    !translationResult
-  ) {
-    return;
-  }
-
-  async function refreshDictionary() {
-    setSearchLoading(true);
-    setSearchError("");
-    setTranslationResult(null);
-    setDictionaryResult(null);
-
-    try {
-      const translatedWord = await translateWord(
-        searchTerm.trim(),
-      );
-
-      setTranslationResult(translatedWord);
-
-      const definitionResult = await lookUpDefinition(
-        translatedWord.translation,
-      );
-
-      setDictionaryResult(definitionResult);
-    } catch (error) {
-      console.error(
-        "Dictionary refresh failed:",
-        error,
-      );
-
-      setSearchError(
-        error.message ||
-          "Something went wrong while updating the dictionary.",
-      );
-    } finally {
-      setSearchLoading(false);
+    if (
+      !targetLanguageChanged ||
+      !isOpen ||
+      !searchTerm.trim() ||
+      !translationResult
+    ) {
+      return;
     }
-  }
 
-  refreshDictionary();
-}, [currentTargetLanguage]);
+    async function refreshDictionary() {
+      setSearchLoading(true);
+      setSearchError("");
+      setTranslationResult(null);
+      setDictionaryResult(null);
 
+      try {
+        const translatedWord = await translateWord(searchTerm.trim());
+
+        setTranslationResult(translatedWord);
+
+        const definitionResult = await lookUpDefinition(
+          translatedWord.translation,
+        );
+
+        setDictionaryResult(definitionResult);
+      } catch (error) {
+        console.error("Dictionary refresh failed:", error);
+
+        setSearchError(
+          error.message ||
+            "Something went wrong while updating the dictionary.",
+        );
+      } finally {
+        setSearchLoading(false);
+      }
+    }
+
+    refreshDictionary();
+  }, [currentTargetLanguage]);
 
   if (!isOpen) {
     return null;
   }
 
-async function translateWord(word) {
-  const response = await fetch(`${API_BASE_URL}/translate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text: word,
-      source_language: currentNativeLanguage,
-      target_language: currentTargetLanguage,
-    }),
-  });
+  async function translateWord(word) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    
+    if (!session) {
+      throw new Error("User is not authenticated.");
+    }
 
-  if (!response.ok) {
-    throw new Error("The word could not be translated.");
+    const response = await fetch(`${API_BASE_URL}/translate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        text: word,
+        source_language: currentNativeLanguage,
+        target_language: currentTargetLanguage,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("The word could not be translated.");
+    }
+
+    const data = await response.json();
+
+    if (!data.translation) {
+      throw new Error("No translation was returned.");
+    }
+
+    return {
+      translation: data.translation,
+      partOfSpeech: data.part_of_speech || "",
+      originalText: data.original_text || word,
+      interpretedText: data.interpreted_text || word,
+    };
   }
-
-  const data = await response.json();
-
-  if (!data.translation) {
-    throw new Error("No translation was returned.");
-  }
-
-  return {
-    translation: data.translation,
-    partOfSpeech: data.part_of_speech || "",
-    originalText: data.original_text || word,
-    interpretedText: data.interpreted_text || word,
-  };
-}
 
   async function lookUpDefinition(word) {
-    const languageCode =
-      LANGUAGE_CODES[currentTargetLanguage.toLowerCase()];
+    const languageCode = LANGUAGE_CODES[currentTargetLanguage.toLowerCase()];
 
     if (!languageCode) {
       return null;
@@ -231,31 +227,24 @@ async function translateWord(word) {
       console.error("Dictionary search failed:", error);
 
       setSearchError(
-        error.message ||
-          "Something went wrong while translating the word.",
+        error.message || "Something went wrong while translating the word.",
       );
     } finally {
       setSearchLoading(false);
     }
   }
 
-  const nativeLanguageTitle = formatLanguageName(
-    currentNativeLanguage,
-  );
+  const nativeLanguageTitle = formatLanguageName(currentNativeLanguage);
 
-  const targetLanguageTitle = formatLanguageName(
-    currentTargetLanguage,
-  );
+  const targetLanguageTitle = formatLanguageName(currentTargetLanguage);
 
-const spellingWasCorrected =
-  translationResult &&
-  normalizeWord(translationResult.originalText) !==
-    normalizeWord(translationResult.interpretedText);
+  const spellingWasCorrected =
+    translationResult &&
+    normalizeWord(translationResult.originalText) !==
+      normalizeWord(translationResult.interpretedText);
 
   return (
-    <div
-      className="dictionary-modal-overlay"
-    >
+    <div className="dictionary-modal-overlay">
       <section
         className="dictionary-modal"
         role="dialog"
@@ -265,7 +254,7 @@ const spellingWasCorrected =
         <div className="dictionary-modal-header">
           <div>
             <h2 id="dictionary-title">
-            {nativeLanguageTitle} to {targetLanguageTitle} Dictionary
+              {nativeLanguageTitle} to {targetLanguageTitle} Dictionary
             </h2>
           </div>
 
@@ -279,10 +268,7 @@ const spellingWasCorrected =
           </button>
         </div>
 
-        <form
-          className="dictionary-search-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="dictionary-search-form" onSubmit={handleSubmit}>
           <label htmlFor="dictionary-search">
             What would you like to translate?
           </label>
@@ -292,68 +278,48 @@ const spellingWasCorrected =
               id="dictionary-search"
               type="text"
               value={searchTerm}
-              onChange={(event) =>
-                setSearchTerm(event.target.value)
-              }
+              onChange={(event) => setSearchTerm(event.target.value)}
               placeholder={`Enter a word in ${currentNativeLanguage}`}
               autoComplete="off"
             />
 
-            <button
-              type="submit"
-              disabled={searchLoading}
-            >
+            <button type="submit" disabled={searchLoading}>
               {searchLoading ? "Searching..." : "Search"}
             </button>
           </div>
         </form>
 
         {searchError && (
-          <p
-            className="dictionary-search-error"
-            role="alert"
-          >
+          <p className="dictionary-search-error" role="alert">
             {searchError}
           </p>
         )}
 
-        {!translationResult &&
-          !searchError &&
-          !searchLoading && (
-            <div className="dictionary-empty-state">
-              <span className="dictionary-empty-icon">
-                📖
-              </span>
+        {!translationResult && !searchError && !searchLoading && (
+          <div className="dictionary-empty-state">
+            <span className="dictionary-empty-icon">📖</span>
 
-              <p>
-                Enter a word to see its{" "}
-                {targetLanguageTitle} translation.
-              </p>
-            </div>
-          )}
+            <p>Enter a word to see its {targetLanguageTitle} translation.</p>
+          </div>
+        )}
 
         {translationResult && (
-            <div className="dictionary-results">
-                {spellingWasCorrected && (
-                <div
-                    className="dictionary-suggestion"
-                    role="status"
+          <div className="dictionary-results">
+            {spellingWasCorrected && (
+              <div className="dictionary-suggestion" role="status">
+                Did you mean{" "}
+                <button
+                  type="button"
+                  className="dictionary-suggestion-word"
+                  onClick={() =>
+                    setSearchTerm(translationResult.interpretedText)
+                  }
                 >
-                    Did you mean{" "}
-                    <button
-                    type="button"
-                    className="dictionary-suggestion-word"
-                    onClick={() =>
-                        setSearchTerm(
-                        translationResult.interpretedText,
-                        )
-                    }
-                    >
-                    {translationResult.interpretedText}
-                    </button>
-                    ?
-                </div>
-                )}
+                  {translationResult.interpretedText}
+                </button>
+                ?
+              </div>
+            )}
             <div className="dictionary-translation-result">
               <h3>{translationResult.translation}</h3>
 
@@ -373,9 +339,7 @@ const spellingWasCorrected =
                   .map((entry, entryIndex) => (
                     <div
                       className="dictionary-entry"
-                      key={`${
-                        entry.partOfSpeech || "entry"
-                      }-${entryIndex}`}
+                      key={`${entry.partOfSpeech || "entry"}-${entryIndex}`}
                     >
                       {entry.partOfSpeech && (
                         <p className="dictionary-part-of-speech">
@@ -385,62 +349,38 @@ const spellingWasCorrected =
 
                       {entry.pronunciations?.[0]?.text && (
                         <p className="dictionary-pronunciation">
-                          {
-                            entry.pronunciations[0]
-                              .text
-                          }
+                          {entry.pronunciations[0].text}
                         </p>
                       )}
 
-                      {entry.senses
-                        ?.slice(0, 3)
-                        .map(
-                          (
-                            sense,
-                            senseIndex,
-                          ) => (
-                            <div
-                              className="dictionary-sense"
-                              key={`${entryIndex}-${senseIndex}`}
-                            >
-                              <p>
-                                <strong>
-                                  {senseIndex +
-                                    1}
-                                  .
-                                </strong>{" "}
-                                {
-                                  sense.definition
-                                }
-                              </p>
+                      {entry.senses?.slice(0, 3).map((sense, senseIndex) => (
+                        <div
+                          className="dictionary-sense"
+                          key={`${entryIndex}-${senseIndex}`}
+                        >
+                          <p>
+                            <strong>{senseIndex + 1}.</strong>{" "}
+                            {sense.definition}
+                          </p>
 
-                              {sense
-                                .examples?.[0] && (
-                                <p className="dictionary-example">
-                                  “
-                                  {
-                                    sense
-                                      .examples[0]
-                                  }
-                                  ”
-                                </p>
-                              )}
-                            </div>
-                          ),
-                        )}
+                          {sense.examples?.[0] && (
+                            <p className="dictionary-example">
+                              “{sense.examples[0]}”
+                            </p>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   ))}
 
                 <p className="dictionary-attribution">
-                  Definitions provided by
-                  FreeDictionaryAPI.com and
-                  Wiktionary.
+                  Definitions provided by FreeDictionaryAPI.com and Wiktionary.
                 </p>
               </div>
             ) : (
               <p className="dictionary-no-definition">
-                Translation found, but no additional
-                dictionary definition was available.
+                Translation found, but no additional dictionary definition was
+                available.
               </p>
             )}
           </div>

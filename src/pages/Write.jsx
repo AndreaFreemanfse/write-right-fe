@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
+import { API_BASE_URL } from "../config/api";
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
@@ -14,6 +16,7 @@ function Write({
   loadingMessage,
   corrections,
   accuracy,
+  journalEntryId,
   journalTitle,
   setJournalTitle,
   onBack,
@@ -29,19 +32,6 @@ function Write({
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
 
-  // const accuracyDetails = {
-  //     score: 86,
-  //     summary:
-  //       "Your meaning was clear, with a few opportunities to strengthen grammar and vocabulary.",
-  //     categories: {
-  //       grammar: 82,
-  //       vocabulary: 88,
-  //       spelling: 94,
-  //       sentenceStructure: 79,
-  //     },
-  //     improvementNote:
-  //       "Focus on sentence structure and grammar in your next journal entry.",
-  //   };
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -60,61 +50,75 @@ function Write({
   }
 
   function handleCreateStudySet() {
-  if (!corrections?.length) {
-    return;
-  }
+    if (!corrections?.length) {
+      return;
+    }
 
-  setFlashcards(corrections);
-  setSaveMessage("");
-}
+    setFlashcards(corrections);
+    setSaveMessage("");
+  }
 
   async function handleSaveFlashcardSet() {
-  if (!flashcards.length) {
-    return;
-  }
+    if (!flashcards.length) {
+      return;
+    }
 
-  const trimmedTitle = journalTitle.trim();
+    const trimmedTitle = journalTitle.trim();
 
-  setSavingSet(true);
-  setSaveMessage("");
+    setSavingSet(true);
+    setSaveMessage("");
 
-  const flashcardSet = {
-    name: trimmedTitle,
-    language: flashcards[0]?.language ?? "Unknown",
-    source_type: "journal",
-    journal_entry_id: null,
-    flashcards: flashcards.map((card) => ({
-      front: card.original,
-      back: card.corrected_text ?? card.corrected,
-      language: card.language ?? null,
-    })),
-  };
+    const flashcardSet = {
+      name: trimmedTitle,
+      language: flashcards[0]?.language ?? "Unknown",
+      source_type: "journal",
+      journal_entry_id: journalEntryId,
+      flashcards: flashcards.map((card) => ({
+        front: card.original,
+        back: card.corrected_text ?? card.corrected,
+        language: card.language ?? null,
+      })),
+    };
 
-  try {
-    const response = await fetch(
-      "http://localhost:8000/flashcard-sets",
-      {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error("User is not authenticated.");
+      }
+      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(flashcardSet),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.detail || "Unable to save flashcard set.",
+        );
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Unable to save flashcard set.");
+      setSaveMessage(
+        result.message || "Flashcards saved successfully.",
+      );
+    } catch (saveError) {
+        console.error(saveError);
+
+        setSaveMessage(
+          saveError.message ||
+            "The flashcard set could not be saved.",
+        );
+    } finally {
+      setSavingSet(false);
     }
-
-    setSaveMessage("Flashcard set added to your vault.");
-  } catch (saveError) {
-    console.error(saveError);
-    setSaveMessage("The flashcard set could not be saved.");
-  } finally {
-    setSavingSet(false);
   }
-}
-
 
   return (
     <>
@@ -128,6 +132,7 @@ function Write({
           loading={loading}
           loadingMessage={loadingMessage}
           error={error}
+          targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
         />
       ) : loading ? (

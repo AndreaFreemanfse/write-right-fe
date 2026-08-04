@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { signIn } from "../services/auth";
 import { useNavigate, Link } from "react-router-dom";
-import "./SigninPage.css";
+import "./SignInPage.css";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ function SignInPage() {
     try {
       await signIn(email, password);
 
-      navigate("/", { replace: true });
+      navigate("/write", { replace: true });
     } catch (error) {
       setMessage(error.message);
     }

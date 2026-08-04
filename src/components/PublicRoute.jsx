@@ -6,7 +6,7 @@ function PublicRoute() {
 
   if (loading) return <p>Loading...</p>;
 
-  return user ? <Navigate to="/" replace /> : <Outlet />;
+  return user ? <Navigate to="/write" replace /> : <Outlet />;
 }
 
 export default PublicRoute;

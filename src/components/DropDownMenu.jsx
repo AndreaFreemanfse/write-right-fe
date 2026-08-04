@@ -6,8 +6,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./DropDownMenu.css";
 import {
-  Popover,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,7 +14,17 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
-function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
+function DropDownMenu({
+  setNativeLanguage,
+  setTargetLanguage,
+  setJournalText,
+  setJournalTitle,
+  onOpenDictionary,
+  onOpenHelp,
+  setCorrections,
+  setReviewMode,
+  nativeLanguage,
+}) {
   const id = React.useId();
   const buttonId = `${id}-button`;
   const menuId = `${id}-menu`;
@@ -26,14 +34,25 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
+
   // sign out user
-  async function handleSignOut(event) {
+  async function handleSignOut() {
     try {
       setAnchorEl(null);
+
       await signOut();
 
-      navigate("/signin");
+      // Reset user-specific app state
+      setJournalText("");
+      setJournalTitle("Untitled Journal");
+      setCorrections([]);
+      setReviewMode(false);
+      setNativeLanguage("english");
+      setTargetLanguage("");
+
+      navigate("/", { replace: true });
     } catch (error) {
+      console.error("Sign out failed:", error);
       setMessage(error.message);
     }
   }
@@ -69,6 +88,11 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
 
   function openDictionary() {
     onOpenDictionary();
+    handleClose();
+  }
+
+  function openProfile() {
+    navigate("/profile");
     handleClose();
   }
 
@@ -112,6 +136,20 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
       >
         <MenuItem
           className="drop-down-menu-item"
+          key="profile"
+          onClick={openProfile}
+          sx={{
+            color: "#555555",
+            "&:hover": {
+              backgroundColor: "#6d28d9",
+              color: "white",
+            },
+          }}
+        >
+          Profile
+        </MenuItem>
+        <MenuItem
+          className="drop-down-menu-item"
           key="dictionary"
           onClick={openDictionary}
           sx={{
@@ -131,7 +169,6 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
           sx={{
             color: "#555555",
             "&:hover": {
-              color: "#5555",
               backgroundColor: "#6d28d9",
               color: "white",
             },
@@ -189,6 +226,7 @@ function DropDownMenu({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
 
         <DialogContent>
           <LanguageSelectionDropdown
+            value={nativeLanguage}
             onChange={setNativeLanguage}
             displayText={"Native Language"}
           />

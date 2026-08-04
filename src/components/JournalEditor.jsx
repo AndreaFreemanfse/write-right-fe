@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./JournalEditor.css";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { Stack } from "@mui/material";
@@ -11,8 +12,16 @@ function JournalEditor({
   loading,
   loadingMessage,
   error,
+  targetLanguage,
   setTargetLanguage,
 }) {
+  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+
+  const handleLanguageChange = (language) => {
+    setTargetLanguage(language);
+    setLanguageDropdownOpen(false);
+  };
+
   return (
     <div className="journal-editor">
       <Stack spacing={2}>
@@ -28,18 +37,29 @@ function JournalEditor({
           />
         </label>
 
-        <Stack direction="row" spacing={2}>
-          <p className="editor-subtitle">
-            Practice writing in your target language:
-          </p>
+        {targetLanguage && !languageDropdownOpen ? (
+          <button
+            type="button"
+            className="selected-language-button"
+            onClick={() => setLanguageDropdownOpen(true)}
+            aria-label={`Change target language from ${targetLanguage}`}
+          >
+            {targetLanguage.toUpperCase()}
+          </button>
+        ) : (
+          <Stack direction="row" spacing={2} alignitems="center">
+            <p className="editor-subtitle">
+              Practice writing in your target language:
+            </p>
 
-          <LanguageSelectionDropdown
-            onChange={setTargetLanguage}
-            displayText="Target Language"
-          />
-        </Stack>
+            <LanguageSelectionDropdown
+              value={targetLanguage}
+              onChange={handleLanguageChange}
+              displayText="Target Language"
+            />
+          </Stack>
+        )}
 
-        {/* This section is no longer relevant, replaced with AnalysisLoading screen */}
         <div className="journal-container">
           <textarea
             className="journal-textarea"
@@ -49,7 +69,7 @@ function JournalEditor({
             disabled={loading}
             style={{
               opacity: loading ? 0.35 : 1,
-              transition: "opacity 0.3s ease"
+              transition: "opacity 0.3s ease",
             }}
           />
 

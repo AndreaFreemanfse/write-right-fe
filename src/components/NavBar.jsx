@@ -4,9 +4,19 @@ import { NavLink } from "react-router-dom";
 // import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import DropDownMenu from "./DropDownMenu";
 
-import "./Navbar.css";
+import "./NavBar.css";
 
-function Navbar({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
+function Navbar({
+  setNativeLanguage,
+  setTargetLanguage,
+  setJournalTitle,
+  setJournalText,
+  onOpenDictionary,
+  onOpenHelp,
+  setCorrections,
+  setReviewMode,
+  nativeLanguage
+}) {
   return (
     <div className="navbar">
       <Stack direction="row" spacing={2}>
@@ -31,7 +41,17 @@ function Navbar({ setNativeLanguage, onOpenDictionary, onOpenHelp }) {
       >
         Flashcards
       </NavLink>
-      <DropDownMenu setNativeLanguage={setNativeLanguage} onOpenDictionary={onOpenDictionary} onOpenHelp={onOpenHelp} />
+      <DropDownMenu
+        setNativeLanguage={setNativeLanguage}
+        onOpenDictionary={onOpenDictionary}
+        onOpenHelp={onOpenHelp}
+        setJournalText={setJournalText}
+        setJournalTitle={setJournalTitle}
+        setTargetLanguage={setTargetLanguage}
+        setCorrections={setCorrections}
+        setReviewMode={setReviewMode}
+        nativeLanguage={nativeLanguage}
+      />
     </div>
   );
 }

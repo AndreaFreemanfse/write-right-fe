@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
+import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 
@@ -46,6 +48,17 @@ function App() {
 
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
 
+  const location = useLocation();
+
+  const publicPaths = [
+    "/",
+    "/signup",
+    "/signin",
+    "/check-email",
+  ];
+
+  const isPublicPage = publicPaths.includes(location.pathname);
+
   useEffect(() => {
     if (!loading) return;
 
@@ -61,7 +74,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [loading]);
+  }, [loading, loadingMessages, loadingMessages.length]);
 
   // API error state to handle errors from the backend
   const [apiError, setApiError] = useState(null);
@@ -80,10 +93,13 @@ function App() {
   const [nativeLanguage, setNativeLanguage] = useState("English");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("English");
+  const [targetLanguage, setTargetLanguage] = useState("");
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
+
+  // Journal ID state
+  const [journalEntryId, setJournalEntryId] = useState(null); 
 
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
@@ -133,9 +149,11 @@ function App() {
 
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
+      const savedJournalEntryId = response.journal_entry_id ?? null;
 
       setCorrections(mistakes);
       setAccuracy(accuracyResult);
+      setJournalEntryId(savedJournalEntryId);
 
       if (mistakes.length === 0) {
         celebrate();
@@ -165,7 +183,7 @@ function App() {
   function updateMistake(updatedMistake) {
     setCorrections(prev =>
         prev.map(m =>
-            m.original === updatedMistake.original
+            m.original_full === updatedMistake.original_full
                 ? updatedMistake
                 : m
         )
@@ -183,10 +201,18 @@ function App() {
 
   return (
     <div className="App">
+      {!isPublicPage && (
+    <>
       <TopNav
+        nativeLanguage={nativeLanguage}
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={() => setDictionaryOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}
+        setJournalText={setJournalText}
+        setJournalTitle={setJournalTitle}
+        setTargetLanguage={setTargetLanguage}
+        setCorrections={setCorrections}
+        setReviewMode={setReviewMode}
       />
       <AchievementOverlay achievement={achievement} />
       <DictionaryModal
@@ -196,35 +222,46 @@ function App() {
         targetLanguage={targetLanguage}
       />
       <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+    </>
+      )}
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Write
-              text={journalText}
-              setText={setJournalText}
-              onAnalyze={analyzeJournal}
-              journalTitle={journalTitle}
-              setJournalTitle={setJournalTitle}
-              loading={loading}
-              loadingMessage={loadingMessage}
-              corrections={corrections}
-              accuracy={accuracy}
-              onBack={returnToEditor}
-              error={apiError}
-              reviewMode={reviewMode}
-              targetLanguage={targetLanguage}
-              nativeLanguage={nativeLanguage}
-              setTargetLanguage={setTargetLanguage}
-              onUpdateMistake={updateMistake}
-            />
-          }
-        />
+        {/* Public Routes */}
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/check-email" element={<CheckEmailPage />} />
+        </Route>
 
-        <Route
-          path="/flashcards"
-          element={<FlashcardReviewPage />}
-        />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/write"
+            element={
+              <Write
+                text={journalText}
+                setText={setJournalText}
+                onAnalyze={analyzeJournal}
+                journalTitle={journalTitle}
+                setJournalTitle={setJournalTitle}
+                loading={loading}
+                loadingMessage={loadingMessage}
+                corrections={corrections}
+                accuracy={accuracy}
+                journalEntryId={journalEntryId}
+                onBack={returnToEditor}
+                error={apiError}
+                reviewMode={reviewMode}
+                targetLanguage={targetLanguage}
+                nativeLanguage={nativeLanguage}
+                setTargetLanguage={setTargetLanguage}
+                onUpdateMistake={updateMistake}
+            />
+            }
+          />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/flashcards" element={<FlashcardReviewPage />} />
+        </Route>
       </Routes>
     </div>
   );
