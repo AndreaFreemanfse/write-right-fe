@@ -114,6 +114,15 @@ function FlashcardVault() {
     }
   }
 
+  function renderUnderline(text) {
+    return text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <u key={index}>{part.slice(2, -2)}</u>;
+      }
+      return part;
+    });
+  }
+
   if (selectedSet) {
     console.log("Selected flashcard set:", selectedSet);
     return (
@@ -154,7 +163,7 @@ function FlashcardVault() {
                   }`}
                 >
                   <div className="study-card-face study-card-front">
-                    <h3>{card.front}</h3>
+                    <h3>{renderUnderline(card.front)}</h3>
                     <p className="study-card-hint">Click to reveal answer</p>
                   </div>
 
