@@ -74,7 +74,7 @@ function Write({
       source_type: "journal",
       journal_entry_id: journalEntryId,
       flashcards: flashcards.map((card) => ({
-        front: card.original,
+        front: card.original_full,
         back: card.corrected_text ?? card.corrected,
         language: card.language ?? null,
       })),
