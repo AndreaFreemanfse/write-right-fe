@@ -1,12 +1,89 @@
+import { useState, useRef, useEffect } from "react";
 import "./CorrectionTooltip.css";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
-function CorrectionTooltip({ mistake, onCreateFlashcard }) {
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+
+function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetLanguage, onUpdateMistake }) {
   // Let's move this logic to BE so FE only gets clean data -------
+
+
+  const currentNativeLanguage = nativeLanguage || "English";
+  const currentTargetLanguage = targetLanguage || "English";
+  
+  async function explain(original, corrected) {
+    const response = await fetch(`${API_BASE_URL}/explanation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        original: original,
+        corrected: corrected,
+        native_language: currentNativeLanguage,
+        target_language: currentTargetLanguage,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("The explanation could not be generated.");
+    }
+
+    const data = await response.json();
+
+    if (!data.explanation) {
+      throw new Error("No explanation was returned.");
+    }
+
+    return {
+      explanation: data.explanation,
+      category: data.category
+    };
+  }
+
+  useEffect(() => {
+    async function generateExplanation() {
+
+      if (mistake.loading) return;
+
+      if (mistake.explanation != null) return;
+      
+      try {
+
+        onUpdateMistake({
+          ...mistake,
+          loading: true,
+        });
+
+        const response = await explain(mistake.original_full, mistake.corrected_full)
+
+        console.log("AI response:", response);
+
+        onUpdateMistake({
+              ...mistake,
+              category: response.category,
+              explanation: response.explanation,
+              loading: false,
+        });
+      } catch (error) {
+        console.error("Explanation generation failed:", error);
+      }
+      
+
+    }
+    
+    generateExplanation();
+
+  }, [mistake]);
+
 
   // Replaces all underscores with spaces
   function refineCategory(word = "") {
+    if (!word) return "Loading...";
     const cleanWord = word.replace(/_/g, " ");
 
     return cleanWord;
@@ -14,6 +91,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard }) {
 
   // Helps set the badge color. If the response is one of the below options in the array, it assigns it a specific color, else it assigns it a general grey badge color
   function getBadgeCategory(word = "") {
+    if (!word) return "other";
     const relevantCategories = [
       "spelling",
       "grammar",

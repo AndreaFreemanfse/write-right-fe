@@ -23,7 +23,9 @@ function Write({
   error,
   reviewMode,
   targetLanguage,
+  nativeLanguage,
   setTargetLanguage,
+  onUpdateMistake,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -72,7 +74,7 @@ function Write({
       source_type: "journal",
       journal_entry_id: journalEntryId,
       flashcards: flashcards.map((card) => ({
-        front: card.original,
+        front: card.original_full,
         back: card.corrected_text ?? card.corrected,
         language: card.language ?? null,
       })),
@@ -151,6 +153,9 @@ function Write({
             corrections={corrections}
             onBack={onBack}
             onCreateFlashcard={handleCreateFlashcard}
+            targetLanguage={targetLanguage}
+            nativeLanguage={nativeLanguage}
+            onUpdateMistake={onUpdateMistake}
           />
 
           <FlashcardStudy

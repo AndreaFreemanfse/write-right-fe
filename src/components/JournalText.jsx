@@ -3,7 +3,7 @@ import Correction from "./Correction";
 import CorrectionTooltip from "./CorrectionTooltip";
 import "./JournalText.css";
 
-function JournalText({ text, corrections, onBack, onCreateFlashcard }) {
+function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake }) {
   // State to track the currently selected correction for tooltip display
   const [selectedCorrection, setSelectedCorrection] = useState(null);
 
@@ -56,6 +56,9 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard }) {
           onClick={() =>
             setSelectedCorrection(selectedCorrection === index ? null : index)
           }
+          targetLanguage={targetLanguage}
+          nativeLanguage={nativeLanguage}
+          onUpdateMistake={onUpdateMistake}
         />,
       );
 

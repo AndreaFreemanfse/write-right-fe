@@ -2,7 +2,11 @@ import { useRef, useEffect } from "react";
 import "./Correction.css";
 import CorrectionTooltip from "./CorrectionTooltip";
 
-function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose }) {
+
+
+
+function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose, targetLanguage, nativeLanguage, onUpdateMistake }) {
+
   // Ref for the wrapper element to detect outside clicks
   const wrapperRef = useRef(null);
 
@@ -44,6 +48,9 @@ function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose }) {
         <CorrectionTooltip
           mistake={mistake}
           onCreateFlashcard={onCreateFlashcard}
+          nativeLanguage={nativeLanguage}
+          targetLanguage={targetLanguage}
+          onUpdateMistake={onUpdateMistake}
         />
       )}
     </span>
