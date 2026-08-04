@@ -163,6 +163,15 @@ if (queue.length === 0) {
     setStudyStarted(true);
   }
 
+  function renderUnderline(text) {
+    return text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <u key={index}>{part.slice(2, -2)}</u>;
+      }
+      return part;
+    });
+  }
+
   return (
     <section className="flashcard-study">
       <div className="study-stats">
@@ -181,7 +190,7 @@ if (queue.length === 0) {
         ) : (
           <>
             <p className="flashcard-label">Correct this:</p>
-            <h3>{currentCard.original}</h3>
+            <h3>{renderUnderline(currentCard.original_full)}</h3>
           </>
         )}
 

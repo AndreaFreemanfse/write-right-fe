@@ -38,7 +38,6 @@ function App() {
   // Loading messages
   const loadingMessages = [
     "Checking for mistakes...",
-    "Generating explanations...",
     "Preparing corrected journal...",
     "Almost finished...",
     "Almost finished...",
@@ -78,10 +77,10 @@ function App() {
   const [helpOpen, setHelpOpen] = useState(false);
 
   // Sets the users native language
-  const [nativeLanguage, setNativeLanguage] = useState("english");
+  const [nativeLanguage, setNativeLanguage] = useState("English");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("english");
+  const [targetLanguage, setTargetLanguage] = useState("English");
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
@@ -163,6 +162,16 @@ function App() {
     }
   }
 
+  function updateMistake(updatedMistake) {
+    setCorrections(prev =>
+        prev.map(m =>
+            m.original === updatedMistake.original
+                ? updatedMistake
+                : m
+        )
+    );
+}
+
   function returnToEditor() {
     setReviewMode(false);
     setApiError(null);
@@ -205,7 +214,9 @@ function App() {
               error={apiError}
               reviewMode={reviewMode}
               targetLanguage={targetLanguage}
+              nativeLanguage={nativeLanguage}
               setTargetLanguage={setTargetLanguage}
+              onUpdateMistake={updateMistake}
             />
           }
         />

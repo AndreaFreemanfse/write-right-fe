@@ -20,7 +20,9 @@ function Write({
   error,
   reviewMode,
   targetLanguage,
+  nativeLanguage,
   setTargetLanguage,
+  onUpdateMistake,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -146,6 +148,9 @@ function Write({
             corrections={corrections}
             onBack={onBack}
             onCreateFlashcard={handleCreateFlashcard}
+            targetLanguage={targetLanguage}
+            nativeLanguage={nativeLanguage}
+            onUpdateMistake={onUpdateMistake}
           />
 
           <FlashcardStudy
