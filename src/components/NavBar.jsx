@@ -15,7 +15,7 @@ function Navbar({
   onOpenHelp,
   setCorrections,
   setReviewMode,
-  nativeLanguage
+  nativeLanguage,
 }) {
   return (
     <div className="navbar">
@@ -40,6 +40,14 @@ function Navbar({
         }
       >
         Flashcards
+      </NavLink>
+      <NavLink
+        to="/journal-entries"
+        className={({ isActive }) =>
+          isActive ? "nav-item active" : "nav-item"
+        }
+      >
+        Journal Entries
       </NavLink>
       <DropDownMenu
         setNativeLanguage={setNativeLanguage}
