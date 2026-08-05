@@ -58,8 +58,8 @@ function Write({
     setSaveMessage("");
   }
 
-  async function handleSaveFlashcardSet() {
-    if (!flashcards.length) {
+  async function handleSaveFlashcardSet(cardsToSave = flashcards) {
+    if (!cardsToSave.length) {
       return;
     }
 
@@ -70,11 +70,11 @@ function Write({
 
     const flashcardSet = {
       name: trimmedTitle,
-      language: flashcards[0]?.language ?? "Unknown",
+      language: cardsToSave[0]?.language ?? "Unknown",
       source_type: "journal",
       journal_entry_id: journalEntryId,
-      flashcards: flashcards.map((card) => ({
-        front: card.original_full,
+      flashcards: cardsToSave.map((card) => ({
+        front: card.original_full ?? card.original,
         back: card.corrected_text ?? card.corrected,
         language: card.language ?? null,
       })),
@@ -108,6 +108,7 @@ function Write({
       setSaveMessage(
         result.message || "Flashcards saved successfully.",
       );
+      return true;
     } catch (saveError) {
         console.error(saveError);
 
@@ -115,6 +116,7 @@ function Write({
           saveError.message ||
             "The flashcard set could not be saved.",
         );
+        return false;
     } finally {
       setSavingSet(false);
     }
