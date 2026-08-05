@@ -12,49 +12,84 @@ function ProfilePage() {
   const [badges, setBadges] = useState([]);
   const [badgesLoading, setBadgesLoading] = useState(true);
   const [badgesError, setBadgesError] = useState("");
+  const [journalCount, setJournalCount] = useState(0);
+  const [flashcardSetCount, setFlashcardSetCount] = useState(0);
 
-  useEffect(() => {
-    async function fetchBadges() {
-      setBadgesLoading(true);
-      setBadgesError("");
+useEffect(() => {
+  async function fetchProfileData() {
+    setBadgesLoading(true);
+    setBadgesError("");
 
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-        if (!session) {
-          throw new Error("User is not authenticated.");
-        }
-
-        const response = await fetch(`${API_BASE_URL}/badges`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            result.detail || "Unable to load badges.",
-          );
-        }
-
-        setBadges(result);
-      } catch (error) {
-        console.error("Badge fetch failed:", error);
-
-        setBadgesError(
-          error.message || "Unable to load badges.",
-        );
-      } finally {
-        setBadgesLoading(false);
+      if (!session) {
+        throw new Error("User is not authenticated.");
       }
-    }
 
-    fetchBadges();
-  }, []);
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      };
+
+      const [
+        badgesResponse,
+        journalsResponse,
+        flashcardSetsResponse,
+      ] = await Promise.all([
+        fetch(`${API_BASE_URL}/badges`, requestOptions),
+        fetch(`${API_BASE_URL}/journal/entries`, requestOptions),
+        fetch(`${API_BASE_URL}/flashcard-sets`, requestOptions),
+      ]);
+
+      const [
+        badgesResult,
+        journalsResult,
+        flashcardSetsResult,
+      ] = await Promise.all([
+        badgesResponse.json(),
+        journalsResponse.json(),
+        flashcardSetsResponse.json(),
+      ]);
+
+      if (!badgesResponse.ok) {
+        throw new Error(
+          badgesResult.detail || "Unable to load badges.",
+        );
+      }
+
+      if (!journalsResponse.ok) {
+        throw new Error(
+          journalsResult.detail || "Unable to load journals.",
+        );
+      }
+
+      if (!flashcardSetsResponse.ok) {
+        throw new Error(
+          flashcardSetsResult.detail ||
+            "Unable to load flashcard sets.",
+        );
+      }
+
+      setBadges(badgesResult);
+      setJournalCount(journalsResult.length);
+      setFlashcardSetCount(flashcardSetsResult.length);
+    } catch (error) {
+      console.error("Profile data fetch failed:", error);
+
+      setBadgesError(
+        error.message || "Unable to load profile activity.",
+      );
+    } finally {
+      setBadgesLoading(false);
+    }
+  }
+
+  fetchProfileData();
+}, []);
 
   const displayName =
     user?.email
@@ -93,12 +128,14 @@ function ProfilePage() {
 
         <div className="profile-stat-grid">
           <article className="profile-stat-card">
-            <strong>—</strong>
+            <strong>{badgesLoading ? "—" : journalCount}</strong>
             <span>Journals Analyzed</span>
           </article>
 
           <article className="profile-stat-card">
-            <strong>—</strong>
+            <strong>
+              {badgesLoading ? "—" : flashcardSetCount}
+            </strong>
             <span>Flashcard Sets</span>
           </article>
 
