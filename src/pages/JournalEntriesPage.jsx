@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import JournalStats from "../components/JournalStats.jsx";
 import JournalEntriesTable from "../components/JournalEntriesTable.jsx";
 import { getJournalEntries } from "../services/api.js";
 
