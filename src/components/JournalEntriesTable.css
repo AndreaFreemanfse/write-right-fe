@@ -49,8 +49,34 @@
 
 
 .pagination {
-  margin-top:2rem;
-  display:flex;
-  justify-content:center;
-  gap:1rem;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
 }
+
+.page-button {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 10%;
+  border: none;
+
+  background: transparent;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  color: #555;
+}
+
+.page-button:hover {
+  background: #f0eaff;
+}
+
+.page-button.active {
+  background: #8b5cf6;
+  color: white;
+  font-weight: 600;
+}
+

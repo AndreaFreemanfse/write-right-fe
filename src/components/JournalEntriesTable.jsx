@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getJournalEntries } from "../services/api.js";
 import JournalStats from "../components/JournalStats.jsx";
+import Stack from "@mui/material/Stack";
 import "./JournalEntriesTable.css";
 
 function JournalEntriesTable() {
@@ -22,6 +23,8 @@ function JournalEntriesTable() {
 
     loadEntries();
   }, []);
+
+  console.log(entries);
 
   // Search filter
   const filteredEntries = entries.filter((entry) =>
@@ -59,7 +62,7 @@ function JournalEntriesTable() {
       <JournalStats entries={entries} />
 
       <table className="journal-table">
-        <thead>
+        <thead className="journal-table-header">
           <tr>
             <th>Entry</th>
             <th>Language</th>
@@ -71,10 +74,20 @@ function JournalEntriesTable() {
         <tbody>
           {currentEntries.map((entry) => (
             <tr key={entry.id}>
-              <td>{entry.original_text}</td>
+              <td>
+                <Stack
+                  direction="row"
+                  sx={{
+                    gap: "1rem",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="stat-icon">📖</div>
+                  {entry.original_text}
+                </Stack>
+              </td>
 
-              {/* This is a placeholder for the language column. Need to add this field to BE */}
-              <td>🇯🇵 Japanese</td>
+              <td>{entry.target_language}</td>
 
               <td>✨ {entry.mistakes.length}</td>
 
@@ -85,23 +98,17 @@ function JournalEntriesTable() {
       </table>
 
       <div className="pagination">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </button>
-
-        <span>
-          Page {currentPage} of {totalPages || 1}
-        </span>
-
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </button>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            className={`page-button ${
+              currentPage === index + 1 ? "active" : ""
+            }`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );
