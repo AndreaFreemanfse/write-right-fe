@@ -13,7 +13,6 @@ export default function JournalStats({ entries }) {
     <div className="journal-stats">
       <div className="stat-card">
         <span className="stat-icon entries-icon">📖</span>
-
         <div className="stat-content">
           <p>Total Entries</p>
           <h3>{totalEntries}</h3>

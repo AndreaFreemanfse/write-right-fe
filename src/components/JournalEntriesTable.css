@@ -1,7 +1,9 @@
 .journal-page {
-  padding: 2rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  padding-bottom: 4rem;
+  padding-top: 1.5rem;
 }
-
 
 .journal-header {
   display:flex;
@@ -10,6 +12,11 @@
   margin-bottom:1.5rem;
 }
 
+.journal-table-header {
+  background:#f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+}
 
 .journal-search {
   width:100%;
@@ -27,6 +34,7 @@
   background:white;
   border-radius:12px;
   overflow:hidden;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
 }
 
 

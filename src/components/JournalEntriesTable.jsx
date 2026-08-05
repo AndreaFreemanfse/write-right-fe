@@ -82,14 +82,18 @@ function JournalEntriesTable() {
                     alignItems: "center",
                   }}
                 >
-                  <div className="stat-icon">📖</div>
+                  <div className="stat-icon entries-icon">📖</div>
                   {entry.original_text}
                 </Stack>
               </td>
 
-              <td>{entry.target_language}</td>
+              <td>
+                <span className={entry.target_language ? "vault-language" : ""}>
+                  {entry.target_language}
+                </span>
+              </td>
 
-              <td>✨ {entry.mistakes.length}</td>
+              <td>{entry.mistakes.length}</td>
 
               <td>{new Date(entry.created_at).toLocaleDateString()}</td>
             </tr>
