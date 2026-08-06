@@ -101,6 +101,7 @@ function Write({
 
       if (!response.ok) {
         throw new Error(result.detail || "Unable to save flashcard set.");
+        return true;
       }
 
       setSaveMessage(result.message || "Flashcards saved successfully.");
@@ -110,6 +111,7 @@ function Write({
       setSaveMessage(
         saveError.message || "The flashcard set could not be saved.",
       );
+      return false;
     } finally {
       setSavingSet(false);
     }
