@@ -2,10 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import "./CorrectionTooltip.css";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+import { API_BASE_URL } from "../config/api.js";
 
 
 function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetLanguage, onUpdateMistake }) {

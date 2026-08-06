@@ -15,6 +15,7 @@ import CheckEmailPage from "./pages/CheckEmailPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
+import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -50,12 +51,7 @@ function App() {
 
   const location = useLocation();
 
-  const publicPaths = [
-    "/",
-    "/signup",
-    "/signin",
-    "/check-email",
-  ];
+  const publicPaths = ["/", "/signup", "/signin", "/check-email"];
 
   const isPublicPage = publicPaths.includes(location.pathname);
 
@@ -99,7 +95,7 @@ function App() {
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
 
   // Journal ID state
-  const [journalEntryId, setJournalEntryId] = useState(null); 
+  const [journalEntryId, setJournalEntryId] = useState(null);
 
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
@@ -181,14 +177,12 @@ function App() {
   }
 
   function updateMistake(updatedMistake) {
-    setCorrections(prev =>
-        prev.map(m =>
-            m.original_full === updatedMistake.original_full
-                ? updatedMistake
-                : m
-        )
+    setCorrections((prev) =>
+      prev.map((m) =>
+        m.original_full === updatedMistake.original_full ? updatedMistake : m,
+      ),
     );
-}
+  }
 
   function returnToEditor() {
     setReviewMode(false);
@@ -202,27 +196,27 @@ function App() {
   return (
     <div className="App">
       {!isPublicPage && (
-    <>
-      <TopNav
-        nativeLanguage={nativeLanguage}
-        setNativeLanguage={setNativeLanguage}
-        onOpenDictionary={() => setDictionaryOpen(true)}
-        onOpenHelp={() => setHelpOpen(true)}
-        setJournalText={setJournalText}
-        setJournalTitle={setJournalTitle}
-        setTargetLanguage={setTargetLanguage}
-        setCorrections={setCorrections}
-        setReviewMode={setReviewMode}
-      />
-      <AchievementOverlay achievement={achievement} />
-      <DictionaryModal
-        isOpen={dictionaryOpen}
-        onClose={() => setDictionaryOpen(false)}
-        nativeLanguage={nativeLanguage}
-        targetLanguage={targetLanguage}
-      />
-      <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
-    </>
+        <>
+          <TopNav
+            nativeLanguage={nativeLanguage}
+            setNativeLanguage={setNativeLanguage}
+            onOpenDictionary={() => setDictionaryOpen(true)}
+            onOpenHelp={() => setHelpOpen(true)}
+            setJournalText={setJournalText}
+            setJournalTitle={setJournalTitle}
+            setTargetLanguage={setTargetLanguage}
+            setCorrections={setCorrections}
+            setReviewMode={setReviewMode}
+          />
+          <AchievementOverlay achievement={achievement} />
+          <DictionaryModal
+            isOpen={dictionaryOpen}
+            onClose={() => setDictionaryOpen(false)}
+            nativeLanguage={nativeLanguage}
+            targetLanguage={targetLanguage}
+          />
+          <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+        </>
       )}
       <Routes>
         {/* Public Routes */}
@@ -239,6 +233,7 @@ function App() {
             path="/write"
             element={
               <Write
+                dictionaryOpen={dictionaryOpen}
                 text={journalText}
                 setText={setJournalText}
                 onAnalyze={analyzeJournal}
@@ -256,11 +251,12 @@ function App() {
                 nativeLanguage={nativeLanguage}
                 setTargetLanguage={setTargetLanguage}
                 onUpdateMistake={updateMistake}
-            />
+              />
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/flashcards" element={<FlashcardReviewPage />} />
+          <Route path="/journal-entries" element={<JournalEntriesPage />} />
         </Route>
       </Routes>
     </div>
