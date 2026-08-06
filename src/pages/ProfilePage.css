@@ -94,6 +94,137 @@
   font-size: 2.5rem;
 }
 
+.profile-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.profile-badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-badge-icon {
+  display: grid;
+  place-items: center;
+
+  width: 130px;
+  height: 130px;
+
+  margin-bottom: 1rem;
+
+  border-radius: 50%;
+  border: 3px solid rgba(167, 139, 250, 0.9);
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff,
+      #f5f0ff 55%,
+      #e4d5ff 100%
+    );
+
+  font-size: 3.5rem;
+
+  box-shadow:
+    0 0 12px rgba(109, 40, 217, 0.35),
+    0 0 26px rgba(139, 92, 246, 0.28),
+    inset 0 0 16px rgba(255,255,255,.95);
+
+  animation: badgePulse 3s ease-in-out infinite;
+}
+
+.profile-badge-card:hover .profile-badge-icon {
+  transform: scale(1.08);
+
+  box-shadow:
+    0 0 18px rgba(109,40,217,.55),
+    0 0 42px rgba(139,92,246,.45),
+    inset 0 0 20px rgba(255,255,255,1);
+
+  transition: all .2s ease;
+}
+
+.profile-badge-content h3 {
+  margin: 0;
+  color: #4c1d95;
+  font-size: 1.1rem;
+}
+
+.profile-badge-content p {
+  margin: .45rem 0;
+  color: #666;
+  font-size: .9rem;
+  line-height: 1.45;
+}
+
+.profile-badge-content span {
+  color: #8a8a8a;
+  font-size: .8rem;
+}
+
+@keyframes badgePulse {
+  0% {
+    box-shadow:
+      0 0 10px rgba(109,40,217,.28),
+      0 0 22px rgba(139,92,246,.22),
+      inset 0 0 16px rgba(255,255,255,.9);
+  }
+
+  50% {
+    box-shadow:
+      0 0 18px rgba(109,40,217,.45),
+      0 0 40px rgba(139,92,246,.4),
+      inset 0 0 20px rgba(255,255,255,1);
+  }
+
+  100% {
+    box-shadow:
+      0 0 10px rgba(109,40,217,.28),
+      0 0 22px rgba(139,92,246,.22),
+      inset 0 0 16px rgba(255,255,255,.9);
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-badge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-badge-card {
+    width: min(230px, 82vw);
+  }
+}
+
+.profile-badge-content h3 {
+  margin: 0 0 0.4rem;
+  color: #4c1d95;
+  font-size: 1.15rem;
+}
+
+.profile-badge-content p {
+  margin: 0;
+  color: #555555;
+  line-height: 1.5;
+}
+
+.profile-badge-content span {
+  display: block;
+  margin-top: 0.8rem;
+  color: #777777;
+  font-size: 0.85rem;
+}
+
+.profile-error-state {
+  border-color: #f3b8b8;
+  background: #fff7f7;
+  color: #991b1b;
+}
+
 @media (max-width: 700px) {
   .profile-page {
     padding: 1.5rem 0;

@@ -1,6 +1,8 @@
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
 
+
+// Fetches journal entries for the authenticated user
 export async function handleCorrectJournal(
   text,
   nativeLanguage,
@@ -30,6 +32,26 @@ export async function handleCorrectJournal(
 
   if (!response.ok) {
     throw new Error("Journal analysis failed");
+  }
+
+  return await response.json();
+}
+
+
+// Fetches journal entries for the authenticated user
+export async function getJournalEntries() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const response = await fetch(`${API_BASE_URL}/journal/entries`, {
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch journal entries");
   }
 
   return await response.json();

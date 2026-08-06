@@ -15,6 +15,7 @@ import CheckEmailPage from "./pages/CheckEmailPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
+import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -261,6 +262,7 @@ function App() {
           />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/flashcards" element={<FlashcardReviewPage />} />
+          <Route path="/journal-entries" element={<JournalEntriesPage />} />
         </Route>
       </Routes>
     </div>
