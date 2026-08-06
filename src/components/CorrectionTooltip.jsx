@@ -12,7 +12,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
   const currentNativeLanguage = nativeLanguage || "English";
   const currentTargetLanguage = targetLanguage || "English";
   
-  async function explain(original, corrected, nativeLanguage, targetLanaguage) {
+  async function explain(original, corrected, nativeLanguage, targetLanguage) {
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -21,8 +21,8 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
       body: JSON.stringify({
         original: original,
         corrected: corrected,
-        native_language: targetLanaguage,
-        target_language: nativeLanguage,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
       }),
     });
 

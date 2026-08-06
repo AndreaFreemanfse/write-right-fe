@@ -118,7 +118,7 @@ if (queue.length === 0) {
   );
 }
 
-async function explain(original, corrected, nativeLanaguage, targetLanaguage) {
+async function explain(original, corrected, nativeLanguage, targetLanguage) {
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -127,8 +127,8 @@ async function explain(original, corrected, nativeLanaguage, targetLanaguage) {
       body: JSON.stringify({
         original: original,
         corrected: corrected,
-        native_language: targetLanaguage,
-        target_language: nativeLanguage,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
       }),
     });
 
