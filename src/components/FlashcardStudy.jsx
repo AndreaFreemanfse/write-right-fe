@@ -135,12 +135,19 @@ if (queue.length === 0) {
             <button
               type="button"
               className="flashcard-button"
-              onClick={onSaveSet}
+              onClick={() => {
+                const cardsToSave =
+                  mistakes?.length > 0
+                    ? mistakes
+                    : corrections ?? [];
+
+                onSaveSet(cardsToSave);
+              }}
               disabled={savingSet}
             >
               {savingSet
                 ? "Saving..."
-                : "Add Set to Flashcard Vault"}
+                : "Save Set to Vault"}
             </button>
 
             {saveMessage && (
@@ -202,7 +209,17 @@ if (queue.length === 0) {
   }
 
   function handleConquerAll() {
-    onCreateStudySet();
+    if (!corrections?.length) {
+      return;
+    }
+
+    setQueue(corrections);
+    setShowAnswer(false);
+    setStreak(0);
+    setMasteredCount(0);
+    setMistakeCount(0);
+    setAttempt("");
+    setFeedback(null);
     setStudyStarted(true);
   }
 
@@ -239,10 +256,6 @@ if (queue.length === 0) {
 
         {!showAnswer ? (
           <form className="flashcard-attempt" onSubmit={handleSubmitAttempt}>
-            {/* <label htmlFor="correction-attempt" className="flashcard-label">
-              Type the corrected sentence
-            </label> */}
-
             <input
               id="correction-attempt"
               value={attempt}
