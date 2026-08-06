@@ -93,7 +93,7 @@ function App() {
   const [nativeLanguage, setNativeLanguage] = useState("English");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("");
+  const [targetLanguage, setTargetLanguage] = useState(null);
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");

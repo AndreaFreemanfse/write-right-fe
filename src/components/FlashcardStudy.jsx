@@ -8,6 +8,8 @@ function FlashcardStudy({
   onSaveSet,
   savingSet,
   saveMessage,
+  targetLanguage,
+  nativeLanguage,
 }) {
   const [queue, setQueue] = useState([]);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -17,6 +19,10 @@ function FlashcardStudy({
   const [feedback, setFeedback] = useState(null);
   const [studyStarted, setStudyStarted] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  const [exp_loading, setExpLoading] = useState(false);
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     setQueue(mistakes ?? []);
@@ -112,9 +118,41 @@ if (queue.length === 0) {
   );
 }
 
+async function explain(original, corrected, nativeLanaguage, targetLanaguage) {
+    const response = await fetch(`${API_BASE_URL}/explanation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        original: original,
+        corrected: corrected,
+        native_language: targetLanaguage,
+        target_language: nativeLanguage,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("The explanation could not be generated.");
+    }
+
+    const data = await response.json();
+
+    if (!data.explanation) {
+      throw new Error("No explanation was returned.");
+    }
+
+    return {
+      explanation: data.explanation,
+      category: data.category
+    };
+  }
 
   const currentCard = queue[0];
   const remaining = queue.length;
+
+  const currentNativeLanguage = nativeLanguage || "English";
+  const currentTargetLanguage = targetLanguage || "English";
 
   function handleKnewIt() {
     setQueue((currentQueue) => currentQueue.slice(1));
@@ -171,6 +209,34 @@ if (queue.length === 0) {
       return part;
     });
   }
+
+  async function generateExplanation() {
+    setExpLoading(true);
+
+    try {
+      const response = await explain(
+        currentCard.original_full,
+        currentCard.corrected_full,
+        currentNativeLanguage,
+        currentTargetLanguage,
+      );
+
+      const updatedCard = {
+        ...currentCard,
+        explanation: response.explanation,
+        category: response.category,
+      };
+
+      setQueue(prev =>
+        prev.map(card =>
+          card.original_full === updatedCard.original_full ? updatedCard : card
+        )
+      );
+
+    } finally {
+      setExpLoading(false);
+    }
+}
 
   return (
     <section className="flashcard-study">
@@ -235,7 +301,17 @@ if (queue.length === 0) {
           <div className="flashcard-answer">
             <p className="flashcard-label">Correct version:</p>
             <h3>{currentCard.corrected_text ?? currentCard.corrected}</h3>
-            <p>{currentCard.explanation}</p>
+            {currentCard.explanation ? (
+              <p>{currentCard.explanation}</p>
+            ) : (
+              <button
+              className="generate-explanation-button"
+              onClick={generateExplanation}
+              disabled={exp_loading}
+              >
+                {exp_loading ? "Generating..." : "Generate Explanation"}
+              </button>
+            )}
 
             <div className="flashcard-actions">
               <button onClick={handleKnewIt}>Mark mastered</button>
