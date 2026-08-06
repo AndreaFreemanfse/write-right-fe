@@ -12,6 +12,7 @@
     margin-right 450ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
     will-change: margin-right, transform;
+    
 }
 
 .journal-editor--dictionary-open {
@@ -65,6 +66,8 @@
     transition: 0.2s;
 
     box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
 
 }
 
@@ -108,7 +111,9 @@
 
     padding: 12px 22px;
 
-    background: #3b82f6;
+    transition: .2s;
+
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
 
     color: white;
 
@@ -125,7 +130,7 @@
 
 .analyze-button:hover:not(:disabled) {
 
-    background: #2563eb;
+  box-shadow: 0 10px 24px rgba(99,102,241,.35);
 
 }
 
@@ -216,7 +221,7 @@
   background: transparent;
   font: inherit;
   font-weight: 700;
-  color: purple;
+  color: #6d28d9;
   cursor: pointer;
 }
 
