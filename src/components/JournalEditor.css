@@ -19,7 +19,7 @@
 .journal-editor--dictionary-open {
     margin-right: var(--dictionary-width);
     transform: translateX(-20px);
-    padding-left: 80px;
+    padding-left: 50px;
 }
 
 .journal-editor h1 {
@@ -29,17 +29,6 @@
     font-size: 38px;
 
     font-weight: 700;
-
-}
-
-
-.editor-subtitle {
-
-    margin-bottom: 30px;
-
-    color: #666;
-
-    font-size: 18px;
 
 }
 
@@ -226,6 +215,7 @@
   cursor: pointer;
 }.language-selector-wrapper .MuiStack-root {
   height: 40px;
+  
 }
 
 .selected-language-button:hover {
@@ -251,6 +241,7 @@
   min-height: 40px;
   padding-left: 0; /* inherits editor padding */
   height: 40px;
+  overflow: visible;
   
 }
 
