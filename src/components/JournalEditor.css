@@ -1,14 +1,26 @@
-.journal-editor {
-
-    max-width: 900px;
-
-    margin: 0px auto;
-
-    padding: 80px 30px 30px;
-    padding-top: 80px;
-
+:root {
+    --dictionary-width: 520px;
 }
 
+.journal-editor {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 30px 30px;
+    padding-top: 1.5rem;
+    box-sizing: border-box;
+
+    transition:
+    margin-right 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: margin-right, transform;
+    
+}
+
+.journal-editor--dictionary-open {
+    margin-right: var(--dictionary-width);
+    transform: translateX(-20px);
+    padding-left: 50px;
+}
 
 .journal-editor h1 {
 
@@ -17,17 +29,6 @@
     font-size: 38px;
 
     font-weight: 700;
-
-}
-
-
-.editor-subtitle {
-
-    margin-bottom: 30px;
-
-    color: #666;
-
-    font-size: 18px;
 
 }
 
@@ -55,6 +56,8 @@
     transition: 0.2s;
 
     box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
 
 }
 
@@ -98,7 +101,9 @@
 
     padding: 12px 22px;
 
-    background: #3b82f6;
+    transition: .2s;
+
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
 
     color: white;
 
@@ -115,7 +120,7 @@
 
 .analyze-button:hover:not(:disabled) {
 
-    background: #2563eb;
+  box-shadow: 0 10px 24px rgba(99,102,241,.35);
 
 }
 
@@ -206,8 +211,11 @@
   background: transparent;
   font: inherit;
   font-weight: 700;
-  color: purple;
+  color: #6d28d9;
   cursor: pointer;
+}.language-selector-wrapper .MuiStack-root {
+  height: 40px;
+  
 }
 
 .selected-language-button:hover {
@@ -217,4 +225,38 @@
 .selected-language-button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;
+}
+
+.language-selector-row {
+  width: 50%;
+}
+
+.editor-subtitle {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.language-selector-wrapper {
+  width: 100%;
+  min-height: 40px;
+  padding-left: 0; /* inherits editor padding */
+  height: 40px;
+  overflow: visible;
+  
+}
+
+.fade-in {
+  animation: slideRightIn 0.25s ease-out;
+}
+
+@keyframes slideRightIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

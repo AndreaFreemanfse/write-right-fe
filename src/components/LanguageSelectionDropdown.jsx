@@ -1,4 +1,5 @@
 import { languages } from "../utils/constants/languages";
+import "./LanguageSelectionDropdown.css";
 
 function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
   const handleChange = (event) => {
@@ -7,6 +8,7 @@ function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
 
   return (
     <select
+      className="language-select"
       id="language-selection"
       name="languages"
       value={value}
