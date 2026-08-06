@@ -41,29 +41,35 @@ function JournalEditor({
             maxLength={80}
           />
         </label>
+        <div className="language-selector-wrapper">
+          {targetLanguage && !languageDropdownOpen ? (
+            <button
+              type="button"
+              className="selected-language-button"
+              onClick={() => setLanguageDropdownOpen(true)}
+              aria-label={`Change target language from ${targetLanguage}`}
+            >
+              {targetLanguage.toUpperCase()}
+            </button>
+          ) : (
+            <Stack
+              direction="row"
+              spacing={2}
+             className="fade-in"
+              sx={{ alignItems: "center" ,width: "100%"}}
+            >
+              <p className="editor-subtitle">
+                Practice writing in your target language:
+              </p>
 
-        {targetLanguage && !languageDropdownOpen ? (
-          <button
-            type="button"
-            className="selected-language-button"
-            onClick={() => setLanguageDropdownOpen(true)}
-            aria-label={`Change target language from ${targetLanguage}`}
-          >
-            {targetLanguage.toUpperCase()}
-          </button>
-        ) : (
-          <Stack direction="row" spacing={2} alignitems="center">
-            <p className="editor-subtitle">
-              Practice writing in your target language:
-            </p>
-
-            <LanguageSelectionDropdown
-              value={targetLanguage}
-              onChange={handleLanguageChange}
-              displayText="Target Language"
-            />
-          </Stack>
-        )}
+              <LanguageSelectionDropdown
+                value={targetLanguage}
+                onChange={handleLanguageChange}
+                displayText="Target Language"
+              />
+            </Stack>
+          )}
+        </div>
 
         <div className="journal-container">
           <textarea
