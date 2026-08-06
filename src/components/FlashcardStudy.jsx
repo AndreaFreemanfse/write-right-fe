@@ -23,6 +23,7 @@ function FlashcardStudy({
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const [setDismissed, setSetDismissed] = useState(false);
 
   useEffect(() => {
     setQueue(mistakes ?? []);
@@ -32,40 +33,82 @@ const API_BASE_URL =
     setAttempt("");
     setFeedback(null);
     setMistakeCount(0);
+    setSetDismissed(false);
+    setStudyStarted(false);
   }, [mistakes]);
 
-  if (!mistakes?.length && !corrections?.length) {
+  if (
+    setDismissed ||
+    (!mistakes?.length && !corrections?.length)
+  ) {
     return null;
   }
 
-  if (!studyStarted) {
-    return (
-      <section className="flashcard-study">
-        <div className="study-start-actions">
-          {mistakes?.length > 0 && (
-            <button
-              type="button"
-              className="flashcard-button"
-              onClick={() => setStudyStarted(true)}
-            >
-              ⚔️ Conquer {mistakes.length}{" "}
-              {mistakes.length === 1 ? "Card" : "Cards"}
-            </button>
-          )}
+if (!studyStarted) {
+  const availableCardCount =
+    mistakes?.length || corrections?.length || 0;
 
-          {corrections?.length > 0 && (
-            <button
-              type="button"
-              className="flashcard-button"
-              onClick={handleConquerAll}
-            >
-              ⚔️ Conquer All {corrections.length} Corrections
-            </button>
-          )}
+  return (
+    <section className="flashcard-study">
+      <div className="study-set-preview">
+        <p className="study-set-count">
+          {availableCardCount}{" "}
+          {availableCardCount === 1 ? "card" : "cards"} ready
+        </p>
+
+        <button
+          type="button"
+          className="flashcard-button study-primary-action"
+          onClick={() => {
+            if (!mistakes?.length && corrections?.length) {
+              handleConquerAll();
+              return;
+            }
+
+            setStudyStarted(true);
+          }}
+        >
+          ⚔️ Conquer{" "}
+          {availableCardCount === 1 ? "Card" : "Cards"}
+        </button>
+
+        <div className="study-secondary-actions">
+          <button
+            type="button"
+            className="study-save-button"
+            onClick={async () => {
+              const cardsToSave =
+                mistakes?.length > 0 ? mistakes : corrections;
+
+              const saved = await onSaveSet(cardsToSave);
+
+              if (saved) {
+                setSetDismissed(true);
+              }
+            }}
+            disabled={savingSet}
+          >
+            {savingSet ? "Saving..." : "📚 Save Set to Vault"}
+          </button>
+
+          <button
+            type="button"
+            className="study-delete-button"
+            onClick={() => setSetDismissed(true)}
+          >
+            🗑 Delete Set
+          </button>
         </div>
-      </section>
-    );
-  }
+
+        {saveMessage && (
+          <p className="flashcard-save-message">
+            {saveMessage}
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
 
 if (queue.length === 0) {
   const perfectSession = mistakeCount === 0;
@@ -98,12 +141,19 @@ if (queue.length === 0) {
             <button
               type="button"
               className="flashcard-button"
-              onClick={onSaveSet}
+              onClick={() => {
+                const cardsToSave =
+                  mistakes?.length > 0
+                    ? mistakes
+                    : corrections ?? [];
+
+                onSaveSet(cardsToSave);
+              }}
               disabled={savingSet}
             >
               {savingSet
                 ? "Saving..."
-                : "Add Set to Flashcard Vault"}
+                : "Save Set to Vault"}
             </button>
 
             {saveMessage && (
@@ -197,7 +247,17 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
   }
 
   function handleConquerAll() {
-    onCreateStudySet();
+    if (!corrections?.length) {
+      return;
+    }
+
+    setQueue(corrections);
+    setShowAnswer(false);
+    setStreak(0);
+    setMasteredCount(0);
+    setMistakeCount(0);
+    setAttempt("");
+    setFeedback(null);
     setStudyStarted(true);
   }
 
@@ -262,10 +322,6 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
 
         {!showAnswer ? (
           <form className="flashcard-attempt" onSubmit={handleSubmitAttempt}>
-            {/* <label htmlFor="correction-attempt" className="flashcard-label">
-              Type the corrected sentence
-            </label> */}
-
             <input
               id="correction-attempt"
               value={attempt}

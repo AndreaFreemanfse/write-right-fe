@@ -9,6 +9,7 @@ import AccuracySummary from "../components/accuracy/AccuracySummary";
 import AccuracyModal from "../components/accuracy/AccuracyModal";
 
 function Write({
+  dictionaryOpen,
   text,
   setText,
   onAnalyze,
@@ -31,7 +32,6 @@ function Write({
   const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
-
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -58,8 +58,8 @@ function Write({
     setSaveMessage("");
   }
 
-  async function handleSaveFlashcardSet() {
-    if (!flashcards.length) {
+  async function handleSaveFlashcardSet(cardsToSave = flashcards) {
+    if (!cardsToSave.length) {
       return;
     }
 
@@ -70,11 +70,11 @@ function Write({
 
     const flashcardSet = {
       name: trimmedTitle,
-      language: flashcards[0]?.language ?? "Unknown",
+      language: cardsToSave[0]?.language ?? "Unknown",
       source_type: "journal",
       journal_entry_id: journalEntryId,
-      flashcards: flashcards.map((card) => ({
-        front: card.original_full,
+      flashcards: cardsToSave.map((card) => ({
+        front: card.original_full ?? card.original,
         back: card.corrected_text ?? card.corrected,
         language: card.language ?? null,
       })),
@@ -100,21 +100,18 @@ function Write({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.detail || "Unable to save flashcard set.",
-        );
+        throw new Error(result.detail || "Unable to save flashcard set.");
+        return true;
       }
 
-      setSaveMessage(
-        result.message || "Flashcards saved successfully.",
-      );
+      setSaveMessage(result.message || "Flashcards saved successfully.");
     } catch (saveError) {
-        console.error(saveError);
+      console.error(saveError);
 
-        setSaveMessage(
-          saveError.message ||
-            "The flashcard set could not be saved.",
-        );
+      setSaveMessage(
+        saveError.message || "The flashcard set could not be saved.",
+      );
+      return false;
     } finally {
       setSavingSet(false);
     }
@@ -124,6 +121,7 @@ function Write({
     <>
       {!reviewMode ? (
         <JournalEditor
+          dictionaryOpen={dictionaryOpen}
           text={text}
           setText={setText}
           journalTitle={journalTitle}
@@ -142,12 +140,12 @@ function Write({
         />
       ) : (
         <>
-      {corrections.length > 0 && accuracy && (
-        <AccuracySummary
-          onOpenDetails={() => setAccuracyModalOpen(true)}
-          score={accuracy.score}
-        />
-      )}
+          {corrections.length > 0 && accuracy && (
+            <AccuracySummary
+              onOpenDetails={() => setAccuracyModalOpen(true)}
+              score={accuracy.score}
+            />
+          )}
           <JournalText
             text={text}
             corrections={corrections}
