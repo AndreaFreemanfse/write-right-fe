@@ -4,6 +4,7 @@ import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { Stack } from "@mui/material";
 
 function JournalEditor({
+  dictionaryOpen,
   text,
   setText,
   journalTitle,
@@ -23,7 +24,11 @@ function JournalEditor({
   };
 
   return (
-    <div className="journal-editor">
+    <div
+      className={`journal-editor ${
+        dictionaryOpen ? "journal-editor--dictionary-open" : ""
+      }`}
+    >
       <Stack spacing={2}>
         <label className="journal-title-group">
           <input

@@ -9,6 +9,7 @@ import AccuracySummary from "../components/accuracy/AccuracySummary";
 import AccuracyModal from "../components/accuracy/AccuracyModal";
 
 function Write({
+  dictionaryOpen,
   text,
   setText,
   onAnalyze,
@@ -31,7 +32,6 @@ function Write({
   const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
-
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -100,21 +100,16 @@ function Write({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.detail || "Unable to save flashcard set.",
-        );
+        throw new Error(result.detail || "Unable to save flashcard set.");
       }
 
-      setSaveMessage(
-        result.message || "Flashcards saved successfully.",
-      );
+      setSaveMessage(result.message || "Flashcards saved successfully.");
     } catch (saveError) {
-        console.error(saveError);
+      console.error(saveError);
 
-        setSaveMessage(
-          saveError.message ||
-            "The flashcard set could not be saved.",
-        );
+      setSaveMessage(
+        saveError.message || "The flashcard set could not be saved.",
+      );
     } finally {
       setSavingSet(false);
     }
@@ -124,6 +119,7 @@ function Write({
     <>
       {!reviewMode ? (
         <JournalEditor
+          dictionaryOpen={dictionaryOpen}
           text={text}
           setText={setText}
           journalTitle={journalTitle}
@@ -142,12 +138,12 @@ function Write({
         />
       ) : (
         <>
-      {corrections.length > 0 && accuracy && (
-        <AccuracySummary
-          onOpenDetails={() => setAccuracyModalOpen(true)}
-          score={accuracy.score}
-        />
-      )}
+          {corrections.length > 0 && accuracy && (
+            <AccuracySummary
+              onOpenDetails={() => setAccuracyModalOpen(true)}
+              score={accuracy.score}
+            />
+          )}
           <JournalText
             text={text}
             corrections={corrections}
