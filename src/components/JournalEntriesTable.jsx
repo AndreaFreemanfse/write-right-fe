@@ -120,7 +120,7 @@ function JournalEntriesTable() {
               <td>{entry.mistakes.length}</td>
 
               <td>{new Date(entry.created_at).toLocaleDateString()}</td>
-              <td>
+              <td className="delete-entry-cell">
                 <button
                   type="button"
                   className="delete-entry-button"
