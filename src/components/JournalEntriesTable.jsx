@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getJournalEntries } from "../services/api.js";
+import { getJournalEntries, deleteJournalEntry } from "../services/api.js";
 import JournalStats from "../components/JournalStats.jsx";
 import Stack from "@mui/material/Stack";
 import "./JournalEntriesTable.css";
@@ -25,6 +25,28 @@ function JournalEntriesTable() {
   }, []);
 
   console.log(entries);
+
+  // Delete selected journal entry
+  const handleDelete = async (entry) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${entry.title}"?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteJournalEntry(entry.id);
+
+      setEntries((currentEntries) =>
+        currentEntries.filter((currentEntry) => currentEntry.id !== entry.id),
+      );
+    } catch (error) {
+      console.error("Failed to delete journal entry:", error);
+      alert("Something went wrong while deleting your journal entry.");
+    }
+  };
 
   // Search filter
   const filteredEntries = entries.filter((entry) =>
@@ -68,6 +90,8 @@ function JournalEntriesTable() {
             <th>Language</th>
             <th>Corrections</th>
             <th>Date</th>
+            {/* empty space for the delete icon */}
+            <th></th>
           </tr>
         </thead>
 
@@ -96,6 +120,16 @@ function JournalEntriesTable() {
               <td>{entry.mistakes.length}</td>
 
               <td>{new Date(entry.created_at).toLocaleDateString()}</td>
+              <td>
+                <button
+                  type="button"
+                  className="delete-entry-button"
+                  onClick={() => handleDelete(entry)}
+                  aria-label={`Delete ${entry.title}`}
+                >
+                  X
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

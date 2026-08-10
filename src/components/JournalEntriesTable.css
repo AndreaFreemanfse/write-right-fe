@@ -81,4 +81,24 @@
   color: white;
   font-weight: 600;
 }
+.delete-entry-button {
+  color: #555;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.delete-entry-button:hover {
+  background: #e76666;
+  transform: scale(1.05);
+  color: white;
+}
+
+.delete-entry-button:active {
+  transform: scale(0.95);
+}
 

@@ -60,3 +60,29 @@ export async function getJournalEntries() {
 
   return await response.json();
 }
+
+export async function deleteJournalEntry(entryId) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("User is not authenticated.");
+  }
+
+  const response = await fetch(
+    `${API_BASE_URL}/journal/${entryId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete journal entry");
+  }
+
+  return await response.json();
+}
