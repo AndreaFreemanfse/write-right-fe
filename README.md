@@ -37,6 +37,10 @@ npm install fontsource-roboto
 npm install canvas-confetti
 npm install @supabase/supabase-js
 npm init playwright@latest
+    - Javascript
+    - test folder: tests
+    - Add a GitHub Actions workflow: Yes
+    - Install Playwright browsers: Yes
 
 npm run dev
 ```
