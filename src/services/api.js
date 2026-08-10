@@ -1,9 +1,9 @@
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
 
-
 // Fetches journal entries for the authenticated user
 export async function handleCorrectJournal(
+  title,
   text,
   nativeLanguage,
   targetLanguage,
@@ -24,6 +24,7 @@ export async function handleCorrectJournal(
     },
 
     body: JSON.stringify({
+      title,
       text,
       native_language: nativeLanguage,
       target_language: targetLanguage,
@@ -37,12 +38,15 @@ export async function handleCorrectJournal(
   return await response.json();
 }
 
-
 // Fetches journal entries for the authenticated user
 export async function getJournalEntries() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("User is not authenticated.");
+  }
 
   const response = await fetch(`${API_BASE_URL}/journal/entries`, {
     headers: {

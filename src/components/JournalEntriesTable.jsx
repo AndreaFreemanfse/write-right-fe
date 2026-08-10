@@ -83,7 +83,7 @@ function JournalEntriesTable() {
                   }}
                 >
                   <div className="stat-icon entries-icon">📖</div>
-                  {entry.original_text}
+                  {entry.title}
                 </Stack>
               </td>
 
