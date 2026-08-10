@@ -292,7 +292,8 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
           card.original_full === updatedCard.original_full ? updatedCard : card
         )
       );
-
+    } catch (error) {
+      console.error("Explanation generation failed:", error);
     } finally {
       setExpLoading(false);
     }

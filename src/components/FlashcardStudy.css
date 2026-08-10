@@ -447,6 +447,8 @@ input {
 
 .generate-explanation-button:active {
   background-color: #0d47a1;
+}
+
 @media (max-width: 600px) {
   .study-set-preview {
     padding: 1.4rem;
