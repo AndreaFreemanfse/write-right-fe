@@ -47,6 +47,13 @@ npm run dev
 
 The frontend will start in development mode.
 
+## Additional Testing Commands
+
+```bash
+npm run test:e2e
+npm run lint
+npm run build
+```
 ---
 
 ## 🎯 Project Goal
