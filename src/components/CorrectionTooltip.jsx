@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import "./CorrectionTooltip.css";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -12,7 +12,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
   const currentNativeLanguage = nativeLanguage || "English";
   const currentTargetLanguage = targetLanguage || "English";
   
-  async function explain(original, corrected) {
+  async function explain(original, corrected, nativeLanguage, targetLanguage) {
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -21,8 +21,8 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
       body: JSON.stringify({
         original: original,
         corrected: corrected,
-        native_language: currentNativeLanguage,
-        target_language: currentTargetLanguage,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
       }),
     });
 
@@ -56,7 +56,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
           loading: true,
         });
 
-        const response = await explain(mistake.original_full, mistake.corrected_full)
+        const response = await explain(mistake.original_full, mistake.corrected_full, currentNativeLanguage, currentTargetLanguage)
 
         console.log("AI response:", response);
 

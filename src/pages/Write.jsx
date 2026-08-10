@@ -163,6 +163,8 @@ function Write({
             onSaveSet={handleSaveFlashcardSet}
             savingSet={savingSet}
             saveMessage={saveMessage}
+            targetLanguage={targetLanguage}
+            nativeLanguage={nativeLanguage}
           />
           <AccuracyModal
             isOpen={accuracyModalOpen}
