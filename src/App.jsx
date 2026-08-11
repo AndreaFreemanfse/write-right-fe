@@ -132,6 +132,7 @@ function App() {
 
     try {
       const response = await handleCorrectJournal(
+        trimmedTitle,
         journalText,
         nativeLanguage,
         targetLanguage,

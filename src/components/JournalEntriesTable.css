@@ -82,3 +82,34 @@
   font-weight: 600;
 }
 
+.delete-entry-cell {
+  padding: 0 !important;
+  width: 70px;
+  height: 60px;
+}
+
+.delete-entry-button {
+  width: 100%;
+  height: 100%;
+  min-height: 50px;
+
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
+  color: #aeaeae;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.delete-entry-button:hover {
+  background: #c43333;
+  color: white;
+}
