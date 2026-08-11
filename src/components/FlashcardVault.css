@@ -477,3 +477,61 @@
   font-size: 0.85rem;
   opacity: 0.65;
 }
+
+.vault-study-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.study-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.study-navigation button {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: white;
+  cursor: pointer;
+}
+
+.study-navigation button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.study-navigation span {
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.study-all-button {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 10px;
+  background: #1976d2;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.study-all-button:hover {
+  background: #1565c0;
+}
+
+.study-card-inner.no-animation {
+  transition: none;
+}
+
+.flashcard-explanation {
+  margin: 1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}

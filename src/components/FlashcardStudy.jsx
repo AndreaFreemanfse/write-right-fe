@@ -300,7 +300,7 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
         ) : (
           <div className="flashcard-answer">
             <p className="flashcard-label">Correct version:</p>
-            <h3>{currentCard.corrected_text ?? currentCard.corrected}</h3>
+            <h3>{currentCard.corrected_full}</h3>
             {currentCard.explanation ? (
               <p>{currentCard.explanation}</p>
             ) : (

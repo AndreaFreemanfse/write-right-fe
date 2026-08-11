@@ -94,7 +94,7 @@ function App() {
   const [nativeLanguage, setNativeLanguage] = useState("English");
 
   // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState(null);
+  const [targetLanguage, setTargetLanguage] = useState("");
 
   // Journal title
   const [journalTitle, setJournalTitle] = useState("Untitled Journal");
@@ -261,7 +261,7 @@ function App() {
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/flashcards" element={<FlashcardReviewPage />} />
+          <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
           <Route path="/journal-entries" element={<JournalEntriesPage />} />
         </Route>
       </Routes>
