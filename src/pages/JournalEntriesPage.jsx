@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import JournalEntriesTable from "../components/JournalEntriesTable.jsx";
 
 function JournalEntriesPage({setJournalEntryOpen, setJournalEntryData}) {
