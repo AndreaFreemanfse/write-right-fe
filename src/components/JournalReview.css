@@ -50,7 +50,6 @@
 
 .journal-review-modal-header {
   display: flex;
-  align-items: flex-start;
   justify-content: center;
 
   padding: 28px 30px 22px;
@@ -69,20 +68,6 @@
 }
 
 /* Journal content */
-
-.journal-review-journal-meta{
-  padding-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  margin-bottom: 12px;
-
-  color: #64748b;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
 
 .journal-review-section {
   display: grid;
@@ -113,23 +98,23 @@
   font-size: 1.45rem;
 }
 
-.journal-review-section p {
-  margin: 0;
+.journal-review-journal-meta {
+  padding-top: 10px;
 
-  color: #1e293b;
-  line-height: 1.6;
-}
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-.journal-review-section p:first-child {
-  margin-bottom: 12px;
+  margin: 0 0 12px;
 
   color: #64748b;
-
   font-size: 1rem;
   font-weight: 600;
 }
 
-.journal-review-section p:last-child {
+.journal-review-text {
+  margin: 0;
+
   color: #334155;
 
   line-height: 1.75;

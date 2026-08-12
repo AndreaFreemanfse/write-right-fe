@@ -10,10 +10,7 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
     : "";
 
   return (
-    <div
-      className="journal-review-modal-overlay"
-      onClick={onClose}
-    >
+    <div className="journal-review-modal-overlay" onClick={onClose}>
       <section
         className="journal-review-modal"
         role="dialog"
@@ -22,16 +19,11 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         onClick={(event) => event.stopPropagation()}
       >
         <header className="journal-review-modal-header">
-          <h2 id="journal-review-modal-title">
-            {journalEntryData?.title}
-          </h2>
+          <h2 id="journal-review-modal-title">{journalEntryData?.title}</h2>
         </header>
 
         <section className="journal-review-section">
-          <div
-            className="journal-review-section-icon"
-            aria-hidden="true"
-          >
+          <div className="journal-review-section-icon" aria-hidden="true">
             ✍️
           </div>
 
@@ -50,7 +42,9 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
               ) : null}
             </p>
 
-            <p>{journalEntryData?.original_text}</p>
+            <p className="journal-review-text">
+              {journalEntryData?.original_text}
+            </p>
           </div>
         </section>
 
