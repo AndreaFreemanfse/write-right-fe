@@ -1,0 +1,244 @@
+.journal-review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 84px 24px 24px;
+
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(6px);
+
+  animation: overlayFadeIn 0.2s ease;
+}
+
+.journal-review-modal {
+  width: min(820px, 94vw);
+  max-height: calc(100vh - 112px);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 24px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(139, 92, 246, 0.12),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f8fafc 100%
+    );
+
+  box-shadow:
+    0 28px 70px rgba(15, 23, 42, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+
+  animation: modalSlideIn 0.25s ease;
+}
+
+/* Header */
+
+.journal-review-modal-header {
+  display: flex;
+  justify-content: center;
+
+  padding: 28px 30px 22px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.journal-review-modal-header h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: clamp(1.8rem, 4vw, 2.35rem);
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* Journal content */
+
+.journal-review-section {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+
+  padding: 30px 50px 24px;
+
+  overflow-y: auto;
+}
+
+.journal-review-section-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #f5f3ff
+  );
+
+  font-size: 1.45rem;
+}
+
+.journal-review-journal-meta {
+  padding-top: 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 0 0 12px;
+
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.journal-review-text {
+  margin: 0;
+
+  color: #334155;
+
+  line-height: 1.75;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Footer */
+
+.journal-review-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+
+  padding: 18px 30px;
+
+  border-top: 1px solid #e2e8f0;
+
+  background: rgba(248, 250, 252, 0.92);
+}
+
+.journal-review-modal-done {
+  padding: 11px 24px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6
+  );
+
+  color: #ffffff;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.25);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.journal-review-modal-done:hover {
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.34);
+
+  transform: translateY(-2px);
+}
+
+.journal-review-modal-done:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+}
+
+/* Animations */
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .journal-review-modal-overlay {
+    align-items: flex-end;
+
+    padding: 72px 0 0;
+  }
+
+  .journal-review-modal {
+    width: 100%;
+    max-height: calc(100vh - 72px);
+
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .journal-review-modal-header {
+    padding: 22px 20px 18px;
+  }
+
+  .journal-review-modal-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .journal-review-section {
+    grid-template-columns: 40px 1fr;
+    gap: 12px;
+
+    padding: 20px 16px;
+  }
+
+  .journal-review-section-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 12px;
+
+    font-size: 1.2rem;
+  }
+
+  .journal-review-modal-footer {
+    padding: 16px;
+  }
+}

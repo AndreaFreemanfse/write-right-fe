@@ -40,11 +40,6 @@
 }
 
 
-.journal-table tbody tr {
-  cursor:pointer;
-}
-
-
 .journal-table tbody tr:hover {
   background:#fafafa;
 }
@@ -112,4 +107,7 @@
 .delete-entry-button:hover {
   background: #c43333;
   color: white;
+}
+.journal-table-title{
+    cursor: pointer;
 }
