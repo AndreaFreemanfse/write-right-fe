@@ -1,26 +1,15 @@
 import { useEffect, useState } from "react";
 import JournalEntriesTable from "../components/JournalEntriesTable.jsx";
-import { getJournalEntries } from "../services/api.js";
 
-function JournalEntriesPage() {
-  const [entries, setEntries] = useState([]);
+function JournalEntriesPage({setJournalEntryOpen, setJournalEntryData}) {
 
-  useEffect(() => {
-    async function loadEntries() {
-      try {
-        const data = await getJournalEntries();
-        setEntries(data);
-      } catch (error) {
-        console.error("Failed to load entries:", error);
-      }
-    }
-
-    loadEntries();
-  }, []);
 
   return (
     <>
-      <JournalEntriesTable entries={entries} />
+      <JournalEntriesTable
+        setJournalEntryOpen={setJournalEntryOpen}
+        setJournalEntryData={setJournalEntryData}
+      />
     </>
   );
 }
