@@ -48,7 +48,7 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
 
   // Search filter
   const filteredEntries = entries.filter((entry) =>
-    entry.original_text.toLowerCase().includes(search.toLowerCase()),
+    entry.title.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Pagination
