@@ -6,36 +6,42 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="journal-review-modal-overlay" onClick={onClose}>
       <section
-        className="modal"
+        className="journal-review-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby="journal-review-modal-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <header className="modal-header">
+        <header className="journal-review-modal-header">
           <div>
-            <h2 id="modal-title">{journalEntryData?.title}</h2>
+            <h2 id="journal-review-modal-title">{journalEntryData?.title}</h2>
           </div>
         </header>
-        <section className="section-1">
-          <div className="section-icon">✍️</div>
+        <section className="journal-review-section">
+          <div className="journal-review-section-icon">✍️</div>
           <div>
-            <p className="journal-meta">
+            <p className="journal-review-journal-meta">
               <span>
                 {new Date(journalEntryData?.created_at).toLocaleDateString()}
               </span>
               <span aria-hidden="true"> | </span>
-              <span className="vault-language">{journalEntryData?.target_language}</span>
+              <span className="vault-language">
+                {journalEntryData?.target_language}
+              </span>
             </p>
 
             <p>{journalEntryData?.original_text}</p>
           </div>
         </section>
 
-        <footer className="modal-footer">
-          <button type="button" className="modal-done" onClick={onClose}>
+        <footer className="journal-review-modal-footer">
+          <button
+            type="button"
+            className="journal-review-modal-done"
+            onClick={onClose}
+          >
             Close
           </button>
         </footer>
