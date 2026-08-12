@@ -16,19 +16,21 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
       >
         <header className="modal-header">
           <div>
-            <h2 id="modal-title">{journalEntryData.title}</h2>
+            <h2 id="modal-title">{journalEntryData?.title}</h2>
           </div>
         </header>
         <section className="section-1">
           <div className="section-icon">✍️</div>
-
           <div>
-            <p class>
-              {new Date(journalEntryData?.created_at).toLocaleDateString()} |{" "}
-              {journalEntryData.target_language}
+            <p className="journal-meta">
+              <span>
+                {new Date(journalEntryData?.created_at).toLocaleDateString()}
+              </span>
+              <span aria-hidden="true"> | </span>
+              <span className="vault-language">{journalEntryData?.target_language}</span>
             </p>
 
-            <p>{journalEntryData.original_text}</p>
+            <p>{journalEntryData?.original_text}</p>
           </div>
         </section>
 

@@ -12,7 +12,7 @@
   background: rgba(15, 23, 42, 0.58);
   backdrop-filter: blur(6px);
 
-  animation: OverlayFadeIn 0.2s ease;
+  animation: overlayFadeIn 0.2s ease;
 }
 
 .modal {
@@ -43,96 +43,46 @@
     0 28px 70px rgba(15, 23, 42, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.3);
 
-  animation: ModalSlideIn 0.25s ease;
+  animation: modalSlideIn 0.25s ease;
 }
+
+/* Header */
 
 .modal-header {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 24px;
 
   padding: 28px 30px 22px;
 
   border-bottom: 1px solid #e2e8f0;
-  
-}
-
-.modal-eyebrow {
-  margin: 0 0 5px;
-
-  color: #7c3aed;
-
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .modal-header h2 {
   margin: 0;
 
   color: #0f172a;
-  align-content: center;
 
   font-size: clamp(1.8rem, 4vw, 2.35rem);
   line-height: 1.1;
-  
+  text-align: center;
 }
 
+/* Journal content */
 
-
-.modal-close {
-  width: 42px;
-  min-width: 42px;
-  height: 42px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: #eef2ff;
-  color: #4338ca;
-
-  cursor: pointer;
-
-  font-size: 1.5rem;
-  line-height: 1;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.modal-close:hover {
-  background: #ddd6fe;
-  color: #5b21b6;
-
-  transform: rotate(90deg);
-}
-
-.modal-close:focus-visible,
-.modal-done:focus-visible {
-  outline: 3px solid rgba(99, 102, 241, 0.35);
-  outline-offset: 3px;
-}
-
-.modal-content {
-  display: grid;
-  gap: 16px;
-
-  padding: 24px 30px;
-
-  overflow-y: auto;
+.journal-meta{
+  padding-top: 10px;
 }
 
 .section-1 {
   display: grid;
   grid-template-columns: 48px 1fr;
   gap: 16px;
-  padding: 18px;
-}
 
+  padding: 30px 50px 24px;
+
+  overflow-y: auto;
+}
 
 .section-icon {
   width: 48px;
@@ -151,105 +101,34 @@
   );
 
   font-size: 1.45rem;
-}
-
-.section-1 h3 {
-  margin: 1px 0 8px;
-
-  color: #1e293b;
-
-  font-size: 1.05rem;
 }
 
 .section-1 p {
   margin: 0;
 
-  line-height: 1.6;
-}
-
-.section ul {
-  margin: 0;
-  padding-left: 20px;
-
-  color: #64748b;
-
-  line-height: 1.65;
-}
-
-.section-1 li + li {
-  margin-top: 5px;
-}
-
-.section-1 li::marker {
-  color: #7c3aed;
-}
-
-.section-1 {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 16px;
-
-  padding: 50px;
-  padding-top: 30px;
-  padding-bottom: 10;
-  padding-right: 86px;
-  
-}
-
-
-.section-icon {
-  width: 48px;
-  height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 14px;
-
-  background: linear-gradient(
-    135deg,
-    #eef2ff,
-    #f5f3ff
-  );
-
-  font-size: 1.45rem;
-}
-
-.section h3 {
-  margin: 1px 0 8px;
-
   color: #1e293b;
-
-  font-size: 1.05rem;
-}
-
-.section p {
-  margin: 0;
-
-
-
   line-height: 1.6;
 }
 
-.section ul {
-  margin: 0;
-  padding-left: 20px;
+.section-1 p:first-child {
+  margin-bottom: 12px;
 
   color: #64748b;
 
-  line-height: 1.65;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.section li + li {
-  margin-top: 5px;
+.section-1 p:last-child {
+  color: #334155;
+
+  line-height: 1.75;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
-.section li::marker {
-  color: #7c3aed;
-}
-
-
+/* Footer */
 
 .modal-footer {
   display: flex;
@@ -294,7 +173,14 @@
   transform: translateY(-2px);
 }
 
-@keyframes OverlayFadeIn {
+.modal-done:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+}
+
+/* Animations */
+
+@keyframes overlayFadeIn {
   from {
     opacity: 0;
   }
@@ -304,7 +190,7 @@
   }
 }
 
-@keyframes ModalSlideIn {
+@keyframes modalSlideIn {
   from {
     opacity: 0;
     transform: translateY(24px) scale(0.98);
@@ -315,6 +201,8 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* Mobile */
 
 @media (max-width: 640px) {
   .modal-overlay {
@@ -335,14 +223,15 @@
     padding: 22px 20px 18px;
   }
 
-  .modal-content {
-    padding: 18px 16px;
+  .modal-header h2 {
+    font-size: 1.6rem;
   }
 
-  .section {
+  .section-1 {
     grid-template-columns: 40px 1fr;
+    gap: 12px;
 
-    padding: 15px;
+    padding: 20px 16px;
   }
 
   .section-icon {
@@ -355,11 +244,6 @@
   }
 
   .modal-footer {
-    padding: 14px 18px;
+    padding: 16px;
   }
-
-  .modal-done {
-    width: 100%;
-  }
-
 }
