@@ -5,8 +5,15 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
     return null;
   }
 
+  const formattedDate = journalEntryData?.created_at
+    ? new Date(journalEntryData.created_at).toLocaleDateString()
+    : "";
+
   return (
-    <div className="journal-review-modal-overlay" onClick={onClose}>
+    <div
+      className="journal-review-modal-overlay"
+      onClick={onClose}
+    >
       <section
         className="journal-review-modal"
         role="dialog"
@@ -15,27 +22,32 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         onClick={(event) => event.stopPropagation()}
       >
         <header className="journal-review-modal-header">
-          <div>
-            <h2 id="journal-review-modal-title">{journalEntryData?.title}</h2>
-          </div>
+          <h2 id="journal-review-modal-title">
+            {journalEntryData?.title}
+          </h2>
         </header>
+
         <section className="journal-review-section">
-          <div className="journal-review-section-icon">✍️</div>
+          <div
+            className="journal-review-section-icon"
+            aria-hidden="true"
+          >
+            ✍️
+          </div>
+
           <div>
             <p className="journal-review-journal-meta">
-              <span>
-                {new Date(journalEntryData?.created_at).toLocaleDateString()}
-              </span>
+              <span>{formattedDate}</span>
+
               {journalEntryData?.target_language ? (
                 <>
-                  <span aria-hidden="true"> | </span>
+                  <span aria-hidden="true">|</span>
+
                   <span className="vault-language">
-                    {journalEntryData?.target_language}
-                  </span>{" "}
+                    {journalEntryData.target_language}
+                  </span>
                 </>
-              ) : (
-                ""
-              )}
+              ) : null}
             </p>
 
             <p>{journalEntryData?.original_text}</p>

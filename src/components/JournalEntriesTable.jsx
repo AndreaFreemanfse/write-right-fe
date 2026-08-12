@@ -104,7 +104,6 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
                     alignItems: "center",
                   }}
                   onClick={() => {
-                    console.log(true);
                     setJournalEntryOpen(true);
                     setJournalEntryData(entry);
                   }}
