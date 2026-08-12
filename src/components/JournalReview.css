@@ -72,6 +72,15 @@
 
 .journal-meta{
   padding-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .section-1 {
