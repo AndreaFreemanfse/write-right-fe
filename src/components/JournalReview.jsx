@@ -26,10 +26,16 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
               <span>
                 {new Date(journalEntryData?.created_at).toLocaleDateString()}
               </span>
-              <span aria-hidden="true"> | </span>
-              <span className="vault-language">
-                {journalEntryData?.target_language}
-              </span>
+              {journalEntryData?.target_language ? (
+                <>
+                  <span aria-hidden="true"> | </span>
+                  <span className="vault-language">
+                    {journalEntryData?.target_language}
+                  </span>{" "}
+                </>
+              ) : (
+                ""
+              )}
             </p>
 
             <p>{journalEntryData?.original_text}</p>
