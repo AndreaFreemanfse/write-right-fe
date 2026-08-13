@@ -330,7 +330,7 @@ function FlashcardVault({nativeLanguage}) {
 
 
         <div className="vault-study-area">
-          <button
+          <div
             type="button"
             className="study-card-container"
             onClick={() => handleFlipCard(cardKey)}
@@ -371,7 +371,7 @@ function FlashcardVault({nativeLanguage}) {
                 <p className="study-card-hint">Click to see prompt</p>
               </div>
             </div>
-          </button>
+          </div>
 
           <div className="study-navigation">
             <button
