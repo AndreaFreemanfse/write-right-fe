@@ -36,14 +36,32 @@ npm install @mui/icons-material
 npm install fontsource-roboto
 npm install canvas-confetti
 npm install @supabase/supabase-js
+npm init playwright@latest
+    - Javascript
+    - test folder: tests
+    - Add a GitHub Actions workflow: Yes
+    - Install Playwright browsers: Yes
 
 npm run dev
 ```
 
 The frontend will start in development mode.
 
+## Additional Testing Commands
+
+```bash
+npm run test:e2e
+npm run lint
+npm run build
+```
 ---
 
 ## 🎯 Project Goal
 
 WriteRight is designed to make language practice more effective by giving learners immediate, personalized feedback on their writing. Instead of only correcting mistakes, the app explains *why* changes were made so users can build lasting language skills.
+
+## For Contributors
+Project Helpdesk https://notebook.google.com/notebook/cc01e95b-c671-4821-a71d-43766208983b
+
+## Deployment Link
+[write-right-fe.vercel.app](https://write-right-fe.vercel.app/)

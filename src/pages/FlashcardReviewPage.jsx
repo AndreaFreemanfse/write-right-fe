@@ -4,7 +4,7 @@ function FlashcardReviewPage({nativeLanguage}) {
   return (
     <>
       <FlashcardVault
-        nativeLanguage={{nativeLanguage}}
+        nativeLanguage={nativeLanguage}
       />
     </>
   );

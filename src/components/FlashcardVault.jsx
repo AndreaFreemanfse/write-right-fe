@@ -17,36 +17,37 @@ function FlashcardVault({nativeLanguage}) {
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-  useEffect(() => {
-    async function loadFlashcardSets() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session) {
-          throw new Error("User is not authenticated.");
-        }
-        const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
 
-        if (!response.ok) {
-          throw new Error("Unable to load flashcard sets.");
-        }
-
-        const data = await response.json();
-        setFlashcardSets(data);
-      } catch (loadError) {
-        console.error(loadError);
-        setError("Your flashcard sets could not be loaded.");
-      } finally {
-        setLoading(false);
+  async function loadFlashcardSets() {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("User is not authenticated.");
       }
-    }
+      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error("Unable to load flashcard sets.");
+      }
+
+      const data = await response.json();
+      setFlashcardSets(data);
+    } catch (loadError) {
+      console.error(loadError);
+      setError("Your flashcard sets could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
     loadFlashcardSets();
   }, []);
 
@@ -187,6 +188,9 @@ function FlashcardVault({nativeLanguage}) {
   }
 
   async function explain(original, corrected, nativeLanguage, targetLanguage) {
+    if (targetLanguage == "Unknown") {
+      targetLanguage = "English"
+    }
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -220,10 +224,9 @@ function FlashcardVault({nativeLanguage}) {
 
     const [cor, exp] = currentCard.back.split("||");
     if (exp) {
-      console.log("Explanation already exists.");
+      console.log("Explanation already exists: ", currentCard.back);
       return;
     }
-    
     setExpLoading(true);
 
     try {
@@ -236,8 +239,48 @@ function FlashcardVault({nativeLanguage}) {
 
       const updatedCard = {
         ...currentCard,
-        back: currentCard.back + "||" + response.explanation
+        back: currentCard.back.split("||")[0] + "||" + response.explanation
       };
+
+      setSelectedCards(prev =>
+        prev.map(card =>
+          card.front === updatedCard.front ? updatedCard : card
+        )
+      );
+
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error("User is not authenticated.");
+        }
+        const response = await fetch(`${API_BASE_URL}/flashcards/${currentCard.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            front: updatedCard.front,
+            back: updatedCard.back,
+            language: updatedCard.language,
+            mastered: updatedCard.mastered,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to update flashcard.");
+        }
+
+        const data = await response.json();
+
+      } catch (loadError) {
+        console.error(loadError);
+        setError("Unable to update flashcard.");
+      } finally {
+        setLoading(false);
+      }
 
       setSelectedCards(prev =>
         prev.map(card =>
@@ -248,7 +291,14 @@ function FlashcardVault({nativeLanguage}) {
     } finally {
       setExpLoading(false);
     }
-}
+  }
+
+  async function handleBackToVault() {
+    setSelectedSet(null);
+    setSelectedCards([]);
+    setCurrentCardIndex(0);
+    await loadFlashcardSets();
+  }
 
   if (selectedSet) {
     console.log("Selected flashcard set:", selectedSet);
@@ -266,10 +316,7 @@ function FlashcardVault({nativeLanguage}) {
         <button
           type="button"
           className="edit-card-button"
-          onClick={() => {
-            setSelectedSet(null);
-            setSelectedCards([]);
-            setCurrentCardIndex(0);}
+          onClick={() => {handleBackToVault();}
           }
         >
           ← Back to Vault
@@ -305,8 +352,10 @@ function FlashcardVault({nativeLanguage}) {
 
               <div className="study-card-face study-card-back">
                 <h3>{renderUnderline(correctedText)}</h3>
-                {currentCard.explanation ? (
-                  <p>{currentCard.explanation}</p>
+                {explanation ? (
+                  <p className='back-explanation'>
+                    {explanation}
+                  </p>
                 ) : (
                   <button
                   className="generate-explanation-button"
@@ -316,7 +365,7 @@ function FlashcardVault({nativeLanguage}) {
                   }}
                   disabled={exp_loading}
                   >
-                    {exp_loading ? "Generating..." : "Generate Explanation"}
+                    {exp_loading ? "Please wait..." : "Generate Explanation"}
                   </button>
                 )}
                 <p className="study-card-hint">Click to see prompt</p>
