@@ -43,9 +43,8 @@ function App() {
   const loadingMessages = [
     "Checking for mistakes...",
     "Preparing corrected journal...",
-    "Almost finished...",
-    "Almost finished...",
-    "Taking longer than expected, please be patient...",
+    "Calculating accuracy score...",
+    "Generating suggestions...",
   ];
 
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
@@ -265,7 +264,7 @@ function App() {
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/flashcards" element={<FlashcardReviewPage />} />
+          <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
           <Route
             path="/journal-entries"
             element={
