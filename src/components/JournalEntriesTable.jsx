@@ -4,7 +4,7 @@ import JournalStats from "../components/JournalStats.jsx";
 import Stack from "@mui/material/Stack";
 import "./JournalEntriesTable.css";
 
-function JournalEntriesTable() {
+function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
   const [entries, setEntries] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,8 +23,6 @@ function JournalEntriesTable() {
 
     loadEntries();
   }, []);
-
-  console.log(entries);
 
   // Delete selected journal entry
   const handleDelete = async (entry) => {
@@ -98,12 +96,16 @@ function JournalEntriesTable() {
         <tbody>
           {currentEntries.map((entry) => (
             <tr key={entry.id}>
-              <td>
+              <td className="journal-table-title">
                 <Stack
                   direction="row"
                   sx={{
                     gap: "1rem",
                     alignItems: "center",
+                  }}
+                  onClick={() => {
+                    setJournalEntryOpen(true);
+                    setJournalEntryData(entry);
                   }}
                 >
                   <div className="stat-icon entries-icon">📖</div>

@@ -6,6 +6,7 @@ import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
+import JournalReview from "./components/JournalReview.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
@@ -80,9 +81,12 @@ function App() {
   // Dictionary modal state
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
-  // Sets the user's native language
   // Help modal state
   const [helpOpen, setHelpOpen] = useState(false);
+
+  // Sets the journal review in journal entries
+  const [journalEntryOpen, setJournalEntryOpen] = useState(false);
+  const [journalEntryData, setJournalEntryData] = useState({});
 
   // Sets the users native language
   const [nativeLanguage, setNativeLanguage] = useState("English");
@@ -216,6 +220,11 @@ function App() {
             targetLanguage={targetLanguage}
           />
           <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+          <JournalReview
+            isOpen={journalEntryOpen}
+            journalEntryData={journalEntryData}
+            onClose={() => setJournalEntryOpen(false)}
+          />
         </>
       )}
       <Routes>
@@ -256,7 +265,15 @@ function App() {
           />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
-          <Route path="/journal-entries" element={<JournalEntriesPage />} />
+          <Route
+            path="/journal-entries"
+            element={
+              <JournalEntriesPage
+                setJournalEntryOpen={setJournalEntryOpen}
+                setJournalEntryData={setJournalEntryData}
+              />
+            }
+          />
         </Route>
       </Routes>
     </div>
