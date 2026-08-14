@@ -27,7 +27,7 @@ setup("authenticate", async ({ page }) => {
     .getByRole("button", { name: "Sign In" })
     .click();
 
-  await page.waitForURL("/write");
+  await page.waitForURL("**/write");
 
   await expect(page).toHaveURL(/\/write$/);
 
