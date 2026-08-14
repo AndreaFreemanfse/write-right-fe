@@ -23,13 +23,31 @@ setup("authenticate", async ({ page }) => {
     .getByPlaceholder("Password")
     .fill(password);
 
+  const authResponsePromise = page.waitForResponse((response) =>
+  response.url().includes("/auth/v1/token"),
+);
+
   await page
     .getByRole("button", { name: "Sign In" })
     .click();
 
-  await page.waitForURL("**/write");
+    const authResponse = await authResponsePromise;
+    const authBody = await authResponse.json();
 
-  await expect(page).toHaveURL(/\/write$/);
+    if (!authResponse.ok()) {
+    throw new Error(
+        `Supabase authentication failed (${authResponse.status()}): ${
+        authBody.error_description ||
+        authBody.msg ||
+        authBody.message ||
+        "Unknown authentication error"
+        }`,
+    );
+    }
+
+    await page.waitForURL("**/write");
+
+    await expect(page).toHaveURL(/\/write$/);
 
   await page.context().storageState({
     path: authFile,
