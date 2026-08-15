@@ -7,8 +7,12 @@ function LandingPage() {
       <section className="landing-content">
         <div className="landing-ink" aria-hidden="true" />
 
-        <div className="landing-logo" aria-hidden="true">
-          {/* ✒️ */} ✍️
+        <div className="landing-logo">
+          <img
+            src="/WriteRightLogo.png"
+            alt="WriteRight logo"
+            className="landing-logo-image"
+          />
         </div>
 
         <div className="landing-title-wrap">
