@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
+import AmbientBackground from "./components/background/AmbientBackground";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
@@ -199,6 +200,7 @@ function App() {
 
   return (
     <div className="App">
+      <AmbientBackground />
       {!isPublicPage && (
         <>
           <TopNav

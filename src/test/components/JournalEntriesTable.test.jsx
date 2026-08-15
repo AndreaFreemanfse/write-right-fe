@@ -78,7 +78,7 @@ describe("JournalEntriesTable", () => {
 
     await user.type(
       screen.getByPlaceholderText("Search journal entries..."),
-      "Berlin",
+      "Second",
     );
 
     expect(
