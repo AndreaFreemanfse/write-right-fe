@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
@@ -19,6 +19,7 @@ import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
+import { updateJournalEntry } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
 import "./App.css";
 
@@ -26,6 +27,8 @@ function App() {
   // --------------------------------------------------------------
   // Journal State
   // --------------------------------------------------------------
+
+  const navigate = useNavigate();
 
   // The user's journal text
   const [journalText, setJournalText] = useState("");
@@ -89,6 +92,9 @@ function App() {
   const [journalEntryOpen, setJournalEntryOpen] = useState(false);
   const [journalEntryData, setJournalEntryData] = useState({});
 
+  // Set the content to be edited if a user selects edit journal
+  const [editingEntry, setEditingEntry] = useState(null);
+
   // Sets the users native language
   const [nativeLanguage, setNativeLanguage] = useState("English");
 
@@ -121,6 +127,13 @@ function App() {
 
     if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
       setApiError("Please rename your journal before analyzing your writing.");
+      return;
+    }
+
+    if (!targetLanguage) {
+      setApiError(
+        "Please select a target language before analyzing your writing.",
+      );
       return;
     }
 
@@ -181,6 +194,100 @@ function App() {
     }
   }
 
+  const handleEditJournal = (entry) => {
+    console.log("ENTRY BEING EDITED:", entry);
+    console.log("NATIVE LANGUAGE:", entry.native_language);
+    console.log("TARGET LANGUAGE:", entry.target_language);
+
+    // Clear previous state
+    setApiError(null);
+    setReviewMode(false);
+    setCorrections([]);
+    setAccuracy(null);
+
+    setEditingEntry(entry);
+    setJournalEntryOpen(false);
+
+    setJournalText(entry.original_text);
+    setJournalTitle(entry.title);
+
+    setTargetLanguage(entry.target_language || "");
+
+    setNativeLanguage(entry.native_language || "English");
+
+    navigate("/write");
+  };
+
+  const handleSaveEdit = async () => {
+    const trimmedTitle = journalTitle.trim();
+
+    // Validate before making any API calls
+    if (!journalText.trim()) {
+      setApiError("Please enter some text first.");
+      return;
+    }
+
+    if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
+      setApiError("Please rename your journal before saving your changes.");
+      return;
+    }
+
+    if (!targetLanguage) {
+      setApiError("Please select a target language before saving.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setApiError(null);
+      setLoadingMessage("Checking for mistakes...");
+
+      // Update and re-analyze the existing journal entry
+      const response = await updateJournalEntry(editingEntry.id, {
+        title: trimmedTitle,
+        original_text: journalText,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
+      });
+
+      console.log("Updated journal entry:", response);
+      console.log("Updated mistakes:", response.mistakes);
+
+      const mistakes = response.mistakes ?? [];
+
+      setCorrections(mistakes);
+      setJournalEntryId(response.id);
+
+      // Exit edit mode
+      setEditingEntry(null);
+
+      // Show the updated corrections
+      setReviewMode(true);
+
+      // Celebrate if there are no mistakes
+      if (mistakes.length === 0) {
+        celebrate();
+
+        setAchievement({
+          title: "🏆 JOURNAL MASTER",
+          subtitle: "Perfect Journal",
+          description: "No corrections were needed!",
+        });
+
+        setTimeout(() => {
+          setAchievement(null);
+        }, 3500);
+      }
+    } catch (error) {
+      console.error("Failed to update journal entry:", error);
+
+      setApiError("Something went wrong while saving your changes.");
+      setReviewMode(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   function updateMistake(updatedMistake) {
     setCorrections((prev) =>
       prev.map((m) =>
@@ -222,6 +329,7 @@ function App() {
           />
           <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
           <JournalReview
+            handleEditJournal={handleEditJournal}
             isOpen={journalEntryOpen}
             journalEntryData={journalEntryData}
             onClose={() => setJournalEntryOpen(false)}
@@ -261,6 +369,8 @@ function App() {
                 nativeLanguage={nativeLanguage}
                 setTargetLanguage={setTargetLanguage}
                 onUpdateMistake={updateMistake}
+                handleSaveEdit={handleSaveEdit}
+                editingEntry={editingEntry}
               />
             }
           />

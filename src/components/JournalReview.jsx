@@ -1,6 +1,12 @@
 import "./JournalReview.css";
 
-function JournalReview({ isOpen, onClose, journalEntryData }) {
+function JournalReview({
+  isOpen,
+  onClose,
+  journalEntryData,
+  onEdit,
+  handleEditJournal,
+}) {
   if (!isOpen) {
     return null;
   }
@@ -8,6 +14,20 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
   const formattedDate = journalEntryData?.created_at
     ? new Date(journalEntryData.created_at).toLocaleDateString()
     : "";
+
+  const handleEdit = () => {
+    const confirmed = window.confirm(
+      "Editing this journal entry will remove its existing corrections and flashcards. You can analyze the updated entry to generate new ones. Do you want to continue?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    handleEditJournal(journalEntryData);
+  };
+
+  console.log(journalEntryData)
 
   return (
     <div className="journal-review-modal-overlay" onClick={onClose}>
@@ -51,7 +71,14 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         <footer className="journal-review-modal-footer">
           <button
             type="button"
-            className="journal-review-modal-done"
+            className="journal-review-modal-button"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            className="journal-review-modal-button"
             onClick={onClose}
           >
             Close

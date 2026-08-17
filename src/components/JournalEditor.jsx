@@ -10,6 +10,8 @@ function JournalEditor({
   journalTitle,
   setJournalTitle,
   onAnalyze,
+  handleSaveEdit,
+  editingEntry,
   loading,
   loadingMessage,
   error,
@@ -55,8 +57,8 @@ function JournalEditor({
             <Stack
               direction="row"
               spacing={2}
-             className="fade-in"
-              sx={{ alignItems: "center" ,width: "100%"}}
+              className="fade-in"
+              sx={{ alignItems: "center", width: "100%" }}
             >
               <p className="editor-subtitle">
                 Practice writing in your target language:
@@ -98,10 +100,16 @@ function JournalEditor({
           <button
             type="button"
             className="analyze-button"
-            onClick={onAnalyze}
+            onClick={editingEntry ? handleSaveEdit : onAnalyze}
             disabled={loading}
           >
-            {loading ? "Analyzing..." : "Analyze Writing"}
+            {loading
+              ? editingEntry
+                ? "Saving..."
+                : "Analyzing..."
+              : editingEntry
+                ? "Save Changes"
+                : "Analyze Writing"}
           </button>
         </div>
 

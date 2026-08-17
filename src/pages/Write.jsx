@@ -27,6 +27,8 @@ function Write({
   nativeLanguage,
   setTargetLanguage,
   onUpdateMistake,
+  handleSaveEdit,
+  editingEntry
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -132,6 +134,8 @@ function Write({
           error={error}
           targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
+          handleSaveEdit={handleSaveEdit}
+          editingEntry={editingEntry}
         />
       ) : loading ? (
         <AnalysisLoading
