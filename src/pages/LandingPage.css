@@ -36,8 +36,11 @@
   z-index: -1;
   width: clamp(280px, 55vw, 560px);
   aspect-ratio: 1;
-  top: 42%;
-  left: 50%;
+  top: var(--pointer-y, 42%);
+  left: var(--pointer-x, 50%);
+  transition:
+    top 500ms ease-out,
+    left 500ms ease-out;
   border-radius:
     42% 58% 63% 37% /
     45% 39% 61% 55%;
