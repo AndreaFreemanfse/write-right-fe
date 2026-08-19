@@ -124,33 +124,34 @@ function JournalEditor({
             </div>
           )}
         </div>
-        <button
-          type="button"
-          className="special-character-toggle"
-          onClick={() => setShowSpecialCharacters((current) => !current)}
-        >
-          {showSpecialCharacters
-            ? "Hide Special Characters"
-            : "View Special Characters"}
-        </button>
-
-        {showSpecialCharacters && characters.length > 0 && (
-            <div className="special-character-bar">
-              {characters.map((character) => (
-                <button
-                  key={character}
-                  type="button"
-                  onMouseDown={(event) => {
-                    event.preventDefault();
-                    insertSpecialCharacter(character);
-                    console.log(character);
-                  }}
-                >
-                  {character}
-                </button>
-              ))}
-            </div>
+        {characters.length > 0 && (
+          <button
+            type="button"
+            className="special-character-toggle"
+            onClick={() => setShowSpecialCharacters((current) => !current)}
+          >
+            {showSpecialCharacters
+              ? "Hide Special Characters"
+              : "View Special Characters"}
+          </button>          
           )}
+          {showSpecialCharacters && characters.length > 0 && (
+              <div className="special-character-bar">
+                {characters.map((character) => (
+                  <button
+                    key={character}
+                    type="button"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      insertSpecialCharacter(character);
+                      console.log(character);
+                    }}
+                  >
+                    {character}
+                  </button>
+                ))}
+              </div>
+            )}
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>
