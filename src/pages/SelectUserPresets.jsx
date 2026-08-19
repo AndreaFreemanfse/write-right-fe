@@ -1,7 +1,4 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { updateNativeLanguage } from "../services/auth";
 
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
 import "./SelectUserPresets.css";
