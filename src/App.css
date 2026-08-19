@@ -5,10 +5,5 @@
 }
 
 .ambient-background {
-  z-index: 0;
-}
-
-.App > *:not(.ambient-background) {
-  position: relative;
-  z-index: 1;
+  z-index: -1;
 }
