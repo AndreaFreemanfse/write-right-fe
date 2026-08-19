@@ -13,6 +13,10 @@ function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
     }
   };
 
+  const sortedLanguages = Object.entries(languages).sort(
+    ([, nameA], [, nameB]) => nameA.localeCompare(nameB),
+  );
+
   return (
     <select
       className="language-select"
@@ -25,7 +29,7 @@ function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
         {displayText}
       </option>
 
-      {Object.entries(languages).map(([code, name]) => (
+      {(sortedLanguages).map(([code, name]) => (
         <option key={code} value={name}>
           {name}
         </option>

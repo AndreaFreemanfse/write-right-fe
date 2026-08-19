@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { updateNativeLanguage } from "../services/auth";
 
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
 import "./SelectUserPresets.css";
 
-function SelectUserPresets({setNativeLanguage}) {
- 
+function SelectUserPresets({ setNativeLanguage, nativeLanguage }) {
   const navigate = useNavigate();
 
   const handleContinue = async () => {
@@ -16,8 +15,6 @@ function SelectUserPresets({setNativeLanguage}) {
     }
 
     try {
-      await updateNativeLanguage(nativeLanguage);
-
       navigate("/write", { replace: true });
     } catch (error) {
       console.error("Failed to save native language:", error);

@@ -247,7 +247,10 @@ function App() {
           <Route
             path="/select-presets"
             element={
-              <SelectUserPresets setNativeLanguage={setNativeLanguage} />
+              <SelectUserPresets
+                setNativeLanguage={setNativeLanguage}
+                nativeLanguage={nativeLanguage}
+              />
             }
           />
           <Route
