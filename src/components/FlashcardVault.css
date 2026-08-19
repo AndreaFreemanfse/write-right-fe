@@ -516,15 +516,17 @@
   padding: 0.75rem 1.25rem;
   border: none;
   border-radius: 12px !important;
-  background: #4c58f5 !important;
+  background: #6d28d9 !important;
   color: white;
   font-weight: 60;
   cursor: pointer;
   font-size: 20px !important;
+  font-weight: 525;
 }
 
 .study-all-button:hover {
-  background: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(17, 24, 39, 0.18);
 }
 
 .study-card-inner.no-animation {

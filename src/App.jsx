@@ -173,7 +173,7 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError("Something went wrong while analyzing your journal.");
+      setApiError(err.message || "Something went wrong while analyzing your journal.");
 
       // Return to the editor so the user can see the error
       setReviewMode(false);

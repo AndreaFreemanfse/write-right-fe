@@ -32,7 +32,11 @@ export async function handleCorrectJournal(
   });
 
   if (!response.ok) {
-    throw new Error("Journal analysis failed");
+    const data = await response.json();
+
+    throw new Error(
+      data.detail || "Something went wrong while analyzing your journal."
+    );
   }
 
   return await response.json();
