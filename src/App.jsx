@@ -244,7 +244,12 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/select-presets" element={<SelectUserPresets />} />
+          <Route
+            path="/select-presets"
+            element={
+              <SelectUserPresets setNativeLanguage={setNativeLanguage} />
+            }
+          />
           <Route
             path="/write"
             element={

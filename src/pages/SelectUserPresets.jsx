@@ -6,9 +6,8 @@ import { updateNativeLanguage } from "../services/auth";
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
 import "./SelectUserPresets.css";
 
-function SelectUserPresets() {
-  const [nativeLanguage, setNativeLanguage] = useState("");
-  const [targetLanguage, setTargetLanguage] = useState("");
+function SelectUserPresets({setNativeLanguage}) {
+ 
   const navigate = useNavigate();
 
   const handleContinue = async () => {
@@ -47,19 +46,6 @@ function SelectUserPresets() {
               displayText="Select your native language"
             />
           </div>
-
-          {/* <div className="language-field">
-            <label htmlFor="target-language">
-              Language you're learning
-            </label>
-
-            <LanguageSelectionDropdown
-              value={targetLanguage}
-              onChange={setTargetLanguage}
-              displayText="Select a language"
-            />
-          </div> */}
-
           <button
             className="select-presets-button"
             type="button"
