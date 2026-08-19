@@ -1,9 +1,16 @@
 import { languages } from "../utils/constants/languages";
 import "./LanguageSelectionDropdown.css";
+import { updateNativeLanguage } from "../services/auth";
 
 function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
-  const handleChange = (event) => {
-    onChange(event.target.value);
+  const handleChange = async (event) => {
+    const nativeLanguage = event.target.value;
+    onChange(nativeLanguage);
+    try {
+      await updateNativeLanguage(nativeLanguage);
+    } catch (error) {
+      console.error("Failed to save native language:", error);
+    }
   };
 
   return (
