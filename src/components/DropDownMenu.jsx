@@ -229,6 +229,7 @@ function DropDownMenu({
             value={nativeLanguage}
             onChange={setNativeLanguage}
             displayText={"Native Language"}
+            languageType={'native'}
           />
         </DialogContent>
       </Dialog>

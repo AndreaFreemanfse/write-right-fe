@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
 import "./SelectUserPresets.css";
+import { updateNativeLanguage } from "../services/auth";
 
 function SelectUserPresets({ setNativeLanguage, nativeLanguage }) {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ function SelectUserPresets({ setNativeLanguage, nativeLanguage }) {
               value={nativeLanguage}
               onChange={setNativeLanguage}
               displayText="Select your native language"
+              languageType={'native'}
             />
           </div>
           <button

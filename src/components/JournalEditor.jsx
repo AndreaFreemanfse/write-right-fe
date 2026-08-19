@@ -98,6 +98,7 @@ function JournalEditor({
                 value={targetLanguage}
                 onChange={handleLanguageChange}
                 displayText="Target Language"
+                languageType={"target"}
               />
             </Stack>
           )}
