@@ -18,7 +18,7 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
-import SelectUserPresets from "./pages/Select User Presets.jsx";
+import SelectUserPresets from "./pages/SelectUserPresets.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -173,7 +173,9 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError(err.message || "Something went wrong while analyzing your journal.");
+      setApiError(
+        err.message || "Something went wrong while analyzing your journal.",
+      );
 
       // Return to the editor so the user can see the error
       setReviewMode(false);
@@ -235,19 +237,14 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/select-presets" element={<SelectUserPresets />} />
-          <Route
-            path="/signin"
-            element={
-              <SignInPage
-              />
-            }
-          />
+
+          <Route path="/signin" element={<SignInPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
         </Route>
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/select-presets" element={<SelectUserPresets />} />
           <Route
             path="/write"
             element={
