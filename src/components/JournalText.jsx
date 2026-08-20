@@ -3,7 +3,7 @@ import Correction from "./Correction";
 import CorrectionTooltip from "./CorrectionTooltip";
 import "./JournalText.css";
 
-function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake }) {
+function JournalText({ text, corrections, onBack, onNewEntry, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake, editingEntry }) {
   // State to track the currently selected correction for tooltip display
   const [selectedCorrection, setSelectedCorrection] = useState(null);
 
@@ -89,8 +89,12 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
       <div className="review-header">
         <h2>Your Journal Review</h2>
 
-        <button onClick={onBack} className="back-button">
-          ← Back to Edit
+        <button onClick={() => onBack(editingEntry)} className="back-button">
+          ← Edit Entry
+        </button>
+
+        <button onClick={onNewEntry} className="back-button">
+          ← New Entry
         </button>
       </div>
 

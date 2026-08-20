@@ -20,7 +20,8 @@ function Write({
   journalEntryId,
   journalTitle,
   setJournalTitle,
-  onBack,
+  returnToEditor,
+  onNewEntry,
   error,
   reviewMode,
   targetLanguage,
@@ -154,11 +155,13 @@ function Write({
           <JournalText
             text={text}
             corrections={corrections}
-            onBack={onBack}
+            onBack={() => returnToEditor(editingEntry)}
+            onNewEntry={onNewEntry}
             onCreateFlashcard={handleCreateFlashcard}
             targetLanguage={targetLanguage}
             nativeLanguage={nativeLanguage}
             onUpdateMistake={onUpdateMistake}
+            editingEntry={editingEntry}
           />
 
           <FlashcardStudy

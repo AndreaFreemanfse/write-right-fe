@@ -168,6 +168,13 @@ function App() {
       setCorrections(mistakes);
       setAccuracy(accuracyResult);
       setJournalEntryId(savedJournalEntryId);
+      setEditingEntry({
+        id: savedJournalEntryId,
+        title: trimmedTitle,
+        original_text: journalText,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
+      });
 
       if (mistakes.length === 0) {
         celebrate();
@@ -185,7 +192,9 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError(err.message || "Something went wrong while analyzing your journal.");
+      setApiError(
+        err.message || "Something went wrong while analyzing your journal.",
+      );
 
       // Return to the editor so the user can see the error
       setReviewMode(false);
@@ -195,9 +204,15 @@ function App() {
   }
 
   const handleEditJournal = (entry) => {
+    const confirmed = window.confirm(
+      "Editing this journal will remove its current corrections and flashcards. Do you want to continue?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     console.log("ENTRY BEING EDITED:", entry);
-    console.log("NATIVE LANGUAGE:", entry.native_language);
-    console.log("TARGET LANGUAGE:", entry.target_language);
 
     // Clear previous state
     setApiError(null);
@@ -254,14 +269,21 @@ function App() {
       console.log("Updated mistakes:", response.mistakes);
 
       const mistakes = response.mistakes ?? [];
+      const accuracyResult = response.accuracy ?? null;
 
       setCorrections(mistakes);
+      setAccuracy(accuracyResult);
       setJournalEntryId(response.id);
 
-      // Exit edit mode
-      setEditingEntry(null);
+      setEditingEntry({
+        ...editingEntry,
+        id: response.id,
+        title: trimmedTitle,
+        original_text: journalText,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
+      });
 
-      // Show the updated corrections
       setReviewMode(true);
 
       // Celebrate if there are no mistakes
@@ -296,9 +318,32 @@ function App() {
     );
   }
 
-  function returnToEditor() {
+  function returnToEditor(entry) {
     setReviewMode(false);
     setApiError(null);
+    setCorrections([]);
+    setAccuracy(null);
+    if (entry) {
+      setEditingEntry(entry);
+      setJournalText(entry.original_text);
+      setJournalTitle(entry.title);
+      setTargetLanguage(entry.target_language || "");
+      setNativeLanguage(entry.native_language || "English");
+    }
+    navigate("/write");
+  }
+
+  function handleNewEntry() {
+    setJournalEntryId(null);
+    setTargetLanguage("");
+    setReviewMode(false);
+    setApiError(null);
+    setCorrections([]);
+    setAccuracy(null);
+    setEditingEntry(null);
+    setJournalText("");
+    setJournalTitle("Untitled Journal");
+    navigate("/write");
   }
 
   // --------------------------------------------------------------
@@ -363,7 +408,8 @@ function App() {
                 corrections={corrections}
                 accuracy={accuracy}
                 journalEntryId={journalEntryId}
-                onBack={returnToEditor}
+                returnToEditor={returnToEditor}
+                onNewEntry={handleNewEntry}
                 error={apiError}
                 reviewMode={reviewMode}
                 targetLanguage={targetLanguage}
@@ -376,7 +422,10 @@ function App() {
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
+          <Route
+            path="/flashcards"
+            element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />}
+          />
           <Route
             path="/journal-entries"
             element={
