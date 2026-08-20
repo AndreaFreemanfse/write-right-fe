@@ -15,81 +15,83 @@ function ProfilePage() {
   const [journalCount, setJournalCount] = useState(0);
   const [flashcardSetCount, setFlashcardSetCount] = useState(0);
 
-useEffect(() => {
-  async function fetchProfileData() {
-    setBadgesLoading(true);
-    setBadgesError("");
+  useEffect(() => {
+    async function fetchProfileData() {
+      setBadgesLoading(true);
+      setBadgesError("");
 
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      if (!session) {
-        throw new Error("User is not authenticated.");
-      }
+        if (!session) {
+          throw new Error("User is not authenticated.");
+        }
 
-      const requestOptions = {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      };
+        const requestOptions = {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        };
 
-      const [
-        badgesResponse,
-        journalsResponse,
-        flashcardSetsResponse,
-      ] = await Promise.all([
-        fetch(`${API_BASE_URL}/badges`, requestOptions),
-        fetch(`${API_BASE_URL}/journal/entries`, requestOptions),
-        fetch(`${API_BASE_URL}/flashcard-sets`, requestOptions),
-      ]);
+        const [
+          badgesResponse,
+          journalStatsResponse,
+          flashcardSetsResponse,
+        ] = await Promise.all([
+          fetch(`${API_BASE_URL}/badges`, requestOptions),
+          fetch(`${API_BASE_URL}/journal/stats`, requestOptions),
+          fetch(`${API_BASE_URL}/flashcard-sets`, requestOptions),
+        ]);
 
-      const [
-        badgesResult,
-        journalsResult,
-        flashcardSetsResult,
-      ] = await Promise.all([
-        badgesResponse.json(),
-        journalsResponse.json(),
-        flashcardSetsResponse.json(),
-      ]);
+        const [
+          badgesResult,
+          journalStatsResult,
+          flashcardSetsResult,
+        ] = await Promise.all([
+          badgesResponse.json(),
+          journalStatsResponse.json(),
+          flashcardSetsResponse.json(),
+        ]);
 
-      if (!badgesResponse.ok) {
-        throw new Error(
-          badgesResult.detail || "Unable to load badges.",
+        if (!badgesResponse.ok) {
+          throw new Error(
+            badgesResult.detail || "Unable to load badges.",
+          );
+        }
+
+        if (!journalStatsResponse.ok) {
+          throw new Error(
+            journalStatsResult.detail || "Unable to load journal stats.",
+          );
+        }
+
+        if (!flashcardSetsResponse.ok) {
+          throw new Error(
+            flashcardSetsResult.detail ||
+              "Unable to load flashcard sets.",
+          );
+        }
+
+        setBadges(badgesResult);
+        setJournalCount(
+          journalStatsResult.lifetime_journal_count,
         );
-      }
+        setFlashcardSetCount(flashcardSetsResult.length);
+      } catch (error) {
+        console.error("Profile data fetch failed:", error);
 
-      if (!journalsResponse.ok) {
-        throw new Error(
-          journalsResult.detail || "Unable to load journals.",
+        setBadgesError(
+          error.message || "Unable to load profile activity.",
         );
+      } finally {
+        setBadgesLoading(false);
       }
-
-      if (!flashcardSetsResponse.ok) {
-        throw new Error(
-          flashcardSetsResult.detail ||
-            "Unable to load flashcard sets.",
-        );
-      }
-
-      setBadges(badgesResult);
-      setJournalCount(journalsResult.length);
-      setFlashcardSetCount(flashcardSetsResult.length);
-    } catch (error) {
-      console.error("Profile data fetch failed:", error);
-
-      setBadgesError(
-        error.message || "Unable to load profile activity.",
-      );
-    } finally {
-      setBadgesLoading(false);
     }
-  }
 
-  fetchProfileData();
-}, []);
+    fetchProfileData();
+  }, []);
 
   const displayName =
     user?.email
