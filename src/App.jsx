@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
+import AmbientBackground from "./components/background/AmbientBackground";
 import DictionaryModal from "./components/DictionaryModal.jsx";
 import TopNav from "./components/NavBar.jsx";
 import HelpModal from "./components/HelpModal";
@@ -46,9 +47,8 @@ function App() {
   const loadingMessages = [
     "Checking for mistakes...",
     "Preparing corrected journal...",
-    "Almost finished...",
-    "Almost finished...",
-    "Taking longer than expected, please be patient...",
+    "Calculating accuracy score...",
+    "Generating suggestions...",
   ];
 
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
@@ -185,7 +185,7 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError("Something went wrong while analyzing your journal.");
+      setApiError(err.message || "Something went wrong while analyzing your journal.");
 
       // Return to the editor so the user can see the error
       setReviewMode(false);
@@ -307,6 +307,7 @@ function App() {
 
   return (
     <div className="App">
+      <AmbientBackground />
       {!isPublicPage && (
         <>
           <TopNav
@@ -375,7 +376,7 @@ function App() {
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/flashcards" element={<FlashcardReviewPage />} />
+          <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
           <Route
             path="/journal-entries"
             element={

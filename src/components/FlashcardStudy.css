@@ -120,7 +120,7 @@ input {
   display: flex;
   padding-top: 15px;
   flex-direction: column;
-  gap: 10px
+  gap: 10px;
 }
 
 .study-start-actions {

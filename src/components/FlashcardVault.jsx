@@ -3,43 +3,51 @@ import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
 import "./FlashcardVault.css";
 
-function FlashcardVault() {
+function FlashcardVault({nativeLanguage}) {
   const [flashcardSets, setFlashcardSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedSet, setSelectedSet] = useState(null);
   const [flippedCards, setFlippedCards] = useState({});
+  const [selectedCards, setSelectedCards] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [changingCard, setChangingCard] = useState(false);
+  const [exp_loading, setExpLoading] = useState(false);
+
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+
+  async function loadFlashcardSets() {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("User is not authenticated.");
+      }
+      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to load flashcard sets.");
+      }
+
+      const data = await response.json();
+      setFlashcardSets(data);
+    } catch (loadError) {
+      console.error(loadError);
+      setError("Your flashcard sets could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadFlashcardSets() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session) {
-          throw new Error("User is not authenticated.");
-        }
-        const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Unable to load flashcard sets.");
-        }
-
-        const data = await response.json();
-        setFlashcardSets(data);
-      } catch (loadError) {
-        console.error(loadError);
-        setError("Your flashcard sets could not be loaded.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     loadFlashcardSets();
   }, []);
 
@@ -123,14 +131,193 @@ function FlashcardVault() {
     });
   }
 
+  const currentNativeLanguage = nativeLanguage || "English";
+
+  function openSet(flashcardSet) {
+    setSelectedSet(flashcardSet);
+    setSelectedCards(shuffleCards(flashcardSet.flashcards || []));
+    setCurrentCardIndex(0);
+    setFlippedCards({});
+  }
+
+  function studyAllCards() {
+    const allCards = flashcardSets.flatMap(
+      (flashcardSet) => flashcardSet.flashcards || []
+    );
+
+    setSelectedSet({ name: "All Cards" });
+    setSelectedCards(shuffleCards(allCards));
+    setCurrentCardIndex(0);
+    setFlippedCards({});
+  }
+
+  function nextCard() {
+    setChangingCard(true);
+    setCurrentCardIndex((currentIndex) =>
+      Math.min(currentIndex + 1, selectedCards.length - 1)
+    );
+
+    setFlippedCards({});
+    requestAnimationFrame(() => {
+      setChangingCard(false);
+    });
+  }
+
+  function previousCard() {
+    setChangingCard(true);
+    setCurrentCardIndex((currentIndex) =>
+      Math.max(currentIndex - 1, 0)
+    );
+
+    setFlippedCards({});
+    requestAnimationFrame(() => {
+      setChangingCard(false);
+    });
+  }
+
+  function shuffleCards(cards) {
+    const shuffled = [...cards];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  }
+
+  async function explain(original, corrected, nativeLanguage, targetLanguage) {
+    if (targetLanguage == "Unknown") {
+      targetLanguage = "English"
+    }
+    const response = await fetch(`${API_BASE_URL}/explanation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        original: original,
+        corrected: corrected,
+        native_language: nativeLanguage,
+        target_language: targetLanguage,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("The explanation could not be generated.");
+    }
+
+    const data = await response.json();
+
+    if (!data.explanation) {
+      throw new Error("No explanation was returned.");
+    }
+
+    return {
+      explanation: data.explanation,
+      category: data.category
+    };
+  }
+
+  async function generateExplanation(currentCard) {
+
+    const [cor, exp] = currentCard.back.split("||");
+    if (exp) {
+      console.log("Explanation already exists: ", currentCard.back);
+      return;
+    }
+    setExpLoading(true);
+
+    try {
+      const response = await explain(
+        currentCard.front,
+        cor,
+        currentNativeLanguage,
+        currentCard.language,
+      );
+
+      const updatedCard = {
+        ...currentCard,
+        back: currentCard.back.split("||")[0] + "||" + response.explanation
+      };
+
+      setSelectedCards(prev =>
+        prev.map(card =>
+          card.front === updatedCard.front ? updatedCard : card
+        )
+      );
+
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error("User is not authenticated.");
+        }
+        const response = await fetch(`${API_BASE_URL}/flashcards/${currentCard.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            front: updatedCard.front,
+            back: updatedCard.back,
+            language: updatedCard.language,
+            mastered: updatedCard.mastered,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to update flashcard.");
+        }
+
+        const data = await response.json();
+
+      } catch (loadError) {
+        console.error(loadError);
+        setError("Unable to update flashcard.");
+      } finally {
+        setLoading(false);
+      }
+
+      setSelectedCards(prev =>
+        prev.map(card =>
+          card.front === updatedCard.front ? updatedCard : card
+        )
+      );
+
+    } finally {
+      setExpLoading(false);
+    }
+  }
+
+  async function handleBackToVault() {
+    setSelectedSet(null);
+    setSelectedCards([]);
+    setCurrentCardIndex(0);
+    await loadFlashcardSets();
+  }
+
   if (selectedSet) {
     console.log("Selected flashcard set:", selectedSet);
+    const currentCard = selectedCards[currentCardIndex];
+    const [correctedText, explanation] = currentCard.back.split("||");
+
+    if (!currentCard) {
+      return null;
+    }
+    const cardKey = currentCard.id ?? `${selectedSet.id}-${currentCardIndex}`;
+    const isFlipped = Boolean(flippedCards[cardKey]);
+
     return (
       <section className="flashcard-vault">
         <button
           type="button"
           className="edit-card-button"
-          onClick={() => setSelectedSet(null)}
+          onClick={() => {handleBackToVault();}
+          }
         >
           ← Back to Vault
         </button>
@@ -138,43 +325,75 @@ function FlashcardVault() {
         <h2>{selectedSet.name}</h2>
 
         <p>
-          {selectedSet.flashcards.length}{" "}
-          {selectedSet.flashcards.length === 1 ? "card" : "cards"}
+          Card {currentCardIndex + 1} of {selectedCards.length}
         </p>
 
-        <div className="vault-grid">
-          {selectedSet.flashcards.map((card, index) => {
-            const cardKey = card.id ?? `${selectedSet.id}-${index}`;
-            const isFlipped = Boolean(flippedCards[cardKey]);
 
-            return (
-              <button
-                key={cardKey}
-                type="button"
-                className="study-card-container"
-                onClick={() => handleFlipCard(cardKey)}
-                aria-label={
-                  isFlipped ? "Show front of flashcard" : "Show answer"
-                }
-              >
-                <div
-                  className={`study-card-inner ${
-                    isFlipped ? "is-flipped" : ""
-                  }`}
-                >
-                  <div className="study-card-face study-card-front">
-                    <h3>{renderUnderline(card.front)}</h3>
-                    <p className="study-card-hint">Click to reveal answer</p>
-                  </div>
+        <div className="vault-study-area">
+          <div
+            type="button"
+            className="study-card-container"
+            onClick={() => handleFlipCard(cardKey)}
+            aria-label={
+              isFlipped ? "Show front of flashcard" : "Show answer"
+            }
+          >
+            <div
+              className={`study-card-inner
+                ${isFlipped ? "is-flipped" : ""}
+                ${changingCard ? "no-animation" : ""}`}
+            >
+              <div className="study-card-face study-card-front">
+                <h3>{renderUnderline(currentCard.front)}</h3>
+                <p className="study-card-hint">
+                  Click to reveal answer
+                </p>
+              </div>
 
-                  <div className="study-card-face study-card-back">
-                    <h3>{card.back}</h3>
-                    <p className="study-card-hint">Click to see prompt</p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+              <div className="study-card-face study-card-back">
+                <h3>{renderUnderline(correctedText)}</h3>
+                {explanation ? (
+                  <p className='back-explanation'>
+                    {explanation}
+                  </p>
+                ) : (
+                  <button
+                  className="generate-explanation-button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    generateExplanation(currentCard);
+                  }}
+                  disabled={exp_loading}
+                  >
+                    {exp_loading ? "Please wait..." : "Generate Explanation"}
+                  </button>
+                )}
+                <p className="study-card-hint">Click to see prompt</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="study-navigation">
+            <button
+              type="button"
+              onClick={previousCard}
+              disabled={currentCardIndex === 0}
+            >
+              ← Previous
+            </button>
+
+            <span>
+              {currentCardIndex + 1} / {selectedCards.length}
+            </span>
+
+            <button
+              type="button"
+              onClick={nextCard}
+              disabled={currentCardIndex === selectedCards.length - 1}
+            >
+              Next →
+            </button>
+          </div>
         </div>
       </section>
     );
@@ -191,6 +410,13 @@ function FlashcardVault() {
             {flashcardSets.length} {flashcardSets.length === 1 ? "set" : "sets"}
           </p>
         </div>
+        <button
+          type="button"
+          className="study-all-button"
+          onClick={studyAllCards}
+        >
+          Study All Cards
+        </button>
       </header>
 
       {flashcardSets.length === 0 ? (
@@ -231,7 +457,7 @@ function FlashcardVault() {
                 <button
                   type="button"
                   className="edit-card-button"
-                  onClick={() => setSelectedSet(flashcardSet)}
+                  onClick={() => openSet(flashcardSet)}
                 >
                   Open Set
                 </button>

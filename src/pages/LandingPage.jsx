@@ -1,11 +1,41 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./LandingPage.css";
 
 function LandingPage() {
+  const [pointerPosition, setPointerPosition] = useState({
+    x: 50,
+    y: 42,
+  });
+
+  function handlePointerMove(event) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+
+    setPointerPosition({
+      x: ((event.clientX - bounds.left) / bounds.width) * 100,
+      y: ((event.clientY - bounds.top) / bounds.height) * 100,
+    });
+  }
+  function handlePointerLeave() {
+    setPointerPosition({
+      x: 50,
+      y: 42,
+    });
+  }
   return (
-    <main className="landing-page">
+    <main className="landing-page"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      >
       <section className="landing-content">
-        <div className="landing-ink" aria-hidden="true" />
+        <div
+          className="landing-ink"
+          aria-hidden="true"
+          style={{
+            "--pointer-x": `${pointerPosition.x}%`,
+            "--pointer-y": `${pointerPosition.y}%`,
+          }}
+        />
 
         <div className="landing-logo" aria-hidden="true">
           {/* ✒️ */} ✍️

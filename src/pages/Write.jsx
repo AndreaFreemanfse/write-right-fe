@@ -77,8 +77,8 @@ function Write({
       journal_entry_id: journalEntryId,
       flashcards: cardsToSave.map((card) => ({
         front: card.original_full ?? card.original,
-        back: card.corrected_text ?? card.corrected,
-        language: card.language ?? null,
+        back: `${card.corrected_full ?? card.corrected ?? ""}||${card.explanation ?? ""}`,
+        language: card.language ?? "Unknown",
       })),
     };
 
@@ -108,6 +108,7 @@ function Write({
 
       setSaveMessage(result.message || "Flashcards saved successfully.");
     } catch (saveError) {
+      console.log(flashcardSet)
       console.error(saveError);
 
       setSaveMessage(

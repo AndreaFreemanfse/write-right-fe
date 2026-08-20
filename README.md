@@ -53,6 +53,9 @@ The frontend will start in development mode.
 npm run test:e2e
 npm run lint
 npm run build
+npx vitest run --coverage
+    - okay to proceed (yes)
+    - jsdom (yes)
 ```
 ---
 

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./JournalEditor.css";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { Stack } from "@mui/material";
+import { specialCharacters } from "../utils/constants/specialCharacters";
 
 function JournalEditor({
   dictionaryOpen,
@@ -20,10 +21,41 @@ function JournalEditor({
 }) {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
+  const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
+
+  const textAreaRef = useRef(null);
+
+
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
     setLanguageDropdownOpen(false);
   };
+
+  function insertSpecialCharacter(character) {
+    const textarea = textAreaRef.current;
+
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    const newText =
+      text.slice(0, start) +
+      character +
+      text.slice(end);
+
+    setText(newText);
+
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + character.length,
+        start + character.length
+      );
+    });
+  }
+
+  const characters = specialCharacters[targetLanguage] ?? [];
 
   return (
     <div
@@ -77,6 +109,7 @@ function JournalEditor({
           <textarea
             className="journal-textarea"
             value={text}
+            ref={textAreaRef}
             onChange={(event) => setText(event.target.value)}
             placeholder="Write about your day..."
             disabled={loading}
@@ -93,6 +126,34 @@ function JournalEditor({
             </div>
           )}
         </div>
+        {characters.length > 0 && (
+          <button
+            type="button"
+            className="special-character-toggle"
+            onClick={() => setShowSpecialCharacters((current) => !current)}
+          >
+            {showSpecialCharacters
+              ? "Hide Special Characters"
+              : "View Special Characters"}
+          </button>          
+          )}
+          {showSpecialCharacters && characters.length > 0 && (
+              <div className="special-character-bar">
+                {characters.map((character) => (
+                  <button
+                    key={character}
+                    type="button"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      insertSpecialCharacter(character);
+                      console.log(character);
+                    }}
+                  >
+                    {character}
+                  </button>
+                ))}
+              </div>
+            )}
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>

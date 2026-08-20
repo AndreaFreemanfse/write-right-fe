@@ -1,9 +1,11 @@
 import FlashcardVault from "../components/FlashcardVault";
 
-function FlashcardReviewPage() {
+function FlashcardReviewPage({nativeLanguage}) {
   return (
     <>
-      <FlashcardVault />
+      <FlashcardVault
+        nativeLanguage={nativeLanguage}
+      />
     </>
   );
 }

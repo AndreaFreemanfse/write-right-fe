@@ -1,6 +1,13 @@
 // @ts-check
 import { test, expect } from "@playwright/test";
 
+test.use({
+  storageState: {
+    cookies: [],
+    origins: [],
+  },
+});
+
 test.describe("WriteRight landing page", () => {
   test("displays the landing page and authentication options", async ({
     page,
@@ -20,3 +27,4 @@ test.describe("WriteRight landing page", () => {
     ).toBeVisible();
   });
 });
+
