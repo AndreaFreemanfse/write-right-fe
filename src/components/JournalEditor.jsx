@@ -57,10 +57,9 @@ function JournalEditor({
 
   return (
     <div
-      className={`journal-editor ${
-        dictionaryOpen ? "journal-editor--dictionary-open" : ""
-      }`}
-    >
+      className={`journal-editor app-page app-page--editor
+      ${dictionaryOpen ? "journal-editor--dictionary-open" : ""}`}>
+        
       <Stack spacing={2}>
         <label className="journal-title-group">
           <input
@@ -158,7 +157,7 @@ function JournalEditor({
 
           <button
             type="button"
-            className="analyze-button"
+            className="app-button app-button--special analyze-button"
             onClick={onAnalyze}
             disabled={loading}
           >

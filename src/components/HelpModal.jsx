@@ -200,7 +200,7 @@ function HelpModal({ isOpen, onClose }) {
         <footer className="help-modal-footer">
           <button
             type="button"
-            className="help-modal-done"
+            className="app-button app-button--special help-modal-done"
             onClick={onClose}
           >
             Got it

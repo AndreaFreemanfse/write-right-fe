@@ -58,7 +58,7 @@ if (!studyStarted) {
 
         <button
           type="button"
-          className="flashcard-button study-primary-action"
+          className="app-button app-button--special flashcard-button study-primary-action"
           onClick={() => {
             if (!mistakes?.length && corrections?.length) {
               handleConquerAll();
@@ -75,7 +75,7 @@ if (!studyStarted) {
         <div className="study-secondary-actions">
           <button
             type="button"
-            className="study-save-button"
+            className="app-button app-button--special study-save-button"
             onClick={async () => {
               const cardsToSave =
                 mistakes?.length > 0 ? mistakes : corrections;
@@ -93,7 +93,7 @@ if (!studyStarted) {
 
           <button
             type="button"
-            className="study-delete-button"
+            className="app-button study-delete-button"
             onClick={() => setSetDismissed(true)}
           >
             🗑 Delete Set
@@ -334,11 +334,17 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
               autoComplete="off"
             />
             {feedback === "correct" ? (
-              <button type="button" onClick={handleKnewIt}>
+              <button 
+              type="button"
+              className="app-button app-button--special"
+              onClick={handleKnewIt}>
                 Next card
               </button>
             ) : (
-              <button type="submit" disabled={!attempt.trim()}>
+              <button 
+              type="submit"
+              className="app-button app-button--special"
+              disabled={!attempt.trim()}>
                 Check answer
               </button>
             )}
@@ -347,7 +353,10 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
               <div className="answer-feedback-incorrect-feedback">
                 <div className="reveal-button">
                   <strong>Not quite—try again.</strong>
-                  <button type="button" onClick={() => setShowAnswer(true)}>
+                 <button
+                  type="button"
+                  className="app-button"
+                  onClick={() => setShowAnswer(true)}>
                     Reveal answer
                   </button>
                 </div>
@@ -371,9 +380,17 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
             )}
 
             <div className="flashcard-actions">
-              <button onClick={handleKnewIt}>Mark mastered</button>
+            <button
+              className="app-button app-button--special"
+              onClick={handleKnewIt}>
+                Mark mastered
+                </button>
 
-              <button onClick={handlePracticeAgain}>Practice again</button>
+                <button
+                  className="app-button"
+                  onClick={handlePracticeAgain}>
+                  Practice again
+                </button>
             </div>
           </div>
         )}

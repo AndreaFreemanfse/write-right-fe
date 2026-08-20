@@ -412,7 +412,7 @@ function FlashcardVault({nativeLanguage}) {
         </div>
         <button
           type="button"
-          className="study-all-button"
+          className="app-button app-button--special study-all-button"
           onClick={studyAllCards}
         >
           Study All Cards

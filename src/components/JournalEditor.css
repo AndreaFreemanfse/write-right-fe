@@ -1,25 +1,19 @@
 :root {
-    --dictionary-width: 520px;
+  --dictionary-width: 520px;
 }
 
 .journal-editor {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 80px 30px 30px;
-    padding-top: 1.5rem;
-    box-sizing: border-box;
-
-    transition:
+  transition:
     margin-right 450ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: margin-right, transform;
-    
+
+  will-change: margin-right, transform;
 }
 
 .journal-editor--dictionary-open {
-    margin-right: var(--dictionary-width);
-    transform: translateX(-20px);
-    padding-left: 50px;
+  margin-right: var(--dictionary-width);
+  transform: translateX(-20px);
+  padding-left: 50px;
 }
 
 .journal-editor h1 {
@@ -93,44 +87,8 @@
 }
 
 
-.analyze-button {
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding: 12px 22px;
-
-    transition: .2s;
-
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: .2s;
-
-}
-
-
-.analyze-button:hover:not(:disabled) {
-
-  box-shadow: 0 10px 24px rgba(99,102,241,.35);
-
-}
-
-
 .analyze-button:disabled {
-
-    background: #9ca3af;
-
-    cursor: not-allowed;
-
+  background: #9ca3af;
 }
 
 

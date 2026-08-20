@@ -8,7 +8,7 @@ function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
 
   return (
     <select
-      className="language-select"
+      className="app-dropdown language-select"
       id="language-selection"
       name="languages"
       value={value}

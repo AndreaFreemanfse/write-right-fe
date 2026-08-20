@@ -46,7 +46,7 @@ function SignInPage() {
             onChange={(event) => setPassword(event.target.value)}
           />
 
-          <button className="auth-button" type="submit">
+          <button className="app-button app-button--special auth-button" type="submit">
             Sign In
           </button>
         </form>
