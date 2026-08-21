@@ -20,21 +20,48 @@
 }
 
 
-.back-button {
-    border: none;
-    background: #f1f1f1;
-
-    padding: 10px 16px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    transition: background 0.2s ease;
+.review-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
+.review-button {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Edit Entry */
+.review-button--edit {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+}
+
+.review-button--edit:hover {
+    background: #e5e7eb;
+    color: #6d28d9;
+}
+
+/* New Entry */
+.review-button--new {
+    background: #16a34a;
+    color: white;
+}
+
+.review-button--new:hover {
+    background: #15803d;
+    transform: translateY(-1px);
+}
+
+.review-button:active {
+    transform: translateY(0);
+}
 
 .back-button:hover {
     background: #ddd;

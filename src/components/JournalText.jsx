@@ -2,7 +2,17 @@ import { useState } from "react";
 import Correction from "./Correction";
 import "./JournalText.css";
 
-function JournalText({ text, corrections, onBack, onNewEntry, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake, editingEntry }) {
+function JournalText({
+  text,
+  corrections,
+  onBack,
+  onNewEntry,
+  onCreateFlashcard,
+  targetLanguage,
+  nativeLanguage,
+  onUpdateMistake,
+  editingEntry,
+}) {
   // State to track the currently selected correction for tooltip display
   const [selectedCorrection, setSelectedCorrection] = useState(null);
 
@@ -88,13 +98,21 @@ function JournalText({ text, corrections, onBack, onNewEntry, onCreateFlashcard,
       <div className="review-header">
         <h2>Your Journal Review</h2>
 
-        <button onClick={() => onBack(editingEntry)} className="back-button">
-          ← Edit Entry
-        </button>
+        <div className="review-actions">
+          <button
+            onClick={() => onBack(editingEntry)}
+            className="review-button review-button--edit"
+          >
+            ← Edit Entry
+          </button>
 
-        <button onClick={onNewEntry} className="back-button">
-          ← New Entry
-        </button>
+          <button
+            onClick={onNewEntry}
+            className="review-button review-button--new"
+          >
+            + New Entry
+          </button>
+        </div>
       </div>
 
       <div className="journal-content">{renderTextWithCorrections()}</div>
