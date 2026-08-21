@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { signOut } from "../services/auth";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -27,6 +27,9 @@ function DropDownMenu({
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isWritePage = location.pathname === "/write";
 
   // sign out user
   async function handleSignOut() {
@@ -136,6 +139,7 @@ function DropDownMenu({
         <MenuItem
           className="drop-down-menu-item"
           key="dictionary"
+          disabled={!isWritePage}
           onClick={openDictionary}
           sx={{
             color: "#555555",
