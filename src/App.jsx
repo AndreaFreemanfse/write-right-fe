@@ -43,6 +43,41 @@ function App() {
   // Loading state
   const [loading, setLoading] = useState(false);
 
+  // API error state to handle errors from the backend
+  const [apiError, setApiError] = useState(null);
+
+  // Win condition celebration
+  const [achievement, setAchievement] = useState(null);
+
+  // Dictionary modal state
+  const [dictionaryOpen, setDictionaryOpen] = useState(false);
+
+  // Help modal state
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  // Sets the journal review in journal entries
+  const [journalEntryOpen, setJournalEntryOpen] = useState(false);
+  
+  const [journalEntryData, setJournalEntryData] = useState({});
+
+  // Set the content to be edited if a user selects edit journal
+  const [editingEntry, setEditingEntry] = useState(null);
+
+  // Sets the users native language
+  const [nativeLanguage, setNativeLanguage] = useState("English");
+
+  // Sets the user's target language
+  const [targetLanguage, setTargetLanguage] = useState("");
+
+  // Journal title
+  const [journalTitle, setJournalTitle] = useState("Untitled Journal");
+
+  // Journal ID state
+  const [journalEntryId, setJournalEntryId] = useState(null);
+
+  // Accuracy state
+  const [accuracy, setAccuracy] = useState(null);
+
   // Loading messages
   const loadingMessages = [
     "Checking for mistakes...",
@@ -76,39 +111,22 @@ function App() {
     return () => clearInterval(interval);
   }, [loading]);
 
-  // API error state to handle errors from the backend
-  const [apiError, setApiError] = useState(null);
+  // reset journal to a clear state if user navigates away
+  useEffect(() => {
+    if (location.pathname === "/write") {
+      return;
+    }
 
-  // Win condition celebration
-  const [achievement, setAchievement] = useState(null);
-
-  // Dictionary modal state
-  const [dictionaryOpen, setDictionaryOpen] = useState(false);
-
-  // Help modal state
-  const [helpOpen, setHelpOpen] = useState(false);
-
-  // Sets the journal review in journal entries
-  const [journalEntryOpen, setJournalEntryOpen] = useState(false);
-  const [journalEntryData, setJournalEntryData] = useState({});
-
-  // Set the content to be edited if a user selects edit journal
-  const [editingEntry, setEditingEntry] = useState(null);
-
-  // Sets the users native language
-  const [nativeLanguage, setNativeLanguage] = useState("English");
-
-  // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("");
-
-  // Journal title
-  const [journalTitle, setJournalTitle] = useState("Untitled Journal");
-
-  // Journal ID state
-  const [journalEntryId, setJournalEntryId] = useState(null);
-
-  // Accuracy state
-  const [accuracy, setAccuracy] = useState(null);
+    setJournalEntryId(null);
+    setTargetLanguage("");
+    setReviewMode(false);
+    setApiError(null);
+    setCorrections([]);
+    setAccuracy(null);
+    setEditingEntry(null);
+    setJournalText("");
+    setJournalTitle("Untitled Journal");
+  }, [location.pathname]);
 
   // --------------------------------------------------------------
   // Helper functions
@@ -155,12 +173,6 @@ function App() {
         targetLanguage,
       );
 
-      console.log("Backend response:", response);
-      console.log("Mistakes:", response.mistakes);
-      console.log("First mistake:", response.mistakes?.[0]);
-      console.log("Accuracy:", response.accuracy);
-      console.log("Response keys:", Object.keys(response));
-
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
       const savedJournalEntryId = response.journal_entry_id ?? null;
@@ -205,14 +217,12 @@ function App() {
 
   const handleEditJournal = (entry) => {
     const confirmed = window.confirm(
-      "Editing this journal will remove its current corrections and flashcards. Do you want to continue?",
+      "Editing this journal will remove its current corrections. Your flashcards will be kept. Do you want to continue?",
     );
 
     if (!confirmed) {
       return;
     }
-
-    console.log("ENTRY BEING EDITED:", entry);
 
     // Clear previous state
     setApiError(null);
@@ -265,9 +275,6 @@ function App() {
         native_language: nativeLanguage,
         target_language: targetLanguage,
       });
-
-      console.log("Updated journal entry:", response);
-      console.log("Updated mistakes:", response.mistakes);
 
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
