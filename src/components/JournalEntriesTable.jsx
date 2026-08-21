@@ -4,7 +4,7 @@ import JournalStats from "../components/JournalStats.jsx";
 import Stack from "@mui/material/Stack";
 import "./JournalEntriesTable.css";
 
-function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
+function JournalEntriesTable({ setActiveModal, setJournalEntryData }) {
   const [entries, setEntries] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,7 +104,7 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
                     alignItems: "center",
                   }}
                   onClick={() => {
-                    setJournalEntryOpen(true);
+                    setActiveModal("journalEntries");
                     setJournalEntryData(entry);
                   }}
                 >

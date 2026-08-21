@@ -13,6 +13,7 @@ function Navbar({
   setJournalText,
   onOpenDictionary,
   onOpenHelp,
+  onOpenSettings,
   setCorrections,
   setReviewMode,
   nativeLanguage,
@@ -53,6 +54,7 @@ function Navbar({
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={onOpenDictionary}
         onOpenHelp={onOpenHelp}
+        onOpenSettings={onOpenSettings}
         setJournalText={setJournalText}
         setJournalTitle={setJournalTitle}
         setTargetLanguage={setTargetLanguage}

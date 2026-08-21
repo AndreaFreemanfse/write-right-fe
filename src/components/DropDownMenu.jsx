@@ -5,13 +5,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./DropDownMenu.css";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
 function DropDownMenu({
@@ -21,6 +15,7 @@ function DropDownMenu({
   setJournalTitle,
   onOpenDictionary,
   onOpenHelp,
+  onOpenSettings,
   setCorrections,
   setReviewMode,
   nativeLanguage,
@@ -29,11 +24,8 @@ function DropDownMenu({
   const buttonId = `${id}-button`;
   const menuId = `${id}-menu`;
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [settingsOpen, setSettingsOpen] = React.useState(false);
-  const [message, setMessage] = React.useState("");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-
 
   // sign out user
   async function handleSignOut() {
@@ -53,7 +45,6 @@ function DropDownMenu({
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Sign out failed:", error);
-      setMessage(error.message);
     }
   }
 
@@ -77,14 +68,6 @@ function DropDownMenu({
   }, []);
 
   // manage the settings dialog
-  function openSettings() {
-    setSettingsOpen(true);
-    handleClose();
-  }
-
-  function closeSettings() {
-    setSettingsOpen(false);
-  }
 
   function openDictionary() {
     onOpenDictionary();
@@ -165,7 +148,10 @@ function DropDownMenu({
         <MenuItem
           className="drop-down-menu-item"
           key="settings"
-          onClick={(event) => openSettings(event)}
+          onClick={() => {
+            onOpenSettings();
+            handleClose();
+          }}
           sx={{
             color: "#555555",
             "&:hover": {
@@ -210,28 +196,6 @@ function DropDownMenu({
           Sign Out
         </MenuItem>
       </Menu>
-
-      {/* Settings dialog */}
-      <Dialog
-        open={settingsOpen}
-        onClose={closeSettings}
-        slotProps={{
-          sx: {
-            backdropFilter: "blur(8px)",
-            backgroundColor: "rgba(0,0,0,0.25)",
-          },
-        }}
-      >
-        <DialogTitle>Settings</DialogTitle>
-
-        <DialogContent>
-          <LanguageSelectionDropdown
-            value={nativeLanguage}
-            onChange={setNativeLanguage}
-            displayText={"Native Language"}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

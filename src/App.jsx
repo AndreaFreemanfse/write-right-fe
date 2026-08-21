@@ -5,8 +5,9 @@ import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import AmbientBackground from "./components/background/AmbientBackground";
 import DictionaryModal from "./components/DictionaryModal.jsx";
-import TopNav from "./components/NavBar.jsx";
+import SettingsModal from "./components/SettingsModal.jsx";
 import HelpModal from "./components/HelpModal";
+import TopNav from "./components/NavBar.jsx";
 import JournalReview from "./components/JournalReview.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -56,6 +57,11 @@ function App() {
 
   const isPublicPage = publicPaths.includes(location.pathname);
 
+  // Close modals on page change
+  useEffect(() => {
+    setActiveModal(null);
+  }, [location.pathname]);
+
   useEffect(() => {
     if (!loading) return;
 
@@ -79,14 +85,9 @@ function App() {
   // Win condition celebration
   const [achievement, setAchievement] = useState(null);
 
-  // Dictionary modal state
-  const [dictionaryOpen, setDictionaryOpen] = useState(false);
+  // Global modal state
+  const [activeModal, setActiveModal] = useState(null);
 
-  // Help modal state
-  const [helpOpen, setHelpOpen] = useState(false);
-
-  // Sets the journal review in journal entries
-  const [journalEntryOpen, setJournalEntryOpen] = useState(false);
   const [journalEntryData, setJournalEntryData] = useState({});
 
   // Sets the users native language
@@ -172,7 +173,9 @@ function App() {
     } catch (err) {
       console.error(err);
 
-      setApiError(err.message || "Something went wrong while analyzing your journal.");
+      setApiError(
+        err.message || "Something went wrong while analyzing your journal.",
+      );
 
       // Return to the editor so the user can see the error
       setReviewMode(false);
@@ -206,8 +209,9 @@ function App() {
           <TopNav
             nativeLanguage={nativeLanguage}
             setNativeLanguage={setNativeLanguage}
-            onOpenDictionary={() => setDictionaryOpen(true)}
-            onOpenHelp={() => setHelpOpen(true)}
+            onOpenDictionary={() => setActiveModal("dictionary")}
+            onOpenSettings={() => setActiveModal("settings")}
+            onOpenHelp={() => setActiveModal("help")}
             setJournalText={setJournalText}
             setJournalTitle={setJournalTitle}
             setTargetLanguage={setTargetLanguage}
@@ -216,16 +220,25 @@ function App() {
           />
           <AchievementOverlay achievement={achievement} />
           <DictionaryModal
-            isOpen={dictionaryOpen}
-            onClose={() => setDictionaryOpen(false)}
+            isOpen={activeModal === "dictionary"}
+            onClose={() => setActiveModal(null)}
             nativeLanguage={nativeLanguage}
             targetLanguage={targetLanguage}
           />
-          <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+          <HelpModal
+            isOpen={activeModal === "help"}
+            onClose={() => setActiveModal(null)}
+          />
+          <SettingsModal
+            isOpen={activeModal === "settings"}
+            onClose={() => setActiveModal(null)}
+            nativeLanguage={nativeLanguage}
+            setNativeLanguage={setNativeLanguage}
+          />
           <JournalReview
-            isOpen={journalEntryOpen}
+            isOpen={activeModal === "journalEntries"}
             journalEntryData={journalEntryData}
-            onClose={() => setJournalEntryOpen(false)}
+            onClose={() => setActiveModal(null)}
           />
         </>
       )}
@@ -244,7 +257,7 @@ function App() {
             path="/write"
             element={
               <Write
-                dictionaryOpen={dictionaryOpen}
+                dictionaryOpen={activeModal === "dictionary"}
                 text={journalText}
                 setText={setJournalText}
                 onAnalyze={analyzeJournal}
@@ -266,12 +279,15 @@ function App() {
             }
           />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/flashcards" element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />} />
+          <Route
+            path="/flashcards"
+            element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />}
+          />
           <Route
             path="/journal-entries"
             element={
               <JournalEntriesPage
-                setJournalEntryOpen={setJournalEntryOpen}
+                setActiveModal={setActiveModal}
                 setJournalEntryData={setJournalEntryData}
               />
             }
