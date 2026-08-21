@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { getJournalEntries, deleteJournalEntry } from "../services/api.js";
 import JournalStats from "../components/JournalStats.jsx";
 import Stack from "@mui/material/Stack";
+import FilterListIcon from '@mui/icons-material/FilterList';
 import "./JournalEntriesTable.css";
 
 function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
   const [entries, setEntries] = useState([]);
   const [search, setSearch] = useState("");
+  const [languageFilter, setLanguageFilter] = useState([]);
+  const [dateSort, setDateSort] = useState("newest");
+  const [filterOpen, setFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const entriesPerPage = 6;
@@ -23,6 +27,17 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
 
     loadEntries();
   }, []);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (filterOpen && !e.target.closest(".journal-filter-dropdown")) {
+        setFilterOpen(false);
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [filterOpen]);
 
   // Delete selected journal entry
   const handleDelete = async (entry) => {
@@ -46,10 +61,22 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
     }
   };
 
-  // Search filter
-  const filteredEntries = entries.filter((entry) =>
-    entry.title.toLowerCase().includes(search.toLowerCase()),
-  );
+  // Get unique languages from entries
+  const languages = [...new Set(entries.map((e) => e.target_language).filter(Boolean))];
+
+  // Filter and sort entries
+  let filteredEntries = entries.filter((entry) => {
+    const matchesSearch = entry.title.toLowerCase().includes(search.toLowerCase());
+    const matchesLanguage = languageFilter.length === 0 || languageFilter.includes(entry.target_language);
+    return matchesSearch && matchesLanguage;
+  });
+
+  // Sort by date
+  filteredEntries.sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+    return dateSort === "newest" ? dateB - dateA : dateA - dateB;
+  });
 
   // Pagination
   const totalPages = Math.ceil(filteredEntries.length / entriesPerPage);
@@ -66,20 +93,109 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
       <header className="journal-header">
         <h1>My Journal Entries</h1>
 
-        {/* <button>+ New Entry</button> */}
-        <input
-          className="journal-search"
-          type="text"
-          placeholder="Search journal entries..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-        />
+        <div className="journal-search-row">
+          <input
+            className="journal-search"
+            type="text"
+            placeholder="Search journal entries..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+
+          <div className="journal-filter-dropdown">
+            <button
+              className="journal-filter-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setFilterOpen(!filterOpen);
+              }}
+            >
+              <FilterListIcon/>
+            </button>
+            {filterOpen && (
+            <div className="journal-filter-menu">
+              <div className="journal-filter-section">
+                <label>Language</label>
+                <div className="journal-language-checkboxes">
+                  {languages.map((lang) => (
+                    <label key={lang} className="journal-language-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={languageFilter.includes(lang)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            if (languageFilter.length < 10) {
+                              setLanguageFilter([...languageFilter, lang]);
+                            }
+                          } else {
+                            setLanguageFilter(languageFilter.filter((l) => l !== lang));
+                          }
+                          setCurrentPage(1);
+                        }}
+                      />
+                      {lang}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="journal-filter-section">
+                <label>Date</label>
+                <select
+                  value={dateSort}
+                  onChange={(e) => setDateSort(e.target.value)}
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+        </div>
       </header>
 
       <JournalStats entries={entries} />
+
+      {(languageFilter.length > 0 || dateSort !== "newest") && (
+        <div className="journal-active-filters">
+          {languageFilter.map((lang) => (
+            <span key={lang} className="vault-language">
+              {lang}
+              <button
+                className="filter-badge-remove"
+                onClick={() => setLanguageFilter(languageFilter.filter((l) => l !== lang))}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          {dateSort !== "newest" && (
+            <span className="journal-date-badge">
+              {dateSort === "oldest" ? "Oldest First" : "Newest First"}
+              <button
+                className="filter-badge-remove"
+                onClick={() => setDateSort("newest")}
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {(languageFilter.length > 1 || (languageFilter.length > 0 && dateSort !== "newest")) && (
+            <button
+              className="journal-clear-filters"
+              onClick={() => {
+                setLanguageFilter([]);
+                setDateSort("newest");
+              }}
+            >
+              Clear all
+            </button>
+          )}
+        </div>
+      )}
 
       <table className="journal-table">
         <thead className="journal-table-header">
