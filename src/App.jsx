@@ -74,7 +74,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [loading, loadingMessages, loadingMessages.length]);
+  }, [loading]);
 
   // API error state to handle errors from the backend
   const [apiError, setApiError] = useState(null);
@@ -254,8 +254,9 @@ function App() {
 
     try {
       setLoading(true);
+      setReviewMode(true);
       setApiError(null);
-      setLoadingMessage("Checking for mistakes...");
+      setLoadingMessage("Saving your journal...");
 
       // Update and re-analyze the existing journal entry
       const response = await updateJournalEntry(editingEntry.id, {

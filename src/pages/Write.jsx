@@ -142,6 +142,8 @@ function Write({
         <AnalysisLoading
           targetLanguage={targetLanguage}
           loadingMessage={loadingMessage}
+          isEditing={!!editingEntry}
+
         />
       ) : (
         <>
