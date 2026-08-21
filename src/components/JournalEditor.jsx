@@ -157,9 +157,6 @@ function JournalEditor({
             type="button"
             className="analyze-button"
             onClick={() => {
-              console.log("BUTTON CLICKED");
-              console.log("editingEntry:", editingEntry);
-
               if (editingEntry) {
                 handleSaveEdit();
               } else {

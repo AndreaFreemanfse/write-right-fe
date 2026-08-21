@@ -29,7 +29,7 @@ function Write({
   setTargetLanguage,
   onUpdateMistake,
   handleSaveEdit,
-  editingEntry
+  editingEntry,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -104,12 +104,11 @@ function Write({
 
       if (!response.ok) {
         throw new Error(result.detail || "Unable to save flashcard set.");
-        return true;
       }
 
       setSaveMessage(result.message || "Flashcards saved successfully.");
+      return true;
     } catch (saveError) {
-      console.log(flashcardSet)
       console.error(saveError);
 
       setSaveMessage(

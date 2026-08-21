@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Correction from "./Correction";
-import CorrectionTooltip from "./CorrectionTooltip";
 import "./JournalText.css";
 
 function JournalText({ text, corrections, onBack, onNewEntry, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake, editingEntry }) {
