@@ -217,6 +217,7 @@ function App() {
             setTargetLanguage={setTargetLanguage}
             setCorrections={setCorrections}
             setReviewMode={setReviewMode}
+            setActiveModal={setActiveModal}
           />
           <AchievementOverlay achievement={achievement} />
           <DictionaryModal

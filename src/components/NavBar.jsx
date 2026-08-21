@@ -17,6 +17,7 @@ function Navbar({
   setCorrections,
   setReviewMode,
   nativeLanguage,
+  setActiveModal
 }) {
   return (
     <div className="navbar">
@@ -61,6 +62,7 @@ function Navbar({
         setCorrections={setCorrections}
         setReviewMode={setReviewMode}
         nativeLanguage={nativeLanguage}
+        setActiveModal={setActiveModal}
       />
     </div>
   );

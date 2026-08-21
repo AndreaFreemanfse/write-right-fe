@@ -13,6 +13,7 @@ function DropDownMenu({
   setTargetLanguage,
   setJournalText,
   setJournalTitle,
+  setActiveModal,
   onOpenDictionary,
   onOpenHelp,
   onOpenSettings,
@@ -50,6 +51,7 @@ function DropDownMenu({
 
   // manage opening and closing menu
   const handleClick = (event) => {
+    setActiveModal(null);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -70,13 +72,13 @@ function DropDownMenu({
   // manage the settings dialog
 
   function openDictionary() {
-    onOpenDictionary();
     handleClose();
+    onOpenDictionary();
   }
 
   function openProfile() {
-    navigate("/profile");
     handleClose();
+    navigate("/profile");
   }
 
   return (
@@ -149,8 +151,8 @@ function DropDownMenu({
           className="drop-down-menu-item"
           key="settings"
           onClick={() => {
-            onOpenSettings();
             handleClose();
+            onOpenSettings();
           }}
           sx={{
             color: "#555555",
@@ -166,8 +168,8 @@ function DropDownMenu({
           className="drop-down-menu-item"
           key="help"
           onClick={() => {
-            onOpenHelp();
             handleClose();
+            onOpenHelp();
           }}
           sx={{
             color: "#555555",
