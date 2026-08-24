@@ -1,57 +1,60 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { API_BASE_URL } from "../config/api";
+import { fetchFlashcardSets, deleteFlashcardSet, updateFlashcard } from "../services/api";
 import "./FlashcardVault.css";
 
-function FlashcardVault({nativeLanguage}) {
-  const [flashcardSets, setFlashcardSets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+// Helper functions outside component
+function shuffleCards(cards) {
+  const shuffled = [...cards];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function renderUnderline(text) {
+  return text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <u key={index}>{part.slice(2, -2)}</u>;
+    }
+    return part;
+  });
+}
+
+function FlashcardVault({ nativeLanguage }) {
   const [selectedSet, setSelectedSet] = useState(null);
   const [flippedCards, setFlippedCards] = useState({});
   const [selectedCards, setSelectedCards] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [changingCard, setChangingCard] = useState(false);
   const [exp_loading, setExpLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const currentNativeLanguage = nativeLanguage || "English";
 
+  // Use React Query for flashcard sets
+  const { data: flashcardSets = [], isLoading, error } = useQuery({
+    queryKey: ["flashcard-sets"],
+    queryFn: fetchFlashcardSets,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  async function loadFlashcardSets() {
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error("User is not authenticated.");
-      }
-      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+  // Mutation for deleting a set
+  const deleteMutation = useMutation({
+    mutationFn: deleteFlashcardSet,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["flashcard-sets"] });
+    },
+  });
 
-      if (!response.ok) {
-        throw new Error("Unable to load flashcard sets.");
-      }
+  // Mutation for updating a flashcard with explanation
+  const updateMutation = useMutation({
+    mutationFn: ({ flashcardId, updates }) => updateFlashcard(flashcardId, updates),
+  });
 
-      const data = await response.json();
-      setFlashcardSets(data);
-    } catch (loadError) {
-      console.error(loadError);
-      setError("Your flashcard sets could not be loaded.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    loadFlashcardSets();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="flashcard-vault">
         <div className="vault-message">
@@ -66,7 +69,7 @@ function FlashcardVault({nativeLanguage}) {
       <section className="flashcard-vault">
         <div className="vault-message vault-error">
           <h2>Something went wrong</h2>
-          <p>{error}</p>
+          <p>{error.message}</p>
         </div>
       </section>
     );
@@ -79,7 +82,7 @@ function FlashcardVault({nativeLanguage}) {
     }));
   }
 
-  async function handleDeleteSet(flashcardSetId) {
+  function handleDeleteSet(flashcardSetId) {
     const shouldDelete = window.confirm(
       "Delete this flashcard set and all of its cards?",
     );
@@ -88,50 +91,8 @@ function FlashcardVault({nativeLanguage}) {
       return;
     }
 
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        throw new Error("User is not authenticated.");
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/flashcard-sets/${flashcardSetId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Unable to delete flashcard set.");
-      }
-
-      setFlashcardSets((currentSets) =>
-        currentSets.filter(
-          (flashcardSet) => flashcardSet.id !== flashcardSetId,
-        ),
-      );
-    } catch (deleteError) {
-      console.error(deleteError);
-      setError("The flashcard set could not be deleted.");
-    }
+    deleteMutation.mutate(flashcardSetId);
   }
-
-  function renderUnderline(text) {
-    return text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return <u key={index}>{part.slice(2, -2)}</u>;
-      }
-      return part;
-    });
-  }
-
-  const currentNativeLanguage = nativeLanguage || "English";
 
   function openSet(flashcardSet) {
     setSelectedSet(flashcardSet);
@@ -175,53 +136,7 @@ function FlashcardVault({nativeLanguage}) {
     });
   }
 
-  function shuffleCards(cards) {
-    const shuffled = [...cards];
-
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-
-    return shuffled;
-  }
-
-  async function explain(original, corrected, nativeLanguage, targetLanguage) {
-    if (targetLanguage == "Unknown") {
-      targetLanguage = "English"
-    }
-    const response = await fetch(`${API_BASE_URL}/explanation`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        original: original,
-        corrected: corrected,
-        native_language: nativeLanguage,
-        target_language: targetLanguage,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("The explanation could not be generated.");
-    }
-
-    const data = await response.json();
-
-    if (!data.explanation) {
-      throw new Error("No explanation was returned.");
-    }
-
-    return {
-      explanation: data.explanation,
-      category: data.category
-    };
-  }
-
   async function generateExplanation(currentCard) {
-
     const [cor, exp] = currentCard.back.split("||");
     if (exp) {
       console.log("Explanation already exists: ", currentCard.back);
@@ -230,64 +145,52 @@ function FlashcardVault({nativeLanguage}) {
     setExpLoading(true);
 
     try {
-      const response = await explain(
-        currentCard.front,
-        cor,
-        currentNativeLanguage,
-        currentCard.language,
-      );
+      const response = await fetch(`${API_BASE_URL}/explanation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          original: currentCard.front,
+          corrected: cor,
+          native_language: currentNativeLanguage,
+          target_language: currentCard.language,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("The explanation could not be generated.");
+      }
+
+      const data = await response.json();
+
+      if (!data.explanation) {
+        throw new Error("No explanation was returned.");
+      }
 
       const updatedCard = {
         ...currentCard,
-        back: currentCard.back.split("||")[0] + "||" + response.explanation
+        back: currentCard.back.split("||")[0] + "||" + data.explanation,
       };
 
-      setSelectedCards(prev =>
-        prev.map(card =>
+      setSelectedCards((prev) =>
+        prev.map((card) =>
           card.front === updatedCard.front ? updatedCard : card
         )
       );
 
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session) {
-          throw new Error("User is not authenticated.");
-        }
-        const response = await fetch(`${API_BASE_URL}/flashcards/${currentCard.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            front: updatedCard.front,
-            back: updatedCard.back,
-            language: updatedCard.language,
-            mastered: updatedCard.mastered,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Unable to update flashcard.");
-        }
-
-        const data = await response.json();
-
-      } catch (loadError) {
-        console.error(loadError);
-        setError("Unable to update flashcard.");
-      } finally {
-        setLoading(false);
-      }
-
-      setSelectedCards(prev =>
-        prev.map(card =>
-          card.front === updatedCard.front ? updatedCard : card
-        )
-      );
-
+      // Update on server
+      updateMutation.mutate({
+        flashcardId: currentCard.id,
+        updates: {
+          front: updatedCard.front,
+          back: updatedCard.back,
+          language: updatedCard.language,
+          mastered: updatedCard.mastered,
+        },
+      });
+    } catch (error) {
+      console.error("Explanation generation failed:", error);
     } finally {
       setExpLoading(false);
     }
@@ -297,7 +200,8 @@ function FlashcardVault({nativeLanguage}) {
     setSelectedSet(null);
     setSelectedCards([]);
     setCurrentCardIndex(0);
-    await loadFlashcardSets();
+    // Refetch to get latest data
+    queryClient.invalidateQueries({ queryKey: ["flashcard-sets"] });
   }
 
   if (selectedSet) {
@@ -316,8 +220,9 @@ function FlashcardVault({nativeLanguage}) {
         <button
           type="button"
           className="edit-card-button"
-          onClick={() => {handleBackToVault();}
-          }
+          onClick={() => {
+            handleBackToVault();
+          }}
         >
           ← Back to Vault
         </button>
@@ -328,42 +233,35 @@ function FlashcardVault({nativeLanguage}) {
           Card {currentCardIndex + 1} of {selectedCards.length}
         </p>
 
-
         <div className="vault-study-area">
           <div
             type="button"
             className="study-card-container"
             onClick={() => handleFlipCard(cardKey)}
-            aria-label={
-              isFlipped ? "Show front of flashcard" : "Show answer"
-            }
+            aria-label={isFlipped ? "Show front of flashcard" : "Show answer"}
           >
             <div
-              className={`study-card-inner
-                ${isFlipped ? "is-flipped" : ""}
-                ${changingCard ? "no-animation" : ""}`}
+              className={`study-card-inner ${
+                isFlipped ? "is-flipped" : ""
+              } ${changingCard ? "no-animation" : ""}`}
             >
               <div className="study-card-face study-card-front">
                 <h3>{renderUnderline(currentCard.front)}</h3>
-                <p className="study-card-hint">
-                  Click to reveal answer
-                </p>
+                <p className="study-card-hint">Click to reveal answer</p>
               </div>
 
               <div className="study-card-face study-card-back">
                 <h3>{renderUnderline(correctedText)}</h3>
                 {explanation ? (
-                  <p className='back-explanation'>
-                    {explanation}
-                  </p>
+                  <p className="back-explanation">{explanation}</p>
                 ) : (
                   <button
-                  className="generate-explanation-button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    generateExplanation(currentCard);
-                  }}
-                  disabled={exp_loading}
+                    className="generate-explanation-button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      generateExplanation(currentCard);
+                    }}
+                    disabled={exp_loading}
                   >
                     {exp_loading ? "Please wait..." : "Generate Explanation"}
                   </button>
@@ -407,7 +305,8 @@ function FlashcardVault({nativeLanguage}) {
           <h2>Flashcard Vault</h2>
 
           <p className="vault-count">
-            {flashcardSets.length} {flashcardSets.length === 1 ? "set" : "sets"}
+            {flashcardSets.length}{" "}
+            {flashcardSets.length === 1 ? "set" : "sets"}
           </p>
         </div>
         <button

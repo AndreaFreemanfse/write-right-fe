@@ -1,97 +1,35 @@
-import { useEffect, useState } from "react";
-
 import { useAuth } from "../context/AuthContext";
-import { supabase } from "../lib/supabase";
-import { API_BASE_URL } from "../config/api";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBadges, fetchJournalStats, fetchFlashcardSets } from "../services/api";
 
 import "./ProfilePage.css";
 
 function ProfilePage() {
   const { user } = useAuth();
 
-  const [badges, setBadges] = useState([]);
-  const [badgesLoading, setBadgesLoading] = useState(true);
-  const [badgesError, setBadgesError] = useState("");
-  const [journalCount, setJournalCount] = useState(0);
-  const [flashcardSetCount, setFlashcardSetCount] = useState(0);
+  const { data: badgesData, isLoading: badgesLoading, error: badgesError } = useQuery({
+    queryKey: ["badges"],
+    queryFn: fetchBadges,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  useEffect(() => {
-    async function fetchProfileData() {
-      setBadgesLoading(true);
-      setBadgesError("");
+  const { data: journalStatsData, isLoading: journalStatsLoading } = useQuery({
+    queryKey: ["journal-stats"],
+    queryFn: fetchJournalStats,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+  const { data: flashcardSetsData, isLoading: flashcardSetsLoading } = useQuery({
+    queryKey: ["flashcard-sets"],
+    queryFn: fetchFlashcardSets,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-        if (!session) {
-          throw new Error("User is not authenticated.");
-        }
-
-        const requestOptions = {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        };
-
-        const [
-          badgesResponse,
-          journalStatsResponse,
-          flashcardSetsResponse,
-        ] = await Promise.all([
-          fetch(`${API_BASE_URL}/badges`, requestOptions),
-          fetch(`${API_BASE_URL}/journal/stats`, requestOptions),
-          fetch(`${API_BASE_URL}/flashcard-sets`, requestOptions),
-        ]);
-
-        const [
-          badgesResult,
-          journalStatsResult,
-          flashcardSetsResult,
-        ] = await Promise.all([
-          badgesResponse.json(),
-          journalStatsResponse.json(),
-          flashcardSetsResponse.json(),
-        ]);
-
-        if (!badgesResponse.ok) {
-          throw new Error(
-            badgesResult.detail || "Unable to load badges.",
-          );
-        }
-
-        if (!journalStatsResponse.ok) {
-          throw new Error(
-            journalStatsResult.detail || "Unable to load journal stats.",
-          );
-        }
-
-        if (!flashcardSetsResponse.ok) {
-          throw new Error(
-            flashcardSetsResult.detail ||
-              "Unable to load flashcard sets.",
-          );
-        }
-
-        setBadges(badgesResult);
-        setJournalCount(
-          journalStatsResult.lifetime_journal_count,
-        );
-        setFlashcardSetCount(flashcardSetsResult.length);
-      } catch (error) {
-        console.error("Profile data fetch failed:", error);
-
-        setBadgesError(
-          error.message || "Unable to load profile activity.",
-        );
-      } finally {
-        setBadgesLoading(false);
-      }
-    }
-
-    fetchProfileData();
-  }, []);
+  const isLoading = badgesLoading || journalStatsLoading || flashcardSetsLoading;
+  const error = badgesError?.message || "";
+  const badges = badgesData || [];
+  const journalCount = journalStatsData?.lifetime_journal_count || 0;
+  const flashcardSetCount = flashcardSetsData?.length || 0;
 
   const displayName =
     user?.email
@@ -130,19 +68,19 @@ function ProfilePage() {
 
         <div className="profile-stat-grid">
           <article className="profile-stat-card">
-            <strong>{badgesLoading ? "—" : journalCount}</strong>
+            <strong>{isLoading ? "—" : journalCount}</strong>
             <span>Journals Analyzed</span>
           </article>
 
           <article className="profile-stat-card">
             <strong>
-              {badgesLoading ? "—" : flashcardSetCount}
+              {isLoading ? "—" : flashcardSetCount}
             </strong>
             <span>Flashcard Sets</span>
           </article>
 
           <article className="profile-stat-card">
-            <strong>{badgesLoading ? "—" : badges.length}</strong>
+            <strong>{isLoading ? "—" : badges.length}</strong>
             <span>Badges Earned</span>
           </article>
         </div>
@@ -151,15 +89,15 @@ function ProfilePage() {
       <section className="profile-section">
         <h2>Your Badges</h2>
 
-        {badgesLoading ? (
+        {isLoading ? (
           <div className="profile-empty-state">
             <span className="profile-empty-icon">⏳</span>
             <p>Loading your badges...</p>
           </div>
-        ) : badgesError ? (
+        ) : error ? (
           <div className="profile-empty-state profile-error-state">
             <span className="profile-empty-icon">⚠️</span>
-            <p>{badgesError}</p>
+            <p>{error}</p>
           </div>
         ) : badges.length === 0 ? (
           <div className="profile-empty-state">
