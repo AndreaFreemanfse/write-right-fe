@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
-import { API_BASE_URL } from "../config/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { saveFlashcardSet } from "../services/api";
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
@@ -29,9 +29,23 @@ function Write({
   onUpdateMistake,
 }) {
   const [flashcards, setFlashcards] = useState([]);
-  const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const saveMutation = useMutation({
+    mutationFn: saveFlashcardSet,
+    onSuccess: (result) => {
+      setSaveMessage(result.message || "Flashcards saved successfully.");
+      // Invalidate flashcard sets cache to refetch
+      queryClient.invalidateQueries({ queryKey: ["flashcard-sets"] });
+    },
+    onError: (saveError) => {
+      setSaveMessage(
+        saveError.message || "The flashcard set could not be saved.",
+      );
+    },
+  });
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -58,15 +72,12 @@ function Write({
     setSaveMessage("");
   }
 
-  async function handleSaveFlashcardSet(cardsToSave = flashcards) {
+  function handleSaveFlashcardSet(cardsToSave = flashcards) {
     if (!cardsToSave.length) {
       return;
     }
 
     const trimmedTitle = journalTitle.trim();
-
-    setSavingSet(true);
-    setSaveMessage("");
 
     const flashcardSet = {
       name: trimmedTitle,
@@ -80,42 +91,7 @@ function Write({
       })),
     };
 
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        throw new Error("User is not authenticated.");
-      }
-      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify(flashcardSet),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.detail || "Unable to save flashcard set.");
-        return true;
-      }
-
-      setSaveMessage(result.message || "Flashcards saved successfully.");
-    } catch (saveError) {
-      console.log(flashcardSet)
-      console.error(saveError);
-
-      setSaveMessage(
-        saveError.message || "The flashcard set could not be saved.",
-      );
-      return false;
-    } finally {
-      setSavingSet(false);
-    }
+    saveMutation.mutate(flashcardSet);
   }
 
   return (
@@ -162,7 +138,7 @@ function Write({
             corrections={corrections}
             onCreateStudySet={handleCreateStudySet}
             onSaveSet={handleSaveFlashcardSet}
-            savingSet={savingSet}
+            savingSet={saveMutation.isPending}
             saveMessage={saveMessage}
             targetLanguage={targetLanguage}
             nativeLanguage={nativeLanguage}

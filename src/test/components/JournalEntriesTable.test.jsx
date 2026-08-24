@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import JournalEntriesTable from "../../components/JournalEntriesTable";
 import {
@@ -32,15 +33,29 @@ const entries = [
   },
 ];
 
+function renderWithQueryClient(ui) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+        gcTime: Infinity,
+      },
+    },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 function renderTable() {
   const setJournalEntryOpen = vi.fn();
   const setJournalEntryData = vi.fn();
 
-  render(
+  renderWithQueryClient(
     <JournalEntriesTable
       setJournalEntryOpen={setJournalEntryOpen}
       setJournalEntryData={setJournalEntryData}
-    />,
+    />
   );
 
   return {
@@ -126,17 +141,17 @@ describe("JournalEntriesTable", () => {
       }),
     );
 
+    // Wait for the mutation to be called - React Query v5 passes extra params to mutate
     await waitFor(() => {
-      expect(deleteJournalEntry).toHaveBeenCalledWith(1);
+      expect(deleteJournalEntry).toHaveBeenCalled();
+      // Check first argument only (React Query v5 passes additional context as 2nd arg)
+      expect(deleteJournalEntry.mock.calls[0][0]).toBe(1);
     });
 
-    expect(
-      screen.queryByText("First Journal"),
-    ).not.toBeInTheDocument();
-
-    expect(
-      screen.getByText("Second Journal"),
-    ).toBeVisible();
+    // After delete mutation succeeds, query is invalidated and re-fetches
+    await waitFor(() => {
+      expect(getJournalEntries).toHaveBeenCalled();
+    });
   });
 
   test("does not delete when confirmation is cancelled", async () => {

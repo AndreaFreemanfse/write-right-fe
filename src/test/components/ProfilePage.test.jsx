@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import ProfilePage from "../../pages/ProfilePage";
 
@@ -51,9 +52,25 @@ function mockFetchResponse(data, ok = true) {
   });
 }
 
+function renderWithQueryClient(ui) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        gcTime: 0,
+        retry: false,
+      },
+    },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 describe("ProfilePage", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Reset all mocks completely
+    vi.resetAllMocks();
 
     useAuth.mockReturnValue({
       user: mockUser,
@@ -66,16 +83,17 @@ describe("ProfilePage", () => {
         },
       },
     });
+
+    // Reset global fetch
+    global.fetch = vi.fn();
   });
 
   test("renders the user profile information", async () => {
-    global.fetch = vi
-      .fn()
-      .mockImplementationOnce(() => mockFetchResponse([]))
-      .mockImplementationOnce(() => mockFetchResponse([]))
-      .mockImplementationOnce(() => mockFetchResponse([]));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse([]));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse({ lifetime_journal_count: 0 }));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse([]));
 
-    render(<ProfilePage />);
+    renderWithQueryClient(<ProfilePage />);
 
     expect(
       screen.getByRole("heading", {
@@ -95,31 +113,16 @@ describe("ProfilePage", () => {
   });
 
   test("renders learning activity counts", async () => {
-    global.fetch = vi
-      .fn()
-      .mockImplementationOnce(() =>
-        mockFetchResponse(mockBadges),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([
-          { id: 1 },
-          { id: 2 },
-          { id: 3 },
-        ]),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([
-          { id: 1 },
-          { id: 2 },
-        ]),
-      );
+    global.fetch.mockResolvedValueOnce(mockFetchResponse(mockBadges));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse({ lifetime_journal_count: 3 }));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse([{ id: 1 }, { id: 2 }]));
 
-    render(<ProfilePage />);
+    renderWithQueryClient(<ProfilePage />);
 
     await waitFor(() => {
-    expect(screen.getByText("3")).toBeVisible();
-    expect(screen.getAllByText("2")).toHaveLength(2);
+      expect(screen.getByText("3")).toBeVisible();
     });
+    expect(screen.getAllByText("2")).toHaveLength(2);
 
     expect(
       screen.getByText("Journals Analyzed"),
@@ -135,19 +138,11 @@ describe("ProfilePage", () => {
   });
 
   test("renders earned badges", async () => {
-    global.fetch = vi
-      .fn()
-      .mockImplementationOnce(() =>
-        mockFetchResponse(mockBadges),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([]),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([]),
-      );
+    global.fetch.mockResolvedValueOnce(mockFetchResponse(mockBadges));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse({ lifetime_journal_count: 0 }));
+    global.fetch.mockResolvedValueOnce(mockFetchResponse([]));
 
-    render(<ProfilePage />);
+    renderWithQueryClient(<ProfilePage />);
 
     expect(
       await screen.findByRole("heading", {
@@ -167,28 +162,16 @@ describe("ProfilePage", () => {
   });
 
   test("shows an error when profile data cannot be loaded", async () => {
-    global.fetch = vi
-      .fn()
-      .mockImplementationOnce(() =>
-        mockFetchResponse(
-          {
-            detail: "Unable to load badges.",
-          },
-          false,
-        ),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([]),
-      )
-      .mockImplementationOnce(() =>
-        mockFetchResponse([]),
-      );
+    global.fetch.mockResolvedValueOnce(
+      mockFetchResponse({ detail: "Unable to load badges." }, false)
+    );
+    // Don't mock the other calls - they won't be reached if first one fails
 
-    render(<ProfilePage />);
+    renderWithQueryClient(<ProfilePage />);
 
-    expect(
-      await screen.findByText("Unable to load badges."),
-    ).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText("Unable to load badges.")).toBeVisible();
+    });
   });
 
   test("shows an authentication error when there is no session", async () => {
@@ -198,10 +181,10 @@ describe("ProfilePage", () => {
       },
     });
 
-    render(<ProfilePage />);
+    renderWithQueryClient(<ProfilePage />);
 
-    expect(
-      await screen.findByText("User is not authenticated."),
-    ).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByText("User is not authenticated.")).toBeVisible();
+    });
   });
 });
