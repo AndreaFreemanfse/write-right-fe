@@ -13,6 +13,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
   const currentTargetLanguage = targetLanguage || "English";
   
   async function explain(original, corrected, nativeLanguage, targetLanguage) {
+    console.time("API: CorrectionTooltip.explain");
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -25,6 +26,7 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
         target_language: targetLanguage,
       }),
     });
+    console.timeEnd("API: CorrectionTooltip.explain");
 
     if (!response.ok) {
       throw new Error("The explanation could not be generated.");

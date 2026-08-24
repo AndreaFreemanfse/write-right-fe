@@ -88,6 +88,7 @@ function Write({
       if (!session) {
         throw new Error("User is not authenticated.");
       }
+      console.time("API: Write.handleSaveFlashcardSet");
       const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
         method: "POST",
         headers: {
@@ -96,6 +97,7 @@ function Write({
         },
         body: JSON.stringify(flashcardSet),
       });
+      console.timeEnd("API: Write.handleSaveFlashcardSet");
 
       const result = await response.json();
 

@@ -26,12 +26,14 @@ function FlashcardVault({nativeLanguage}) {
       if (!session) {
         throw new Error("User is not authenticated.");
       }
+      console.time("API: FlashcardVault.loadFlashcardSets");
       const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
       });
+      console.timeEnd("API: FlashcardVault.loadFlashcardSets");
 
       if (!response.ok) {
         throw new Error("Unable to load flashcard sets.");
@@ -97,6 +99,7 @@ function FlashcardVault({nativeLanguage}) {
         throw new Error("User is not authenticated.");
       }
 
+      console.time("API: FlashcardVault.handleDeleteSet");
       const response = await fetch(
         `${API_BASE_URL}/flashcard-sets/${flashcardSetId}`,
         {
@@ -106,6 +109,7 @@ function FlashcardVault({nativeLanguage}) {
           },
         },
       );
+      console.timeEnd("API: FlashcardVault.handleDeleteSet");
 
       if (!response.ok) {
         throw new Error("Unable to delete flashcard set.");
@@ -191,6 +195,7 @@ function FlashcardVault({nativeLanguage}) {
     if (targetLanguage == "Unknown") {
       targetLanguage = "English"
     }
+    console.time("API: FlashcardVault.explain");
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -203,6 +208,7 @@ function FlashcardVault({nativeLanguage}) {
         target_language: targetLanguage,
       }),
     });
+    console.timeEnd("API: FlashcardVault.explain");
 
     if (!response.ok) {
       throw new Error("The explanation could not be generated.");
@@ -255,6 +261,7 @@ function FlashcardVault({nativeLanguage}) {
         if (!session) {
           throw new Error("User is not authenticated.");
         }
+        console.time("API: FlashcardVault.generateExplanation.updateFlashcard");
         const response = await fetch(`${API_BASE_URL}/flashcards/${currentCard.id}`, {
           method: "PATCH",
           headers: {
@@ -268,6 +275,7 @@ function FlashcardVault({nativeLanguage}) {
             mastered: updatedCard.mastered,
           }),
         });
+        console.timeEnd("API: FlashcardVault.generateExplanation.updateFlashcard");
 
         if (!response.ok) {
           throw new Error("Unable to update flashcard.");

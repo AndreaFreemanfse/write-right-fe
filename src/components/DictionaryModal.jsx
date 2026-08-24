@@ -136,11 +136,12 @@ function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    
+
     if (!session) {
       throw new Error("User is not authenticated.");
     }
 
+    console.time("API: DictionaryModal.translateWord");
     const response = await fetch(`${API_BASE_URL}/translate`, {
       method: "POST",
       headers: {
@@ -153,6 +154,7 @@ function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
         target_language: currentTargetLanguage,
       }),
     });
+    console.timeEnd("API: DictionaryModal.translateWord");
 
     if (!response.ok) {
       throw new Error("The word could not be translated.");
@@ -179,11 +181,13 @@ function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
       return null;
     }
 
+    console.time("API: DictionaryModal.lookUpDefinition");
     const response = await fetch(
       `https://freedictionaryapi.com/api/v1/entries/${languageCode}/${encodeURIComponent(
         word,
       )}`,
     );
+    console.timeEnd("API: DictionaryModal.lookUpDefinition");
 
     if (!response.ok) {
       return null;
