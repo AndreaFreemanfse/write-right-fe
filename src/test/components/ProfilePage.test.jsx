@@ -101,11 +101,7 @@ describe("ProfilePage", () => {
         mockFetchResponse(mockBadges),
       )
       .mockImplementationOnce(() =>
-        mockFetchResponse([
-          { id: 1 },
-          { id: 2 },
-          { id: 3 },
-        ]),
+        mockFetchResponse({ lifetime_journal_count: 3 }),
       )
       .mockImplementationOnce(() =>
         mockFetchResponse([
