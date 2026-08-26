@@ -283,7 +283,11 @@ function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
               autoComplete="off"
             />
 
-            <button type="submit" disabled={searchLoading}>
+            <button 
+              type="submit"
+              className="app-button app-button--special"
+              disabled={searchLoading}>
+
               {searchLoading ? "Searching..." : "Search"}
             </button>
           </div>

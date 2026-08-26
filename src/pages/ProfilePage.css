@@ -1,8 +1,5 @@
 .profile-page {
-  width: min(1000px, 92vw);
-  margin: 0 auto;
-  padding: 3rem 0;
-  color: #444444;
+  /* Page width, margin, and outer padding provided by .app-page */
 }
 
 .profile-header-card {

@@ -85,11 +85,11 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
   }
 
   return (
-    <div className="journal-review">
+    <div className="journal-review app-page app-page--narrow">
       <div className="review-header">
         <h2>Your Journal Review</h2>
 
-        <button onClick={onBack} className="back-button">
+        <button onClick={onBack} className="app-button back-button">
           ← Back to Edit
         </button>
       </div>

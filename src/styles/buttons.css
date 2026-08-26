@@ -1,0 +1,53 @@
+.app-button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.2rem;
+
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  background: #f1f1f1;
+  color: #334155;
+
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.app-button:hover:not(:disabled) {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.app-button:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.25);
+  outline-offset: 2px;
+}
+
+.app-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.app-button--special {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.app-button--special:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5b5fe8, #7c4fe0);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
+}
+
+.app-button--danger {
+  background: #dc2626;
+  color: white;
+}
+
+.app-button--danger:hover:not(:disabled) {
+  background: #b91c1c;
+}

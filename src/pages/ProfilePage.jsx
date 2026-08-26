@@ -110,7 +110,7 @@ function ProfilePage() {
     : "Unavailable";
 
   return (
-    <main className="profile-page">
+    <main className="profile-page app-page">
       <section className="profile-header-card">
         <div className="profile-avatar" aria-hidden="true">
           {user?.email?.charAt(0).toUpperCase() || "U"}

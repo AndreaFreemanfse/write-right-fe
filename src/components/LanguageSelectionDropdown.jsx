@@ -30,7 +30,7 @@ function LanguageSelectionDropdown({
 
   return (
     <select
-      className="language-select"
+      className="app-dropdown language-select"
       id="language-selection"
       name="languages"
       value={value}

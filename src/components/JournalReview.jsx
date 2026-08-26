@@ -51,7 +51,7 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         <footer className="journal-review-modal-footer">
           <button
             type="button"
-            className="journal-review-modal-done"
+            className="app-button app-button--special journal-review-modal-done"
             onClick={onClose}
           >
             Close

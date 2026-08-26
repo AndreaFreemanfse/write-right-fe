@@ -1,8 +1,4 @@
-.journal-review {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 24px;
-}
+
 
 
 .review-header {
@@ -18,28 +14,6 @@
     font-size: 28px;
     font-weight: 600;
 }
-
-
-.back-button {
-    border: none;
-    background: #f1f1f1;
-
-    padding: 10px 16px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    transition: background 0.2s ease;
-}
-
-
-.back-button:hover {
-    background: #ddd;
-}
-
 
 .journal-content {
 

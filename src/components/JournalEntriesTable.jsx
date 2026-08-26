@@ -62,7 +62,7 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
   );
 
   return (
-    <div className="journal-page">
+    <div className="journal-page app-page">
       <header className="journal-header">
         <h1>My Journal Entries</h1>
 
