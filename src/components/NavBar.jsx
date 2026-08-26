@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
-// import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import DropDownMenu from "./DropDownMenu";
 
 import "./NavBar.css";

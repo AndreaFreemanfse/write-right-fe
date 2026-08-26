@@ -5,11 +5,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./DropDownMenu.css";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
@@ -33,7 +29,6 @@ function DropDownMenu({
   const [message, setMessage] = React.useState("");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-
 
   // sign out user
   async function handleSignOut() {
@@ -78,8 +73,11 @@ function DropDownMenu({
 
   // manage the settings dialog
   function openSettings() {
-    setSettingsOpen(true);
     handleClose();
+
+    setTimeout(() => {
+      setSettingsOpen(true);
+    }, 0);
   }
 
   function closeSettings() {
@@ -165,7 +163,7 @@ function DropDownMenu({
         <MenuItem
           className="drop-down-menu-item"
           key="settings"
-          onClick={(event) => openSettings(event)}
+          onClick={openSettings}
           sx={{
             color: "#555555",
             "&:hover": {
@@ -216,9 +214,11 @@ function DropDownMenu({
         open={settingsOpen}
         onClose={closeSettings}
         slotProps={{
-          sx: {
-            backdropFilter: "blur(8px)",
-            backgroundColor: "rgba(0,0,0,0.25)",
+          backdrop: {
+            sx: {
+              backdropFilter: "blur(8px)",
+              backgroundColor: "rgba(0,0,0,0.25)",
+            },
           },
         }}
       >
@@ -229,6 +229,7 @@ function DropDownMenu({
             value={nativeLanguage}
             onChange={setNativeLanguage}
             displayText={"Native Language"}
+            languageType={'native'}
           />
         </DialogContent>
       </Dialog>
