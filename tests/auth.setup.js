@@ -45,7 +45,15 @@ setup("authenticate", async ({ page }) => {
     );
     }
 
-    await page.waitForURL("**/write");
+    // Handle onboarding redirect for new users
+    if (page.url().includes("/select-presets")) {
+      // Set localStorage to mark onboarding complete, then navigate
+      await page.evaluate(() => {
+        localStorage.setItem("onboardingComplete", "true");
+      });
+      await page.goto("/write");
+      await page.waitForLoadState("networkidle");
+    }
 
     await expect(page).toHaveURL(/\/write$/);
 

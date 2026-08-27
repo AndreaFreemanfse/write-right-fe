@@ -19,6 +19,8 @@ function LanguageSelectionDropdown({
 
     try {
       await updateNativeLanguage(language);
+      // Persist locally so AuthContext can read on next load without a profile fetch
+      localStorage.setItem("onboardingComplete", "true");
     } catch (error) {
       console.error("Failed to save native language:", error);
     }
