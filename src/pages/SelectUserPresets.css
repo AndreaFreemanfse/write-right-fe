@@ -1,0 +1,96 @@
+.select-presets-page {
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.select-presets-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 45px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.select-presets-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.select-presets-header h1 {
+  margin: 0 0 12px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.select-presets-header p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+  color: #666;
+}
+
+.select-presets-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.language-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.language-field label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.language-select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.language-select:hover {
+  border-color: #aaa;
+}
+
+.language-select:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+}
+
+.select-presets-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #6d28d9;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.select-presets-button:hover {
+  transform: translateY(-1px);
+}
+
+.select-presets-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

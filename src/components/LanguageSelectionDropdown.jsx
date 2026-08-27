@@ -1,10 +1,32 @@
 import { languages } from "../utils/constants/languages";
 import "./LanguageSelectionDropdown.css";
+import { updateNativeLanguage } from "../services/auth";
 
-function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
-  const handleChange = (event) => {
-    onChange(event.target.value);
+function LanguageSelectionDropdown({
+  value = "",
+  onChange,
+  displayText,
+  languageType,
+}) {
+  const handleChange = async (event) => {
+    const language = event.target.value;
+
+    onChange(language);
+
+    if (languageType !== "native") {
+      return;
+    }
+
+    try {
+      await updateNativeLanguage(language);
+    } catch (error) {
+      console.error("Failed to save native language:", error);
+    }
   };
+
+  const sortedLanguages = Object.entries(languages).sort(
+    ([, nameA], [, nameB]) => nameA.localeCompare(nameB),
+  );
 
   return (
     <select
@@ -18,7 +40,7 @@ function LanguageSelectionDropdown({ value = "", onChange, displayText }) {
         {displayText}
       </option>
 
-      {Object.entries(languages).map(([code, name]) => (
+      {sortedLanguages.map(([code, name]) => (
         <option key={code} value={name}>
           {name}
         </option>

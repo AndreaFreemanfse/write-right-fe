@@ -19,6 +19,7 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
+import SelectUserPresets from "./pages/SelectUserPresets.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { celebrate } from "./utils/celebrate";
@@ -248,12 +249,22 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
         </Route>
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
+          <Route
+            path="/select-presets"
+            element={
+              <SelectUserPresets
+                setNativeLanguage={setNativeLanguage}
+                nativeLanguage={nativeLanguage}
+              />
+            }
+          />
           <Route
             path="/write"
             element={
