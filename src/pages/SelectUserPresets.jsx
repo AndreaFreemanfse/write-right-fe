@@ -3,16 +3,23 @@ import { useNavigate } from "react-router-dom";
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
 import "./SelectUserPresets.css";
 import { updateNativeLanguage } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
 function SelectUserPresets({ setNativeLanguage, nativeLanguage }) {
   const navigate = useNavigate();
+  const { setOnboardingComplete } = useAuth();
 
   const handleContinue = async () => {
     if (!nativeLanguage) {
       return;
     }
 
+    // Set localStorage immediately so AuthContext sees it on next load
+    localStorage.setItem("onboardingComplete", "true");
+
     try {
+      await updateNativeLanguage(nativeLanguage);
+      setOnboardingComplete(true);
       navigate("/write", { replace: true });
     } catch (error) {
       console.error("Failed to save native language:", error);
