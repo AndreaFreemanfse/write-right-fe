@@ -11,6 +11,8 @@ function JournalEditor({
   journalTitle,
   setJournalTitle,
   onAnalyze,
+  handleSaveEdit,
+  editingEntry,
   loading,
   loadingMessage,
   error,
@@ -22,7 +24,6 @@ function JournalEditor({
   const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
 
   const textAreaRef = useRef(null);
-
 
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
@@ -37,10 +38,7 @@ function JournalEditor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
-    const newText =
-      text.slice(0, start) +
-      character +
-      text.slice(end);
+    const newText = text.slice(0, start) + character + text.slice(end);
 
     setText(newText);
 
@@ -48,7 +46,7 @@ function JournalEditor({
       textarea.focus();
       textarea.setSelectionRange(
         start + character.length,
-        start + character.length
+        start + character.length,
       );
     });
   }
@@ -87,8 +85,8 @@ function JournalEditor({
             <Stack
               direction="row"
               spacing={2}
-             className="fade-in"
-              sx={{ alignItems: "center" ,width: "100%"}}
+              className="fade-in"
+              sx={{ alignItems: "center", width: "100%" }}
             >
               <p className="editor-subtitle">
                 Practice writing in your target language:
@@ -134,25 +132,24 @@ function JournalEditor({
             {showSpecialCharacters
               ? "Hide Special Characters"
               : "View Special Characters"}
-          </button>          
-          )}
-          {showSpecialCharacters && characters.length > 0 && (
-              <div className="special-character-bar">
-                {characters.map((character) => (
-                  <button
-                    key={character}
-                    type="button"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      insertSpecialCharacter(character);
-                      console.log(character);
-                    }}
-                  >
-                    {character}
-                  </button>
-                ))}
-              </div>
-            )}
+          </button>
+        )}
+        {showSpecialCharacters && characters.length > 0 && (
+          <div className="special-character-bar">
+            {characters.map((character) => (
+              <button
+                key={character}
+                type="button"
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                  insertSpecialCharacter(character);
+                }}
+              >
+                {character}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>
@@ -160,10 +157,22 @@ function JournalEditor({
           <button
             type="button"
             className="analyze-button"
-            onClick={onAnalyze}
+            onClick={() => {
+              if (editingEntry) {
+                handleSaveEdit();
+              } else {
+                onAnalyze();
+              }
+            }}
             disabled={loading}
           >
-            {loading ? "Analyzing..." : "Analyze Writing"}
+            {loading
+              ? editingEntry
+                ? "Saving..."
+                : "Analyzing..."
+              : editingEntry
+                ? "Save Changes"
+                : "Analyze Writing"}
           </button>
         </div>
 
