@@ -1,11 +1,11 @@
 import JournalEntriesTable from "../components/JournalEntriesTable.jsx";
 
-function JournalEntriesPage({setJournalEntryOpen, setJournalEntryData}) {
+function JournalEntriesPage({setActiveModal, setJournalEntryData}) {
 
   return (
     <>
       <JournalEntriesTable
-        setJournalEntryOpen={setJournalEntryOpen}
+        setActiveModal={setActiveModal}
         setJournalEntryData={setJournalEntryData}
       />
     </>

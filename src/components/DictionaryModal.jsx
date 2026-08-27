@@ -248,7 +248,7 @@ function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
       <section
         className="dictionary-modal"
         role="dialog"
-        aria-modal="false"
+        aria-modal="true"
         aria-labelledby="dictionary-title"
       >
         <div className="dictionary-modal-header">

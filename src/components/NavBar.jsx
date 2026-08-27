@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
-// import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import DropDownMenu from "./DropDownMenu";
 
 import "./NavBar.css";
@@ -13,9 +12,11 @@ function Navbar({
   setJournalText,
   onOpenDictionary,
   onOpenHelp,
+  onOpenSettings,
   setCorrections,
   setReviewMode,
   nativeLanguage,
+  setActiveModal
 }) {
   return (
     <div className="navbar">
@@ -53,12 +54,14 @@ function Navbar({
         setNativeLanguage={setNativeLanguage}
         onOpenDictionary={onOpenDictionary}
         onOpenHelp={onOpenHelp}
+        onOpenSettings={onOpenSettings}
         setJournalText={setJournalText}
         setJournalTitle={setJournalTitle}
         setTargetLanguage={setTargetLanguage}
         setCorrections={setCorrections}
         setReviewMode={setReviewMode}
         nativeLanguage={nativeLanguage}
+        setActiveModal={setActiveModal}
       />
     </div>
   );

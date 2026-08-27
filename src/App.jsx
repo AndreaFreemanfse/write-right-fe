@@ -5,8 +5,9 @@ import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import AmbientBackground from "./components/background/AmbientBackground";
 import DictionaryModal from "./components/DictionaryModal.jsx";
-import TopNav from "./components/NavBar.jsx";
+import SettingsModal from "./components/SettingsModal.jsx";
 import HelpModal from "./components/HelpModal";
+import TopNav from "./components/NavBar.jsx";
 import JournalReview from "./components/JournalReview.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -18,6 +19,7 @@ import SignUpPage from "./pages/SignUpPage.jsx";
 import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
+import SelectUserPresets from "./pages/SelectUserPresets.jsx";
 
 import { handleCorrectJournal } from "./services/api.js";
 import { updateJournalEntry } from "./services/api.js";
@@ -48,6 +50,9 @@ function App() {
 
   // Win condition celebration
   const [achievement, setAchievement] = useState(null);
+
+  // Global modal state
+  const [activeModal, setActiveModal] = useState(null);
 
   // Dictionary modal state
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
@@ -94,6 +99,11 @@ function App() {
 
   const isPublicPage = publicPaths.includes(location.pathname);
 
+  // Close modals on page change
+  useEffect(() => {
+    setActiveModal(null);
+  }, [location.pathname]);
+
   useEffect(() => {
     if (!loading) return;
 
@@ -127,6 +137,7 @@ function App() {
     setJournalText("");
     setJournalTitle("Untitled Journal");
   }, [location.pathname]);
+
 
   // --------------------------------------------------------------
   // Helper functions
@@ -366,27 +377,38 @@ function App() {
           <TopNav
             nativeLanguage={nativeLanguage}
             setNativeLanguage={setNativeLanguage}
-            onOpenDictionary={() => setDictionaryOpen(true)}
-            onOpenHelp={() => setHelpOpen(true)}
+            onOpenDictionary={() => setActiveModal("dictionary")}
+            onOpenSettings={() => setActiveModal("settings")}
+            onOpenHelp={() => setActiveModal("help")}
             setJournalText={setJournalText}
             setJournalTitle={setJournalTitle}
             setTargetLanguage={setTargetLanguage}
             setCorrections={setCorrections}
             setReviewMode={setReviewMode}
+            setActiveModal={setActiveModal}
           />
           <AchievementOverlay achievement={achievement} />
           <DictionaryModal
-            isOpen={dictionaryOpen}
-            onClose={() => setDictionaryOpen(false)}
+            isOpen={activeModal === "dictionary"}
+            onClose={() => setActiveModal(null)}
             nativeLanguage={nativeLanguage}
             targetLanguage={targetLanguage}
           />
-          <HelpModal isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
+          <HelpModal
+            isOpen={activeModal === "help"}
+            onClose={() => setActiveModal(null)}
+          />
+          <SettingsModal
+            isOpen={activeModal === "settings"}
+            onClose={() => setActiveModal(null)}
+            nativeLanguage={nativeLanguage}
+            setNativeLanguage={setNativeLanguage}
+          />
           <JournalReview
             handleEditJournal={handleEditJournal}
-            isOpen={journalEntryOpen}
+            isOpen={activeModal === "journalEntries"}
             journalEntryData={journalEntryData}
-            onClose={() => setJournalEntryOpen(false)}
+            onClose={() => setActiveModal(null)}
           />
         </>
       )}
@@ -395,6 +417,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
         </Route>
@@ -402,10 +425,19 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
+            path="/select-presets"
+            element={
+              <SelectUserPresets
+                setNativeLanguage={setNativeLanguage}
+                nativeLanguage={nativeLanguage}
+              />
+            }
+          />
+          <Route
             path="/write"
             element={
               <Write
-                dictionaryOpen={dictionaryOpen}
+                dictionaryOpen={activeModal === "dictionary"}
                 text={journalText}
                 setText={setJournalText}
                 onAnalyze={analyzeJournal}
@@ -438,7 +470,7 @@ function App() {
             path="/journal-entries"
             element={
               <JournalEntriesPage
-                setJournalEntryOpen={setJournalEntryOpen}
+                setActiveModal={setActiveModal}
                 setJournalEntryData={setJournalEntryData}
               />
             }

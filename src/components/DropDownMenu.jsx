@@ -1,17 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { signOut } from "../services/auth";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import "./DropDownMenu.css";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
 function DropDownMenu({
@@ -19,8 +13,10 @@ function DropDownMenu({
   setTargetLanguage,
   setJournalText,
   setJournalTitle,
+  setActiveModal,
   onOpenDictionary,
   onOpenHelp,
+  onOpenSettings,
   setCorrections,
   setReviewMode,
   nativeLanguage,
@@ -29,11 +25,11 @@ function DropDownMenu({
   const buttonId = `${id}-button`;
   const menuId = `${id}-menu`;
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [settingsOpen, setSettingsOpen] = React.useState(false);
-  const [message, setMessage] = React.useState("");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const isWritePage = location.pathname === "/write";
 
   // sign out user
   async function handleSignOut() {
@@ -53,12 +49,12 @@ function DropDownMenu({
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Sign out failed:", error);
-      setMessage(error.message);
     }
   }
 
   // manage opening and closing menu
   const handleClick = (event) => {
+    setActiveModal(null);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -77,23 +73,15 @@ function DropDownMenu({
   }, []);
 
   // manage the settings dialog
-  function openSettings() {
-    setSettingsOpen(true);
-    handleClose();
-  }
-
-  function closeSettings() {
-    setSettingsOpen(false);
-  }
 
   function openDictionary() {
-    onOpenDictionary();
     handleClose();
+    onOpenDictionary();
   }
 
   function openProfile() {
-    navigate("/profile");
     handleClose();
+    navigate("/profile");
   }
 
   return (
@@ -151,6 +139,7 @@ function DropDownMenu({
         <MenuItem
           className="drop-down-menu-item"
           key="dictionary"
+          disabled={!isWritePage}
           onClick={openDictionary}
           sx={{
             color: "#555555",
@@ -165,7 +154,10 @@ function DropDownMenu({
         <MenuItem
           className="drop-down-menu-item"
           key="settings"
-          onClick={(event) => openSettings(event)}
+          onClick={() => {
+            handleClose();
+            onOpenSettings();
+          }}
           sx={{
             color: "#555555",
             "&:hover": {
@@ -180,8 +172,8 @@ function DropDownMenu({
           className="drop-down-menu-item"
           key="help"
           onClick={() => {
-            onOpenHelp();
             handleClose();
+            onOpenHelp();
           }}
           sx={{
             color: "#555555",
@@ -210,28 +202,6 @@ function DropDownMenu({
           Sign Out
         </MenuItem>
       </Menu>
-
-      {/* Settings dialog */}
-      <Dialog
-        open={settingsOpen}
-        onClose={closeSettings}
-        slotProps={{
-          sx: {
-            backdropFilter: "blur(8px)",
-            backgroundColor: "rgba(0,0,0,0.25)",
-          },
-        }}
-      >
-        <DialogTitle>Settings</DialogTitle>
-
-        <DialogContent>
-          <LanguageSelectionDropdown
-            value={nativeLanguage}
-            onChange={setNativeLanguage}
-            displayText={"Native Language"}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

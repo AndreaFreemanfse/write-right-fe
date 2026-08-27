@@ -1,5 +1,4 @@
 export const languages = {
-"alpha2":"English",
 "aa": "Afar",
 "ab":"Abkhazian",
 "ae":"Avestan",

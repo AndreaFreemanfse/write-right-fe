@@ -13,9 +13,13 @@ function SignInPage() {
     event.preventDefault();
 
     try {
-      await signIn(email, password);
+      const data = await signIn(email, password);
 
-      navigate("/write", { replace: true });
+      if (!data.native_language) {
+        navigate("/select-presets", { replace: true });
+      } else {
+        navigate("/write", { replace: true });
+      }
     } catch (error) {
       setMessage(error.message);
     }
