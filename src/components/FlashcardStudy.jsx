@@ -169,6 +169,7 @@ if (queue.length === 0) {
 }
 
 async function explain(original, corrected, nativeLanguage, targetLanguage) {
+    console.time("API: FlashcardStudy.explain");
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -181,6 +182,7 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
         target_language: targetLanguage,
       }),
     });
+    console.timeEnd("API: FlashcardStudy.explain");
 
     if (!response.ok) {
       throw new Error("The explanation could not be generated.");

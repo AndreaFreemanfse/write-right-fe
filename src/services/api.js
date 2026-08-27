@@ -16,6 +16,7 @@ export async function handleCorrectJournal(
     throw new Error("User is not authenticated.");
   }
 
+  console.time("API: handleCorrectJournal");
   const response = await fetch(`${API_BASE_URL}/journal/analyze`, {
     method: "POST",
     headers: {
@@ -30,6 +31,7 @@ export async function handleCorrectJournal(
       target_language: targetLanguage,
     }),
   });
+  console.timeEnd("API: handleCorrectJournal");
 
   if (!response.ok) {
     const data = await response.json();
@@ -52,11 +54,13 @@ export async function getJournalEntries() {
     throw new Error("User is not authenticated.");
   }
 
+  console.time("API: getJournalEntries");
   const response = await fetch(`${API_BASE_URL}/journal/entries`, {
     headers: {
       Authorization: `Bearer ${session.access_token}`,
     },
   });
+  console.timeEnd("API: getJournalEntries");
 
   if (!response.ok) {
     throw new Error("Failed to fetch journal entries");
@@ -74,6 +78,7 @@ export async function deleteJournalEntry(entryId) {
     throw new Error("User is not authenticated.");
   }
 
+  console.time("API: deleteJournalEntry");
   const response = await fetch(
     `${API_BASE_URL}/journal/${entryId}`,
     {
@@ -83,6 +88,7 @@ export async function deleteJournalEntry(entryId) {
       },
     }
   );
+  console.timeEnd("API: deleteJournalEntry");
 
   if (!response.ok) {
     throw new Error("Failed to delete journal entry");

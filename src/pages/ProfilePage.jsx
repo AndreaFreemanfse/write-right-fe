@@ -35,6 +35,9 @@ function ProfilePage() {
           },
         };
 
+        console.time("API: ProfilePage.fetchBadges");
+        console.time("API: ProfilePage.fetchJournalStats");
+        console.time("API: ProfilePage.fetchFlashcardSets");
         const [
           badgesResponse,
           journalStatsResponse,
@@ -44,6 +47,9 @@ function ProfilePage() {
           fetch(`${API_BASE_URL}/journal/stats`, requestOptions),
           fetch(`${API_BASE_URL}/flashcard-sets`, requestOptions),
         ]);
+        console.timeEnd("API: ProfilePage.fetchBadges");
+        console.timeEnd("API: ProfilePage.fetchJournalStats");
+        console.timeEnd("API: ProfilePage.fetchFlashcardSets");
 
         const [
           badgesResult,
