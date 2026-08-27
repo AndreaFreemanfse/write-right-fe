@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./CorrectionTooltip.css";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -7,7 +7,7 @@ import { API_BASE_URL } from "../config/api.js";
 
 function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetLanguage, onUpdateMistake }) {
   // Let's move this logic to BE so FE only gets clean data -------
-
+  const generatingRef = useRef(false);
 
   const currentNativeLanguage = nativeLanguage || "English";
   const currentTargetLanguage = targetLanguage || "English";
@@ -43,39 +43,39 @@ function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetL
   }
 
   useEffect(() => {
+    // Guard against StrictMode double-invocation in development
+    if (generatingRef.current) return;
+    generatingRef.current = true;
+
     async function generateExplanation() {
-
       if (mistake.loading) return;
-
       if (mistake.explanation != null) return;
-      
-      try {
 
+      try {
         onUpdateMistake({
           ...mistake,
           loading: true,
         });
 
-        const response = await explain(mistake.original_full, mistake.corrected_full, currentNativeLanguage, currentTargetLanguage)
+        const response = await explain(mistake.original_full, mistake.corrected_full, currentNativeLanguage, currentTargetLanguage);
 
         console.log("AI response:", response);
 
         onUpdateMistake({
-              ...mistake,
-              category: response.category,
-              explanation: response.explanation,
-              loading: false,
+          ...mistake,
+          category: response.category,
+          explanation: response.explanation,
+          loading: false,
         });
       } catch (error) {
         console.error("Explanation generation failed:", error);
+      } finally {
+        generatingRef.current = false;
       }
-      
-
     }
-    
-    generateExplanation();
 
-  }, [mistake]);
+    generateExplanation();
+  }, [mistake.original_full, mistake.corrected_full]);
 
 
   // Replaces all underscores with spaces

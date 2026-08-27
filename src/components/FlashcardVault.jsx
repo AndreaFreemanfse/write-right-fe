@@ -38,13 +38,22 @@ function FlashcardVault({ nativeLanguage }) {
   const { data: flashcardSets = [], isLoading, error } = useQuery({
     queryKey: ["flashcard-sets"],
     queryFn: fetchFlashcardSets,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 0, // Always fetch fresh data so new flashcards appear immediately
   });
 
   // Mutation for deleting a set
   const deleteMutation = useMutation({
     mutationFn: deleteFlashcardSet,
-    onSuccess: () => {
+    onMutate: async (flashcardSetId) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["flashcard-sets"] });
+      // Optimistically remove the set from the UI immediately
+      queryClient.setQueryData(["flashcard-sets"], (old) =>
+        old.filter((set) => set.id !== flashcardSetId)
+      );
+    },
+    onSettled: () => {
+      // Refetch after server responds to ensure true server state
       queryClient.invalidateQueries({ queryKey: ["flashcard-sets"] });
     },
   });

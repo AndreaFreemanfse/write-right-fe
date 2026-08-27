@@ -15,13 +15,21 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
   const { data: entries = [], isLoading, error } = useQuery({
     queryKey: ["journal-entries"],
     queryFn: getJournalEntries,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 0, // Always fetch fresh data so new entries appear immediately
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteJournalEntry,
-    onSuccess: () => {
-      // Invalidate queries to refetch
+    onMutate: async (entryId) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["journal-entries"] });
+      // Optimistically remove the entry from the UI immediately
+      queryClient.setQueryData(["journal-entries"], (old) =>
+        old.filter((entry) => entry.id !== entryId)
+      );
+    },
+    onSettled: () => {
+      // Refetch after server responds to ensure true server state
       queryClient.invalidateQueries({ queryKey: ["journal-entries"] });
     },
   });

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
@@ -24,6 +25,8 @@ import { celebrate } from "./utils/celebrate";
 import "./App.css";
 
 function App() {
+  const queryClient = useQueryClient();
+
   // --------------------------------------------------------------
   // Journal State
   // --------------------------------------------------------------
@@ -156,6 +159,14 @@ function App() {
       setAccuracy(accuracyResult);
       setJournalEntryId(savedJournalEntryId);
 
+      // Optimistically insert the new journal entry into the cache immediately
+      if (response.journal_entry) {
+        queryClient.setQueryData(["journal-entries"], (old) => [
+          response.journal_entry,
+          ...(old ?? []),
+        ]);
+      }
+
       if (mistakes.length === 0) {
         celebrate();
 
@@ -191,6 +202,7 @@ function App() {
 
   function returnToEditor() {
     setReviewMode(false);
+    setCorrections([]);
     setApiError(null);
   }
 

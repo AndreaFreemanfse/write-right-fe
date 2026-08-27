@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { saveFlashcardSet } from "../services/api";
 import JournalEditor from "../components/JournalEditor.jsx";
@@ -33,16 +33,55 @@ function Write({
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  // Reset flashcards whenever a new journal analysis runs (corrections change)
+  const correctionsRef = useRef(corrections);
+  useEffect(() => {
+    if (corrections !== correctionsRef.current) {
+      correctionsRef.current = corrections;
+      setFlashcards([]);
+      setSaveMessage("");
+    }
+  }, [corrections]);
+
   const saveMutation = useMutation({
     mutationFn: saveFlashcardSet,
-    onSuccess: (result) => {
-      setSaveMessage(result.message || "Flashcards saved successfully.");
-      // Invalidate flashcard sets cache to refetch
-      queryClient.invalidateQueries({ queryKey: ["flashcard-sets"] });
+    onMutate: async (flashcardSet) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic insert
+      await queryClient.cancelQueries({ queryKey: ["flashcard-sets"] });
+      // Snapshot the previous state
+      const previousSets = queryClient.getQueryData(["flashcard-sets"]);
+      // Build a placeholder entry to show immediately
+      const optimisticSet = {
+        id: -Date.now(), // temporary negative ID
+        name: flashcardSet.name,
+        language: flashcardSet.language,
+        source_type: flashcardSet.source_type,
+        journal_entry_id: flashcardSet.journal_entry_id,
+        flashcards: flashcardSet.flashcards.map((card, i) => ({
+          ...card,
+          id: -Date.now() - i,
+        })),
+      };
+      // Insert optimistically into the cache
+      queryClient.setQueryData(["flashcard-sets"], (old) => [
+        ...(previousSets ?? []),
+        optimisticSet,
+      ]);
+      return { previousSets };
     },
-    onError: (saveError) => {
-      setSaveMessage(
-        saveError.message || "The flashcard set could not be saved.",
+    onError: (_err, _vars, context) => {
+      // Roll back on error
+      if (context?.previousSets !== undefined) {
+        queryClient.setQueryData(["flashcard-sets"], context.previousSets);
+      }
+    },
+    onSuccess: (flashcardSet) => {
+      setSaveMessage("Flashcards saved successfully.");
+      // Replace the optimistic entry with the real server data
+      queryClient.setQueryData(["flashcard-sets"], (old) =>
+        old.map((s) =>
+          s.id < 0 && s.name === flashcardSet.name ? flashcardSet : s
+        )
       );
     },
   });

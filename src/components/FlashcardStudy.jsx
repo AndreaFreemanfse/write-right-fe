@@ -21,8 +21,8 @@ function FlashcardStudy({
   const [mistakeCount, setMistakeCount] = useState(0);
   const [exp_loading, setExpLoading] = useState(false);
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8000";
   const [setDismissed, setSetDismissed] = useState(false);
 
   useEffect(() => {
@@ -37,138 +37,137 @@ const API_BASE_URL =
     setStudyStarted(false);
   }, [mistakes]);
 
+  const availableCardCount = mistakes?.length || corrections?.length || 0;
+
   if (
     setDismissed ||
-    (!mistakes?.length && !corrections?.length)
+    availableCardCount === 0
   ) {
     return null;
   }
 
-if (!studyStarted) {
-  const availableCardCount =
-    mistakes?.length || corrections?.length || 0;
-
-  return (
-    <section className="flashcard-study">
-      <div className="study-set-preview">
-        <p className="study-set-count">
-          {availableCardCount}{" "}
-          {availableCardCount === 1 ? "card" : "cards"} ready
-        </p>
-
-        <button
-          type="button"
-          className="flashcard-button study-primary-action"
-          onClick={() => {
-            if (!mistakes?.length && corrections?.length) {
-              handleConquerAll();
-              return;
-            }
-
-            setStudyStarted(true);
-          }}
-        >
-          ⚔️ Conquer{" "}
-          {availableCardCount === 1 ? "Card" : "Cards"}
-        </button>
-
-        <div className="study-secondary-actions">
-          <button
-            type="button"
-            className="study-save-button"
-            onClick={async () => {
-              const cardsToSave =
-                mistakes?.length > 0 ? mistakes : corrections;
-
-              const saved = await onSaveSet(cardsToSave);
-
-              if (saved) {
-                setSetDismissed(true);
-              }
-            }}
-            disabled={savingSet}
-          >
-            {savingSet ? "Saving..." : "📚 Save Set to Vault"}
-          </button>
-
-          <button
-            type="button"
-            className="study-delete-button"
-            onClick={() => setSetDismissed(true)}
-          >
-            🗑 Delete Set
-          </button>
-        </div>
-
-        {saveMessage && (
-          <p className="flashcard-save-message">
-            {saveMessage}
+  if (!studyStarted) {
+    return (
+      <section className="flashcard-study">
+        <div className="study-set-preview">
+          <p className="study-set-count">
+            {availableCardCount}{" "}
+            {availableCardCount === 1 ? "card" : "cards"} ready
           </p>
-        )}
-      </div>
-    </section>
-  );
-}
 
-if (queue.length === 0) {
-  const perfectSession = mistakeCount === 0;
+          <button
+            type="button"
+            className="flashcard-button study-primary-action"
+            onClick={() => {
+              if (!mistakes?.length && corrections?.length) {
+                handleConquerAll();
+                return;
+              }
 
-  return (
-    <section className="flashcard-study">
-      <article className="completion-card">
-        <div
-          className={`completion-card-inner ${
-            perfectSession
-              ? "completion-card-perfect"
-              : "completion-card-standard"
-          }`}
-        >
-          <div className="completion-card-front">
-            <h2>Final card conquered!</h2>
-          </div>
+              setStudyStarted(true);
+            }}
+          >
+            ⚔️ Conquer{" "}
+            {availableCardCount === 1 ? "Card" : "Cards"}
+          </button>
 
-          <div className="completion-card-back">
-            <h2>
-              {perfectSession
-                ? "You Crushed It!"
-                : "All cards mastered!"}
-            </h2>
-
-            <p>Cards mastered: {masteredCount}</p>
-            <p>Mistakes made: {mistakeCount}</p>
-            <p>Final streak: {streak}</p>
-
+          <div className="study-secondary-actions">
             <button
               type="button"
-              className="flashcard-button"
-              onClick={() => {
+              className="study-save-button"
+              onClick={async () => {
                 const cardsToSave =
-                  mistakes?.length > 0
-                    ? mistakes
-                    : corrections ?? [];
+                  mistakes?.length > 0 ? mistakes : corrections;
 
-                onSaveSet(cardsToSave);
+                const saved = await onSaveSet(cardsToSave);
+
+                if (saved) {
+                  setSetDismissed(true);
+                }
               }}
               disabled={savingSet}
             >
-              {savingSet
-                ? "Saving..."
-                : "Save Set to Vault"}
+              {savingSet ? "Saving..." : "📚 Save Set to Vault"}
             </button>
 
-            {saveMessage && (
-              <p className="flashcard-save-message">
-                {saveMessage}
-              </p>
-            )}
+            <button
+              type="button"
+              className="study-delete-button"
+              onClick={() => setSetDismissed(true)}
+            >
+              🗑 Delete Set
+            </button>
           </div>
-        </div>
-      </article>
-    </section>
-  );
-}
 
-async function explain(original, corrected, nativeLanguage, targetLanguage) {
+          {saveMessage && (
+            <p className="flashcard-save-message">
+              {saveMessage}
+            </p>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  if (queue.length === 0) {
+    const perfectSession = mistakeCount === 0;
+
+    return (
+      <section className="flashcard-study">
+        <article className="completion-card">
+          <div
+            className={`completion-card-inner ${
+              perfectSession
+                ? "completion-card-perfect"
+                : "completion-card-standard"
+            }`}
+          >
+            <div className="completion-card-front">
+              <h2>Final card conquered!</h2>
+            </div>
+
+            <div className="completion-card-back">
+              <h2>
+                {perfectSession
+                  ? "You Crushed It!"
+                  : "All cards mastered!"}
+              </h2>
+
+              <p>Cards mastered: {masteredCount}</p>
+              <p>Mistakes made: {mistakeCount}</p>
+              <p>Final streak: {streak}</p>
+
+              <button
+                type="button"
+                className="flashcard-button"
+                onClick={() => {
+                  const cardsToSave =
+                    mistakes?.length > 0
+                      ? mistakes
+                      : corrections ?? [];
+
+                  onSaveSet(cardsToSave);
+                }}
+                disabled={savingSet}
+              >
+                {savingSet
+                  ? "Saving..."
+                  : "Save Set to Vault"}
+              </button>
+
+              {saveMessage && (
+                <p className="flashcard-save-message">
+                  {saveMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        </article>
+      </section>
+    );
+  }
+
+  async function explain(original, corrected, nativeLanguage, targetLanguage) {
     const response = await fetch(`${API_BASE_URL}/explanation`, {
       method: "POST",
       headers: {
@@ -297,7 +296,7 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
     } finally {
       setExpLoading(false);
     }
-}
+  }
 
   return (
     <section className="flashcard-study">

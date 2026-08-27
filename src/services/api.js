@@ -158,7 +158,7 @@ export async function saveFlashcardSet(flashcardSet) {
     throw new Error(data.detail || "Unable to save flashcard set.");
   }
 
-  return response.json();
+  return (await response.json()).flashcard_set;
 }
 
 export async function deleteFlashcardSet(flashcardSetId) {
