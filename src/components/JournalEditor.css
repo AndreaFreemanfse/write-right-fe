@@ -290,3 +290,180 @@
   cursor: pointer;
   font-size: 1.5rem;
 }
+/* ------------------------------------------------------------
+   Review Depth
+------------------------------------------------------------ */
+
+.review-depth-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-depth-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #888;
+  white-space: nowrap;
+}
+
+.review-depth-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-option-wrapper {
+  position: relative;
+}
+
+/* Review buttons use the same visual style as the old Analyze button */
+
+.review-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-width: 105px;
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #f1f1f5;
+  color: #555;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: none;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.review-option:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.2);
+}
+
+/* Selected option */
+
+.review-option.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+.review-option.active:hover:not(:disabled) {
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
+}
+
+/* Click feedback */
+
+.review-option:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Disabled state */
+
+.review-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.review-option-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+
+/* ------------------------------------------------------------
+   Review Tooltips
+------------------------------------------------------------ */
+
+.review-tooltip {
+  position: absolute;
+  z-index: 1000;
+
+  bottom: calc(100% + 10px);
+  left: 50%;
+
+  width: 220px;
+  padding: 12px 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+
+  background: rgba(28, 28, 34, 0.96);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 0.75rem;
+  line-height: 1.4;
+
+  pointer-events: none;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translate(-50%, 5px);
+
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease,
+    transform 0.18s ease;
+}
+
+.review-tooltip strong {
+  color: #fff;
+  font-size: 0.78rem;
+}
+
+.review-tooltip small {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.68rem;
+}
+
+.review-option-wrapper:hover .review-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+/* Tooltip arrow */
+
+.review-tooltip::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -5px;
+  left: 50%;
+
+  width: 9px;
+  height: 9px;
+
+  background: rgba(28, 28, 34, 0.96);
+
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+  transform: translateX(-50%) rotate(45deg);
+}

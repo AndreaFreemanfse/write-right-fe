@@ -22,7 +22,6 @@ function JournalEditor({
   setReviewDepth,
 }) {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-
   const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
 
   const textAreaRef = useRef(null);
@@ -30,6 +29,16 @@ function JournalEditor({
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
     setLanguageDropdownOpen(false);
+  };
+
+  const handleReviewSelection = (depth) => {
+    setReviewDepth(depth);
+
+    if (editingEntry) {
+      handleSaveEdit(depth);
+    } else {
+      onAnalyze(depth);
+    }
   };
 
   function insertSpecialCharacter(character) {
@@ -73,6 +82,7 @@ function JournalEditor({
             maxLength={80}
           />
         </label>
+
         <div className="language-selector-wrapper">
           {targetLanguage && !languageDropdownOpen ? (
             <button
@@ -125,6 +135,7 @@ function JournalEditor({
             </div>
           )}
         </div>
+
         {characters.length > 0 && (
           <button
             type="button"
@@ -136,6 +147,7 @@ function JournalEditor({
               : "View Special Characters"}
           </button>
         )}
+
         {showSpecialCharacters && characters.length > 0 && (
           <div className="special-character-bar">
             {characters.map((character) => (
@@ -155,51 +167,66 @@ function JournalEditor({
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>
-          
-          <div className="review-mode-selector">
-            <button
-              type="button"
-              className={`review-mode-button ${
-                reviewDepth === "quick" ? "active" : ""
-              }`}
-              onClick={() => setReviewDepth("quick")}
-              disabled={loading}
-            >
-              ⚡ Quick
-            </button>
 
-            <button
-              type="button"
-              className={`review-mode-button ${
-                reviewDepth === "in_depth" ? "active" : ""
-              }`}
-              onClick={() => setReviewDepth("in_depth")}
-              disabled={loading}
-            >
-              🔎 In Depth
-            </button>
+          <div className="review-depth-control">
+            <div className="review-depth-options">
+              <div className="review-option-wrapper">
+                <button
+                  type="button"
+                  className={`review-option ${
+                    reviewDepth === "quick" ? "active" : ""
+                  }`}
+                  onClick={() => handleReviewSelection("quick")}
+                  disabled={loading || !text.trim()}
+                  aria-describedby="quick-review-tooltip"
+                >
+                  <span className="review-option-icon">⚡</span>
+                  <span>Quick Analysis</span>
+                </button>
+
+                <div
+                  id="quick-review-tooltip"
+                  className="review-tooltip"
+                  role="tooltip"
+                >
+                  <strong>Quick review</strong>
+                  <span>
+                    Fastest option — checks your writing with our language
+                    tools.
+                  </span>
+                  <small>Usually much faster</small>
+                </div>
+              </div>
+
+              <div className="review-option-wrapper">
+                <button
+                  type="button"
+                  className={`review-option ${
+                    reviewDepth === "in-depth" ? "active" : ""
+                  }`}
+                  onClick={() => handleReviewSelection("in-depth")}
+                  disabled={loading || !text.trim()}
+                  aria-describedby="indepth-review-tooltip"
+                >
+                  <span className="review-option-icon">🔎</span>
+                  <span>In Depth Analysis</span>
+                </button>
+
+                <div
+                  id="indepth-review-tooltip"
+                  className="review-tooltip"
+                  role="tooltip"
+                >
+                  <strong>In-depth review</strong>
+                  <span>
+                    More thorough — combines language tools with AI for deeper
+                    feedback.
+                  </span>
+                  <small>Takes a little longer</small>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <button
-            type="button"
-            className="analyze-button"
-            onClick={() => {
-              if (editingEntry) {
-                handleSaveEdit();
-              } else {
-                onAnalyze();
-              }
-            }}
-            disabled={loading}
-          >
-            {loading
-              ? editingEntry
-                ? "Saving..."
-                : "Analyzing..."
-              : editingEntry
-                ? "Save Changes"
-                : "Analyze Writing"}
-          </button>
         </div>
 
         {error && <p className="error-message">{error}</p>}
