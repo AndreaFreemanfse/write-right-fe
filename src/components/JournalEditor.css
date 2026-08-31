@@ -93,46 +93,6 @@
 }
 
 
-.analyze-button {
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding: 12px 22px;
-
-    transition: .2s;
-
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: .2s;
-
-}
-
-
-.analyze-button:hover:not(:disabled) {
-
-  box-shadow: 0 10px 24px rgba(99,102,241,.35);
-
-}
-
-
-.analyze-button:disabled {
-
-    background: #9ca3af;
-
-    cursor: not-allowed;
-
-}
-
 
 .error-message {
 
@@ -290,6 +250,7 @@
   cursor: pointer;
   font-size: 1.5rem;
 }
+
 /* ------------------------------------------------------------
    Review Depth
 ------------------------------------------------------------ */
