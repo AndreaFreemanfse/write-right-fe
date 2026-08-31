@@ -35,17 +35,20 @@ const entries = [
 function renderTable() {
   const setJournalEntryOpen = vi.fn();
   const setJournalEntryData = vi.fn();
+  const setActiveModal = vi.fn();
 
   render(
     <JournalEntriesTable
       setJournalEntryOpen={setJournalEntryOpen}
       setJournalEntryData={setJournalEntryData}
+      setActiveModal={setActiveModal}
     />,
   );
 
   return {
     setJournalEntryOpen,
     setJournalEntryData,
+    setActiveModal,
   };
 }
 
@@ -94,7 +97,7 @@ describe("JournalEntriesTable", () => {
     const user = userEvent.setup();
 
     const {
-      setJournalEntryOpen,
+      setActiveModal,
       setJournalEntryData,
     } = renderTable();
 
@@ -102,7 +105,7 @@ describe("JournalEntriesTable", () => {
       await screen.findByText("First Journal"),
     );
 
-    expect(setJournalEntryOpen).toHaveBeenCalledWith(true);
+    expect(setActiveModal).toHaveBeenCalledWith("journalEntries");
 
     expect(setJournalEntryData).toHaveBeenCalledWith(
       entries[0],
