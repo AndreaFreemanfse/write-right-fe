@@ -27,6 +27,8 @@ function Write({
   nativeLanguage,
   setTargetLanguage,
   onUpdateMistake,
+  francWarning,
+  setFrancWarning,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -133,6 +135,8 @@ function Write({
           error={error}
           targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
+          francWarning={francWarning}
+          setFrancWarning={setFrancWarning}
         />
       ) : loading ? (
         <AnalysisLoading

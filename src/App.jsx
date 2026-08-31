@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import {franc, francAll} from 'franc'
+import { franc_languages } from "./utils/constants/languages.js";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
@@ -105,6 +107,8 @@ function App() {
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
 
+  const [francWarning, setFrancWarning] = useState(null);
+
   // --------------------------------------------------------------
   // Helper functions
   // --------------------------------------------------------------
@@ -125,10 +129,17 @@ function App() {
       return;
     }
 
+    const lang = franc(journalText, {minLength: 50});
+    if (!francWarning && lang != 'und' && franc_languages[lang] != targetLanguage) {
+      setFrancWarning(`Warning: Expected ${targetLanguage} but found ${franc_languages[lang]}`);
+      return;
+    }
+
     // Clear previous results before starting a new analysis
     setCorrections([]);
     setAccuracy(null);
     setApiError("");
+    setFrancWarning(null);
 
     // Immediately show the loading screen
     setLoadingMessage("Checking for mistakes...");
@@ -193,6 +204,7 @@ function App() {
   }
 
   function returnToEditor() {
+    setFrancWarning(null);
     setReviewMode(false);
     setApiError(null);
   }
@@ -275,6 +287,8 @@ function App() {
                 nativeLanguage={nativeLanguage}
                 setTargetLanguage={setTargetLanguage}
                 onUpdateMistake={updateMistake}
+                francWarning={francWarning}
+                setFrancWarning={setFrancWarning}
               />
             }
           />
