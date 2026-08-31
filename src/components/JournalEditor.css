@@ -290,3 +290,61 @@
   cursor: pointer;
   font-size: 1.5rem;
 }
+
+.franc-error-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.franc-error-popup {
+  background: white;
+  color: red;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.franc-error-popup h2 {
+  margin-top: 0;
+}
+
+.franc-error-popup p {
+  margin: 1rem 0 1.5rem;
+}
+
+.franc-error-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-weight: 100px;
+}
+
+.franc-error-buttons button {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.return-button {
+  background-color: #dbdbdb;
+  color: black;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+.continue-button {
+  background-color: #6d28d9;
+  color: white;
+  font-size: 15px;
+  font-weight: 100;
+}

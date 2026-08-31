@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import {franc, francAll} from 'franc'
+import { franc_languages } from "./utils/constants/languages.js";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
@@ -83,6 +85,8 @@ function App() {
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
 
+  const [francWarning, setFrancWarning] = useState(null);
+
   // Loading messages
   const loadingMessages = [
     "Checking for mistakes...",
@@ -136,8 +140,7 @@ function App() {
     setEditingEntry(null);
     setJournalText("");
     setJournalTitle("Untitled Journal");
-  }, [location.pathname]);
-
+  }, [location.pathname]);  
 
   // --------------------------------------------------------------
   // Helper functions
@@ -166,10 +169,17 @@ function App() {
       return;
     }
 
+    const lang = franc(journalText, {minLength: 50});
+    if (!francWarning && lang != 'und' && franc_languages[lang] != targetLanguage) {
+      setFrancWarning(`Warning: Expected ${targetLanguage} but found ${franc_languages[lang]}`);
+      return;
+    }
+
     // Clear previous results before starting a new analysis
     setCorrections([]);
     setAccuracy(null);
     setApiError("");
+    setFrancWarning(null);
 
     // Immediately show the loading screen
     setLoadingMessage("Checking for mistakes...");
@@ -340,6 +350,7 @@ function App() {
   function returnToEditor(entry) {
     setReviewMode(false);
     setApiError(null);
+    setFrancWarning(null);
     setCorrections([]);
     setAccuracy(null);
     if (entry) {
@@ -355,6 +366,7 @@ function App() {
   function handleNewEntry() {
     setJournalEntryId(null);
     setTargetLanguage("");
+    setFrancWarning(null);
     setReviewMode(false);
     setApiError(null);
     setCorrections([]);
@@ -458,6 +470,8 @@ function App() {
                 onUpdateMistake={updateMistake}
                 handleSaveEdit={handleSaveEdit}
                 editingEntry={editingEntry}
+                francWarning={francWarning}
+                setFrancWarning={setFrancWarning}
               />
             }
           />

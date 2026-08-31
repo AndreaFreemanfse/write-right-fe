@@ -30,6 +30,8 @@ function Write({
   onUpdateMistake,
   handleSaveEdit,
   editingEntry,
+  francWarning,
+  setFrancWarning,
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -137,6 +139,8 @@ function Write({
           setTargetLanguage={setTargetLanguage}
           handleSaveEdit={handleSaveEdit}
           editingEntry={editingEntry}
+          francWarning={francWarning}
+          setFrancWarning={setFrancWarning}
         />
       ) : loading ? (
         <AnalysisLoading
