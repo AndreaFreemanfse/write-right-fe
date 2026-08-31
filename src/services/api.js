@@ -1,12 +1,13 @@
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
 
-// Fetches journal entries for the authenticated user
+// Analyze a journal entry using the selected review mode.
 export async function handleCorrectJournal(
   title,
   text,
   nativeLanguage,
   targetLanguage,
+  reviewDepth
 ) {
   const {
     data: { session },
@@ -22,27 +23,33 @@ export async function handleCorrectJournal(
       "Content-Type": "application/json",
       Authorization: `Bearer ${session.access_token}`,
     },
-
     body: JSON.stringify({
       title,
       text,
       native_language: nativeLanguage,
       target_language: targetLanguage,
+     review_depth: reviewDepth,
     }),
   });
 
   if (!response.ok) {
-    const data = await response.json();
+    let errorMessage = "Something went wrong while analyzing your journal.";
 
-    throw new Error(
-      data.detail || "Something went wrong while analyzing your journal."
-    );
+    try {
+      const data = await response.json();
+      errorMessage = data.detail || errorMessage;
+    } catch {
+      // Keep the default error message if the response
+      // does not contain valid JSON.
+    }
+
+    throw new Error(errorMessage);
   }
 
   return await response.json();
 }
 
-// Fetches journal entries for the authenticated user
+// Fetch journal entries for the authenticated user.
 export async function getJournalEntries() {
   const {
     data: { session },
@@ -65,6 +72,7 @@ export async function getJournalEntries() {
   return await response.json();
 }
 
+// Delete a journal entry.
 export async function deleteJournalEntry(entryId) {
   const {
     data: { session },
@@ -88,6 +96,7 @@ export async function deleteJournalEntry(entryId) {
   return await response.json();
 }
 
+// Update an existing journal entry.
 export async function updateJournalEntry(entryId, data) {
   const {
     data: { session },
@@ -114,7 +123,7 @@ export async function updateJournalEntry(entryId, data) {
       error: result,
     });
 
-    throw new Error(JSON.stringify(result));
+    throw new Error(result.detail || "Failed to update journal entry");
   }
 
   return result;

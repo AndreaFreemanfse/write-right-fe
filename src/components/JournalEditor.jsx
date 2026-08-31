@@ -18,6 +18,8 @@ function JournalEditor({
   error,
   targetLanguage,
   setTargetLanguage,
+  reviewDepth,
+  setReviewDepth,
 }) {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
@@ -153,6 +155,30 @@ function JournalEditor({
 
         <div className="editor-footer">
           <span className="character-count">{text.length} characters</span>
+          
+          <div className="review-mode-selector">
+            <button
+              type="button"
+              className={`review-mode-button ${
+                reviewDepth === "quick" ? "active" : ""
+              }`}
+              onClick={() => setReviewDepth("quick")}
+              disabled={loading}
+            >
+              ⚡ Quick
+            </button>
+
+            <button
+              type="button"
+              className={`review-mode-button ${
+                reviewDepth === "in_depth" ? "active" : ""
+              }`}
+              onClick={() => setReviewDepth("in_depth")}
+              disabled={loading}
+            >
+              🔎 In Depth
+            </button>
+          </div>
 
           <button
             type="button"

@@ -62,7 +62,7 @@ function App() {
 
   // Sets the journal review in journal entries
   const [journalEntryOpen, setJournalEntryOpen] = useState(false);
-  
+
   const [journalEntryData, setJournalEntryData] = useState({});
 
   // Set the content to be edited if a user selects edit journal
@@ -82,6 +82,9 @@ function App() {
 
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
+
+  // Sets how indepth the anlysis should be - affects speed of response
+  const [reviewDepth, setReviewDepth] = useState("quick");
 
   // Loading messages
   const loadingMessages = [
@@ -138,7 +141,6 @@ function App() {
     setJournalTitle("Untitled Journal");
   }, [location.pathname]);
 
-
   // --------------------------------------------------------------
   // Helper functions
   // --------------------------------------------------------------
@@ -182,6 +184,7 @@ function App() {
         journalText,
         nativeLanguage,
         targetLanguage,
+        reviewDepth,
       );
 
       const mistakes = response.mistakes ?? [];
@@ -256,6 +259,7 @@ function App() {
 
   const handleSaveEdit = async () => {
     const trimmedTitle = journalTitle.trim();
+    console.log(reviewDepth);
 
     // Validate before making any API calls
     if (!journalText.trim()) {
@@ -285,7 +289,9 @@ function App() {
         original_text: journalText,
         native_language: nativeLanguage,
         target_language: targetLanguage,
+        review_depth: reviewDepth,
       });
+      console.log(reviewDepth);
 
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
@@ -458,6 +464,8 @@ function App() {
                 onUpdateMistake={updateMistake}
                 handleSaveEdit={handleSaveEdit}
                 editingEntry={editingEntry}
+                reviewDepth={reviewDepth}
+                setReviewDepth={setReviewDepth}
               />
             }
           />
