@@ -20,13 +20,16 @@ function Write({
   journalEntryId,
   journalTitle,
   setJournalTitle,
-  onBack,
+  returnToEditor,
+  onNewEntry,
   error,
   reviewMode,
   targetLanguage,
   nativeLanguage,
   setTargetLanguage,
   onUpdateMistake,
+  handleSaveEdit,
+  editingEntry,
   francWarning,
   setFrancWarning,
 }) {
@@ -103,12 +106,11 @@ function Write({
 
       if (!response.ok) {
         throw new Error(result.detail || "Unable to save flashcard set.");
-        return true;
       }
 
       setSaveMessage(result.message || "Flashcards saved successfully.");
+      return true;
     } catch (saveError) {
-      console.log(flashcardSet)
       console.error(saveError);
 
       setSaveMessage(
@@ -135,6 +137,8 @@ function Write({
           error={error}
           targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
+          handleSaveEdit={handleSaveEdit}
+          editingEntry={editingEntry}
           francWarning={francWarning}
           setFrancWarning={setFrancWarning}
         />
@@ -142,6 +146,8 @@ function Write({
         <AnalysisLoading
           targetLanguage={targetLanguage}
           loadingMessage={loadingMessage}
+          isEditing={!!editingEntry}
+
         />
       ) : (
         <>
@@ -154,11 +160,13 @@ function Write({
           <JournalText
             text={text}
             corrections={corrections}
-            onBack={onBack}
+            onBack={() => returnToEditor(editingEntry)}
+            onNewEntry={onNewEntry}
             onCreateFlashcard={handleCreateFlashcard}
             targetLanguage={targetLanguage}
             nativeLanguage={nativeLanguage}
             onUpdateMistake={onUpdateMistake}
+            editingEntry={editingEntry}
           />
 
           <FlashcardStudy

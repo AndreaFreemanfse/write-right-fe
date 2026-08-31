@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import "./JournalEntriesTable.css";
 
-function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
+function JournalEntriesTable({ setActiveModal, setJournalEntryData }) {
   const [entries, setEntries] = useState([]);
   const [search, setSearch] = useState("");
   const [languageFilter, setLanguageFilter] = useState([]);
@@ -220,7 +220,7 @@ function JournalEntriesTable({ setJournalEntryOpen, setJournalEntryData }) {
                     alignItems: "center",
                   }}
                   onClick={() => {
-                    setJournalEntryOpen(true);
+                    setActiveModal("journalEntries");
                     setJournalEntryData(entry);
                   }}
                 >

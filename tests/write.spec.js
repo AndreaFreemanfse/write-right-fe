@@ -69,6 +69,8 @@ test("user can submit a journal and see mocked analysis results", async ({
     .getByPlaceholder("Write about your day...")
     .fill("Ich fare einen Lastwagen.");
 
+  await page.selectOption("#language-selection", "German");
+
   const analyzeButton = page.getByRole("button", {
     name: /analyze|submit|check/i,
   });
@@ -149,6 +151,8 @@ test("user can start and complete a Conquer Card session", async ({
   await page
     .getByPlaceholder("Write about your day...")
     .fill("Ich fare einen Lastwagen.");
+
+  await page.selectOption("#language-selection", "German");
 
   await page
     .getByRole("button", {
@@ -280,6 +284,8 @@ test("user can save a completed flashcard set to the Vault", async ({
   await page
     .getByPlaceholder("Write about your day...")
     .fill("Ich fare einen Lastwagen.");
+
+  await page.selectOption("#language-selection", "German");
 
   await page
     .getByRole("button", {

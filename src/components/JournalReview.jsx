@@ -1,6 +1,11 @@
 import "./JournalReview.css";
 
-function JournalReview({ isOpen, onClose, journalEntryData }) {
+function JournalReview({
+  isOpen,
+  onClose,
+  journalEntryData,
+  handleEditJournal,
+}) {
   if (!isOpen) {
     return null;
   }
@@ -51,7 +56,14 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         <footer className="journal-review-modal-footer">
           <button
             type="button"
-            className="journal-review-modal-done"
+            className="journal-review-modal-button"
+            onClick={() => handleEditJournal(journalEntryData)}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            className="journal-review-modal-button"
             onClick={onClose}
           >
             Close

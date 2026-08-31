@@ -136,7 +136,8 @@
   background: rgba(248, 250, 252, 0.92);
 }
 
-.journal-review-modal-done {
+.journal-review-modal-button {
+  margin-right: 10px;
   padding: 11px 24px;
 
   border: none;
@@ -162,13 +163,13 @@
     box-shadow 0.2s ease;
 }
 
-.journal-review-modal-done:hover {
+.journal-review-modal-button:hover {
   box-shadow: 0 12px 24px rgba(99, 102, 241, 0.34);
 
   transform: translateY(-2px);
 }
 
-.journal-review-modal-done:focus-visible {
+.journal-review-modal-button:focus-visible {
   outline: 3px solid rgba(99, 102, 241, 0.35);
   outline-offset: 3px;
 }
