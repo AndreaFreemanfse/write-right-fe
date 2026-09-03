@@ -22,7 +22,7 @@ function Navbar({
       <Stack
         direction="row"
         spacing={1}
-        alignItems="center"
+        sx={{alignItems: "center" }}
         className="navbar-logo"
       >
         <img
