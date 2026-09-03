@@ -54,15 +54,9 @@ function App() {
   // Global modal state
   const [activeModal, setActiveModal] = useState(null);
 
-  // Dictionary modal state
-  const [dictionaryOpen, setDictionaryOpen] = useState(false);
-
-  // Help modal state
-  const [helpOpen, setHelpOpen] = useState(false);
-
   // Sets the journal review in journal entries
   const [journalEntryOpen, setJournalEntryOpen] = useState(false);
-  
+
   const [journalEntryData, setJournalEntryData] = useState({});
 
   // Set the content to be edited if a user selects edit journal
@@ -82,6 +76,9 @@ function App() {
 
   // Accuracy state
   const [accuracy, setAccuracy] = useState(null);
+
+  // Sets how indepth the anlysis should be - affects speed of response
+  const [reviewDepth, setReviewDepth] = useState(null);
 
   // Loading messages
   const loadingMessages = [
@@ -136,8 +133,8 @@ function App() {
     setEditingEntry(null);
     setJournalText("");
     setJournalTitle("Untitled Journal");
+    setReviewDepth(null);
   }, [location.pathname]);
-
 
   // --------------------------------------------------------------
   // Helper functions
@@ -145,7 +142,7 @@ function App() {
 
   // Function to handle the journal analysis.
   // Calls the backend and updates the correction state.
-  async function analyzeJournal() {
+  async function analyzeJournal(reviewDepth) {
     // Prevent empty submissions
     if (!journalText.trim()) {
       setApiError("Please enter some text first.");
@@ -162,6 +159,13 @@ function App() {
     if (!targetLanguage) {
       setApiError(
         "Please select a target language before analyzing your writing.",
+      );
+      return;
+    }
+    
+    if (!reviewDepth) {
+      setApiError(
+        "Please select a review depth before analyzing your writing.",
       );
       return;
     }
@@ -182,6 +186,7 @@ function App() {
         journalText,
         nativeLanguage,
         targetLanguage,
+        reviewDepth,
       );
 
       const mistakes = response.mistakes ?? [];
@@ -254,8 +259,9 @@ function App() {
     navigate("/write");
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = async (reviewDepth) => {
     const trimmedTitle = journalTitle.trim();
+    console.log(reviewDepth);
 
     // Validate before making any API calls
     if (!journalText.trim()) {
@@ -285,7 +291,9 @@ function App() {
         original_text: journalText,
         native_language: nativeLanguage,
         target_language: targetLanguage,
+        review_depth: reviewDepth,
       });
+      console.log(reviewDepth);
 
       const mistakes = response.mistakes ?? [];
       const accuracyResult = response.accuracy ?? null;
@@ -363,6 +371,7 @@ function App() {
     setJournalText("");
     setJournalTitle("Untitled Journal");
     navigate("/write");
+    setReviewDepth(null);
   }
 
   // --------------------------------------------------------------
@@ -458,6 +467,8 @@ function App() {
                 onUpdateMistake={updateMistake}
                 handleSaveEdit={handleSaveEdit}
                 editingEntry={editingEntry}
+                reviewDepth={reviewDepth}
+                setReviewDepth={setReviewDepth}
               />
             }
           />

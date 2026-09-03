@@ -30,6 +30,8 @@ function Write({
   onUpdateMistake,
   handleSaveEdit,
   editingEntry,
+  reviewDepth,
+  setReviewDepth
 }) {
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
@@ -137,13 +139,14 @@ function Write({
           setTargetLanguage={setTargetLanguage}
           handleSaveEdit={handleSaveEdit}
           editingEntry={editingEntry}
+          reviewDepth={reviewDepth}
+          setReviewDepth={setReviewDepth}
         />
       ) : loading ? (
         <AnalysisLoading
           targetLanguage={targetLanguage}
           loadingMessage={loadingMessage}
           isEditing={!!editingEntry}
-
         />
       ) : (
         <>

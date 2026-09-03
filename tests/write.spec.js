@@ -71,13 +71,13 @@ test("user can submit a journal and see mocked analysis results", async ({
 
   await page.selectOption("#language-selection", "German");
 
-  const analyzeButton = page.getByRole("button", {
-    name: /analyze|submit|check/i,
+  const quickAnalysisButton = page.getByRole("button", {
+    name: /quick analysis/i,
   });
 
-  await expect(analyzeButton).toBeVisible();
+  await expect(quickAnalysisButton).toBeVisible();
 
-  await analyzeButton.click();
+  await quickAnalysisButton.click();
 
   await expect(
    page.getByRole("heading", {
@@ -156,7 +156,7 @@ test("user can start and complete a Conquer Card session", async ({
 
   await page
     .getByRole("button", {
-      name: /analyze|submit|check/i,
+      name: /quick analysis/i,
     })
     .click();
 
@@ -289,7 +289,7 @@ test("user can save a completed flashcard set to the Vault", async ({
 
   await page
     .getByRole("button", {
-      name: /analyze|submit|check/i,
+      name: /quick analysis/i,
     })
     .click();
 
