@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
+import { useJournal } from "../context/JournalContext";
+
 import JournalEditor from "../components/JournalEditor.jsx";
 import JournalText from "../components/JournalText.jsx";
 import FlashcardStudy from "../components/FlashcardStudy.jsx";
@@ -8,30 +10,36 @@ import AnalysisLoading from "../components/AnalysisLoading.jsx";
 import AccuracySummary from "../components/accuracy/AccuracySummary";
 import AccuracyModal from "../components/accuracy/AccuracyModal";
 
-function Write({
-  dictionaryOpen,
-  text,
-  setText,
-  onAnalyze,
-  loading,
-  loadingMessage,
-  corrections,
-  accuracy,
-  journalEntryId,
-  journalTitle,
-  setJournalTitle,
-  onBack,
-  error,
-  reviewMode,
-  targetLanguage,
-  nativeLanguage,
-  setTargetLanguage,
-  onUpdateMistake,
-}) {
+function Write() {
+  // --------------------------------------------------------------
+  // Shared Journal State
+  // --------------------------------------------------------------
+
+  // Journal state shared across the application is provided
+  // by JournalContext instead of being passed down from App.
+  const {
+    corrections,
+    reviewMode,
+    loading,
+    journalTitle,
+    journalEntryId,
+    accuracy,
+  } = useJournal();
+
+  // --------------------------------------------------------------
+  // Local Flashcard State
+  // --------------------------------------------------------------
+
+  // These values belong specifically to the Write page's
+  // flashcard workflow, so they remain local component state.
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
+
+  // --------------------------------------------------------------
+  // Flashcard Helper Functions
+  // --------------------------------------------------------------
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
@@ -47,15 +55,6 @@ function Write({
 
       return [...currentCards, mistake];
     });
-  }
-
-  function handleCreateStudySet() {
-    if (!corrections?.length) {
-      return;
-    }
-
-    setFlashcards(corrections);
-    setSaveMessage("");
   }
 
   async function handleSaveFlashcardSet(cardsToSave = flashcards) {
@@ -75,7 +74,9 @@ function Write({
       journal_entry_id: journalEntryId,
       flashcards: cardsToSave.map((card) => ({
         front: card.original_full ?? card.original,
-        back: `${card.corrected_full ?? card.corrected ?? ""}||${card.explanation ?? ""}`,
+        back: `${card.corrected_full ?? card.corrected ?? ""}||${
+          card.explanation ?? ""
+        }`,
         language: card.language ?? "Unknown",
       })),
     };
@@ -88,6 +89,7 @@ function Write({
       if (!session) {
         throw new Error("User is not authenticated.");
       }
+
       const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
         method: "POST",
         headers: {
@@ -100,45 +102,41 @@ function Write({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.detail || "Unable to save flashcard set.");
-        return true;
+        throw new Error(
+          result.detail || "Unable to save flashcard set.",
+        );
       }
 
-      setSaveMessage(result.message || "Flashcards saved successfully.");
+      setSaveMessage(
+        result.message || "Flashcards saved successfully.",
+      );
+
+      return true;
     } catch (saveError) {
-      console.log(flashcardSet)
+      console.log(flashcardSet);
       console.error(saveError);
 
       setSaveMessage(
-        saveError.message || "The flashcard set could not be saved.",
+        saveError.message ||
+          "The flashcard set could not be saved.",
       );
+
       return false;
     } finally {
       setSavingSet(false);
     }
   }
 
+  // --------------------------------------------------------------
+  // Render
+  // --------------------------------------------------------------
+
   return (
     <>
       {!reviewMode ? (
-        <JournalEditor
-          dictionaryOpen={dictionaryOpen}
-          text={text}
-          setText={setText}
-          journalTitle={journalTitle}
-          setJournalTitle={setJournalTitle}
-          onAnalyze={onAnalyze}
-          loading={loading}
-          loadingMessage={loadingMessage}
-          error={error}
-          targetLanguage={targetLanguage}
-          setTargetLanguage={setTargetLanguage}
-        />
+       <JournalEditor />
       ) : loading ? (
-        <AnalysisLoading
-          targetLanguage={targetLanguage}
-          loadingMessage={loadingMessage}
-        />
+       <AnalysisLoading />
       ) : (
         <>
           {corrections.length > 0 && accuracy && (
@@ -147,26 +145,18 @@ function Write({
               score={accuracy.score}
             />
           )}
+
           <JournalText
-            text={text}
-            corrections={corrections}
-            onBack={onBack}
             onCreateFlashcard={handleCreateFlashcard}
-            targetLanguage={targetLanguage}
-            nativeLanguage={nativeLanguage}
-            onUpdateMistake={onUpdateMistake}
           />
 
           <FlashcardStudy
             mistakes={flashcards}
-            corrections={corrections}
-            onCreateStudySet={handleCreateStudySet}
             onSaveSet={handleSaveFlashcardSet}
             savingSet={savingSet}
             saveMessage={saveMessage}
-            targetLanguage={targetLanguage}
-            nativeLanguage={nativeLanguage}
           />
+
           <AccuracyModal
             isOpen={accuracyModalOpen}
             onClose={() => setAccuracyModalOpen(false)}

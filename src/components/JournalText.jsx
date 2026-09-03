@@ -1,11 +1,23 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+
 import Correction from "./Correction";
-import CorrectionTooltip from "./CorrectionTooltip";
+
 import "./JournalText.css";
 
-function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLanguage, nativeLanguage, onUpdateMistake }) {
+import { useJournal } from "../context/JournalContext";
+
+function JournalText({ onCreateFlashcard }) {
+const {
+  journalText,
+  corrections,
+  returnToEditor,
+} = useJournal();
+
   // State to track the currently selected correction for tooltip display
   const [selectedCorrection, setSelectedCorrection] = useState(null);
+
+  // Alias journalText so the rest of this component can keep using "text"
+  const text = journalText;
 
   function renderTextWithCorrections() {
     // If there are no mistakes, just display the text
@@ -19,18 +31,18 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
     let currentIndex = 0;
 
     corrections.forEach((mistake, index) => {
-      /*
-                Add the text BEFORE the mistake
-
-                Example:
-
-                "How are you"
-
-                mistake:
-                Hww
-
-                This adds everything before Hww
-            */
+      /**
+       * Add the text BEFORE the mistake
+       *
+       * Example:
+       *
+       * "How are you"
+       *
+       * mistake:
+       * Hww
+       *
+       * This adds everything before Hww
+       */
       if (mistake.start > currentIndex) {
         parts.push(
           <span key={`text-${index}`}>
@@ -39,13 +51,13 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
         );
       }
 
-      /*
-                Add the correction component
-
-                Example:
-
-                Hww → How
-            */
+      /**
+       * Add the correction component
+       *
+       * Example:
+       *
+       * Hww → How
+       */
       parts.push(
         <Correction
           key={`mistake-${index}`}
@@ -54,31 +66,32 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
           isOpen={selectedCorrection === index}
           onClose={() => setSelectedCorrection(null)}
           onClick={() =>
-            setSelectedCorrection(selectedCorrection === index ? null : index)
-          }
-          targetLanguage={targetLanguage}
-          nativeLanguage={nativeLanguage}
-          onUpdateMistake={onUpdateMistake}
+          setSelectedCorrection(selectedCorrection === index ? null : index)}
+          onUpdateMistake={updateMistake}
         />,
       );
 
-      /*
-                Move our pointer forward
-
-                so we don't duplicate text
-            */
+      /**
+       * Move our pointer forward
+       *
+       * so we don't duplicate text
+       */
       currentIndex = mistake.end;
     });
 
-    /*
-            Add whatever text remains after the last mistake
-
-            Example:
-
-            " are you??"
-        */
+    /**
+     * Add whatever text remains after the last mistake
+     *
+     * Example:
+     *
+     * " are you??"
+     */
     if (currentIndex < text.length) {
-      parts.push(<span key="remaining-text">{text.slice(currentIndex)}</span>);
+      parts.push(
+        <span key="remaining-text">
+          {text.slice(currentIndex)}
+        </span>,
+      );
     }
 
     return parts;
@@ -89,12 +102,14 @@ function JournalText({ text, corrections, onBack, onCreateFlashcard, targetLangu
       <div className="review-header">
         <h2>Your Journal Review</h2>
 
-        <button onClick={onBack} className="back-button">
+        <button onClick={returnToEditor} className="back-button">
           ← Back to Edit
         </button>
       </div>
 
-      <div className="journal-content">{renderTextWithCorrections()}</div>
+      <div className="journal-content">
+        {renderTextWithCorrections()}
+      </div>
     </div>
   );
 }

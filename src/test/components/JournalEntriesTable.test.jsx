@@ -1,4 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -7,10 +11,15 @@ import {
   getJournalEntries,
   deleteJournalEntry,
 } from "../../services/api.js";
+import { useJournal } from "../../context/JournalContext";
 
 vi.mock("../../services/api.js", () => ({
   getJournalEntries: vi.fn(),
   deleteJournalEntry: vi.fn(),
+}));
+
+vi.mock("../../context/JournalContext", () => ({
+  useJournal: vi.fn(),
 }));
 
 const entries = [
@@ -33,18 +42,18 @@ const entries = [
 ];
 
 function renderTable() {
-  const setJournalEntryOpen = vi.fn();
+  const setActiveModal = vi.fn();
   const setJournalEntryData = vi.fn();
 
-  render(
-    <JournalEntriesTable
-      setJournalEntryOpen={setJournalEntryOpen}
-      setJournalEntryData={setJournalEntryData}
-    />,
-  );
+  useJournal.mockReturnValue({
+    setActiveModal,
+    setJournalEntryData,
+  });
+
+  render(<JournalEntriesTable />);
 
   return {
-    setJournalEntryOpen,
+    setActiveModal,
     setJournalEntryData,
   };
 }
@@ -77,7 +86,9 @@ describe("JournalEntriesTable", () => {
     await screen.findByText("First Journal");
 
     await user.type(
-      screen.getByPlaceholderText("Search journal entries..."),
+      screen.getByPlaceholderText(
+        "Search journal entries...",
+      ),
       "Second",
     );
 
@@ -94,7 +105,7 @@ describe("JournalEntriesTable", () => {
     const user = userEvent.setup();
 
     const {
-      setJournalEntryOpen,
+      setActiveModal,
       setJournalEntryData,
     } = renderTable();
 
@@ -102,7 +113,9 @@ describe("JournalEntriesTable", () => {
       await screen.findByText("First Journal"),
     );
 
-    expect(setJournalEntryOpen).toHaveBeenCalledWith(true);
+    expect(setActiveModal).toHaveBeenCalledWith(
+      "journalEntries",
+    );
 
     expect(setJournalEntryData).toHaveBeenCalledWith(
       entries[0],

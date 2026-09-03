@@ -1,14 +1,23 @@
 import { useEffect } from "react";
 import "./CorrectionTooltip.css";
+import { useJournal } from "../context/JournalContext";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { API_BASE_URL } from "../config/api.js";
 
 
-function CorrectionTooltip({ mistake, onCreateFlashcard, nativeLanguage, targetLanguage, onUpdateMistake }) {
+function CorrectionTooltip({
+  mistake,
+  onCreateFlashcard,
+}) {
+  const {
+    nativeLanguage,
+    targetLanguage,
+    updateMistake,
+  } = useJournal();
   // Let's move this logic to BE so FE only gets clean data -------
 
-
+  const onUpdateMistake = updateMistake;
   const currentNativeLanguage = nativeLanguage || "English";
   const currentTargetLanguage = targetLanguage || "English";
   

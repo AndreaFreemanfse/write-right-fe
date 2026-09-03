@@ -1,56 +1,53 @@
 import { useNavigate } from "react-router-dom";
-
 import LanguageSelectionDropdown from "../components/LanguageSelectionDropdown";
+import { useJournal } from "../context/JournalContext";
 import "./SelectUserPresets.css";
-import { updateNativeLanguage } from "../services/auth";
 
-function SelectUserPresets({ setNativeLanguage, nativeLanguage }) {
+function SelectUserPresets() {
   const navigate = useNavigate();
 
+  const {
+    nativeLanguage,
+    setNativeLanguage,
+  } = useJournal();
+
   const handleContinue = async () => {
-    if (!nativeLanguage) {
-      return;
-    }
+    if (!nativeLanguage) return;
 
     try {
       navigate("/write", { replace: true });
     } catch (error) {
-      console.error("Failed to save native language:", error);
+      console.error(
+        "Failed to save native language:",
+        error,
+      );
     }
   };
 
   return (
-    <div className="select-presets-page">
-      <div className="select-presets-card">
-        <div className="select-presets-header">
-          <h1>Let's personalize your language journey</h1>
+    <div className="select-user-presets">
+      <div className="select-user-presets-content">
+        <h1>Choose Your Native Language</h1>
 
-          <p>
-            Tell us a little about your language preferences so we can
-            personalize your learning experience.
-          </p>
-        </div>
+        <p>
+          Select the language you are most comfortable
+          speaking.
+        </p>
 
-        <div className="select-presets-form">
-          <div className="language-field">
-            <label htmlFor="native-language">Native language</label>
+        <LanguageSelectionDropdown
+          value={nativeLanguage}
+          onChange={setNativeLanguage}
+          displayText="Select your native language"
+          languageType="native"
+        />
 
-            <LanguageSelectionDropdown
-              value={nativeLanguage}
-              onChange={setNativeLanguage}
-              displayText="Select your native language"
-              languageType={'native'}
-            />
-          </div>
-          <button
-            className="select-presets-button"
-            type="button"
-            onClick={handleContinue}
-            disabled={!nativeLanguage}
-          >
-            Continue
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleContinue}
+          disabled={!nativeLanguage}
+        >
+          Continue
+        </button>
       </div>
     </div>
   );

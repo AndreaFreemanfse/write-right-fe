@@ -1,8 +1,14 @@
 import { useMemo } from "react";
 import { vocabulary } from "../data/vocabulary.js";
+import { useJournal } from "../context/JournalContext";
 import "./AnalysisLoading.css";
 
-function AnalysisLoading({ targetLanguage, loadingMessage }) {
+function AnalysisLoading() {
+  const {
+    targetLanguage,
+    loadingMessage,
+  } = useJournal();
+
   const selectedWord = useMemo(() => {
     const normalizedLanguage = targetLanguage?.toLowerCase() || "english";
 

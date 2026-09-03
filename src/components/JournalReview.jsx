@@ -1,6 +1,20 @@
+import { useJournal } from "../context/JournalContext";
+
 import "./JournalReview.css";
 
-function JournalReview({ isOpen, onClose, journalEntryData }) {
+function JournalReview() {
+  const {
+    activeModal,
+    setActiveModal,
+    journalEntryData,
+  } = useJournal();
+
+  const isOpen = activeModal === "journalEntries";
+
+  const handleClose = () => {
+    setActiveModal(null);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -10,7 +24,10 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
     : "";
 
   return (
-    <div className="journal-review-modal-overlay" onClick={onClose}>
+    <div
+      className="journal-review-modal-overlay"
+      onClick={handleClose}
+    >
       <section
         className="journal-review-modal"
         role="dialog"
@@ -19,11 +36,16 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
         onClick={(event) => event.stopPropagation()}
       >
         <header className="journal-review-modal-header">
-          <h2 id="journal-review-modal-title">{journalEntryData?.title}</h2>
+          <h2 id="journal-review-modal-title">
+            {journalEntryData?.title}
+          </h2>
         </header>
 
         <section className="journal-review-section">
-          <div className="journal-review-section-icon" aria-hidden="true">
+          <div
+            className="journal-review-section-icon"
+            aria-hidden="true"
+          >
             ✍️
           </div>
 
@@ -52,7 +74,7 @@ function JournalReview({ isOpen, onClose, journalEntryData }) {
           <button
             type="button"
             className="journal-review-modal-done"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Close
           </button>

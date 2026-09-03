@@ -1,31 +1,50 @@
 import { useState, useRef } from "react";
-import "./JournalEditor.css";
-import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { Stack } from "@mui/material";
+
+import "./JournalEditor.css";
+
+import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
+
 import { specialCharacters } from "../utils/constants/specialCharacters";
 
-function JournalEditor({
-  dictionaryOpen,
-  text,
-  setText,
-  journalTitle,
-  setJournalTitle,
-  onAnalyze,
-  loading,
-  loadingMessage,
-  error,
-  targetLanguage,
-  setTargetLanguage,
-}) {
+import { useJournal } from "../context/JournalContext";
+
+function JournalEditor() {
+  const {
+    journalText,
+    setJournalText,
+    journalTitle,
+    setJournalTitle,
+    analyzeJournal,
+    loading,
+    loadingMessage,
+    apiError,
+    targetLanguage,
+    setTargetLanguage,
+    activeModal,
+  } = useJournal();
+
+  const dictionaryOpen = activeModal === "dictionary";
+  // Keep local UI state local to this component
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
 
   const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
 
   const textAreaRef = useRef(null);
 
+  // Alias shared context values so the existing component logic
+  // can continue using the same variable names.
+  const text = journalText;
+
+  const setText = setJournalText;
+
+  const onAnalyze = analyzeJournal;
+
+  const error = apiError;
 
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
+
     setLanguageDropdownOpen(false);
   };
 
@@ -35,6 +54,7 @@ function JournalEditor({
     if (!textarea) return;
 
     const start = textarea.selectionStart;
+
     const end = textarea.selectionEnd;
 
     const newText =
@@ -46,9 +66,10 @@ function JournalEditor({
 
     requestAnimationFrame(() => {
       textarea.focus();
+
       textarea.setSelectionRange(
         start + character.length,
-        start + character.length
+        start + character.length,
       );
     });
   }
@@ -67,12 +88,15 @@ function JournalEditor({
             type="text"
             className="journal-title-input"
             value={journalTitle}
-            onChange={(event) => setJournalTitle(event.target.value)}
+            onChange={(event) =>
+              setJournalTitle(event.target.value)
+            }
             size={Math.max(journalTitle.length, 1)}
             placeholder="Name your journal"
             maxLength={80}
           />
         </label>
+
         <div className="language-selector-wrapper">
           {targetLanguage && !languageDropdownOpen ? (
             <button
@@ -87,8 +111,11 @@ function JournalEditor({
             <Stack
               direction="row"
               spacing={2}
-             className="fade-in"
-              sx={{ alignItems: "center" ,width: "100%"}}
+              className="fade-in"
+              sx={{
+                alignItems: "center",
+                width: "100%",
+              }}
             >
               <p className="editor-subtitle">
                 Practice writing in your target language:
@@ -98,7 +125,7 @@ function JournalEditor({
                 value={targetLanguage}
                 onChange={handleLanguageChange}
                 displayText="Target Language"
-                languageType={"target"}
+                languageType="target"
               />
             </Stack>
           )}
@@ -109,7 +136,9 @@ function JournalEditor({
             className="journal-textarea"
             value={text}
             ref={textAreaRef}
-            onChange={(event) => setText(event.target.value)}
+            onChange={(event) =>
+              setText(event.target.value)
+            }
             placeholder="Write about your day..."
             disabled={loading}
             style={{
@@ -121,41 +150,51 @@ function JournalEditor({
           {loading && (
             <div className="loading-overlay">
               <div className="spinner"></div>
+
               <p>{loadingMessage}</p>
             </div>
           )}
         </div>
+
         {characters.length > 0 && (
           <button
             type="button"
             className="special-character-toggle"
-            onClick={() => setShowSpecialCharacters((current) => !current)}
+            onClick={() =>
+              setShowSpecialCharacters((current) => !current)
+            }
           >
             {showSpecialCharacters
               ? "Hide Special Characters"
               : "View Special Characters"}
-          </button>          
+          </button>
+        )}
+
+        {showSpecialCharacters &&
+          characters.length > 0 && (
+            <div className="special-character-bar">
+              {characters.map((character) => (
+                <button
+                  key={character}
+                  type="button"
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+
+                    insertSpecialCharacter(character);
+
+                    console.log(character);
+                  }}
+                >
+                  {character}
+                </button>
+              ))}
+            </div>
           )}
-          {showSpecialCharacters && characters.length > 0 && (
-              <div className="special-character-bar">
-                {characters.map((character) => (
-                  <button
-                    key={character}
-                    type="button"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      insertSpecialCharacter(character);
-                      console.log(character);
-                    }}
-                  >
-                    {character}
-                  </button>
-                ))}
-              </div>
-            )}
 
         <div className="editor-footer">
-          <span className="character-count">{text.length} characters</span>
+          <span className="character-count">
+            {text.length} characters
+          </span>
 
           <button
             type="button"
@@ -167,7 +206,11 @@ function JournalEditor({
           </button>
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
       </Stack>
     </div>
   );

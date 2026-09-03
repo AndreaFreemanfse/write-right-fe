@@ -3,15 +3,20 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import HelpModal from "../../components/HelpModal";
+import { useJournal } from "../../context/JournalContext";
+
+vi.mock("../../context/JournalContext", () => ({
+  useJournal: vi.fn(),
+}));
 
 describe("HelpModal", () => {
   test("does not render when closed", () => {
-    render(
-      <HelpModal
-        isOpen={false}
-        onClose={() => {}}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: null,
+      setActiveModal: vi.fn(),
+    });
+
+    render(<HelpModal />);
 
     expect(
       screen.queryByRole("dialog"),
@@ -19,12 +24,12 @@ describe("HelpModal", () => {
   });
 
   test("renders when open", () => {
-    render(
-      <HelpModal
-        isOpen={true}
-        onClose={() => {}}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "help",
+      setActiveModal: vi.fn(),
+    });
+
+    render(<HelpModal />);
 
     expect(
       screen.getByRole("dialog"),
@@ -37,16 +42,16 @@ describe("HelpModal", () => {
     ).toBeVisible();
   });
 
-  test("clicking the close button calls onClose", async () => {
+  test("clicking the close button closes the modal", async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
+    const setActiveModal = vi.fn();
 
-    render(
-      <HelpModal
-        isOpen={true}
-        onClose={onClose}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "help",
+      setActiveModal,
+    });
+
+    render(<HelpModal />);
 
     await user.click(
       screen.getByRole("button", {
@@ -54,19 +59,19 @@ describe("HelpModal", () => {
       }),
     );
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setActiveModal).toHaveBeenCalledWith(null);
   });
 
-  test("clicking Got it calls onClose", async () => {
+  test("clicking Got it closes the modal", async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
+    const setActiveModal = vi.fn();
 
-    render(
-      <HelpModal
-        isOpen={true}
-        onClose={onClose}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "help",
+      setActiveModal,
+    });
+
+    render(<HelpModal />);
 
     await user.click(
       screen.getByRole("button", {
@@ -74,6 +79,6 @@ describe("HelpModal", () => {
       }),
     );
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setActiveModal).toHaveBeenCalledWith(null);
   });
 });
