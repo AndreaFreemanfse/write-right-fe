@@ -74,19 +74,48 @@ export async function deleteJournalEntry(entryId) {
     throw new Error("User is not authenticated.");
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}/journal/${entryId}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${session.access_token}`,
-      },
-    }
-  );
+  const response = await fetch(`${API_BASE_URL}/journal/${entryId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Failed to delete journal entry");
   }
 
   return await response.json();
+}
+
+export async function updateJournalEntry(entryId, data) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    throw new Error("User is not authenticated.");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/journal/${entryId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    console.error("Update failed:", {
+      status: response.status,
+      error: result,
+    });
+
+    throw new Error(JSON.stringify(result));
+  }
+
+  return result;
 }

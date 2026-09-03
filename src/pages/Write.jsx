@@ -11,12 +11,6 @@ import AccuracySummary from "../components/accuracy/AccuracySummary";
 import AccuracyModal from "../components/accuracy/AccuracyModal";
 
 function Write() {
-  // --------------------------------------------------------------
-  // Shared Journal State
-  // --------------------------------------------------------------
-
-  // Journal state shared across the application is provided
-  // by JournalContext instead of being passed down from App.
   const {
     corrections,
     reviewMode,
@@ -26,27 +20,19 @@ function Write() {
     accuracy,
   } = useJournal();
 
-  // --------------------------------------------------------------
-  // Local Flashcard State
-  // --------------------------------------------------------------
-
-  // These values belong specifically to the Write page's
-  // flashcard workflow, so they remain local component state.
   const [flashcards, setFlashcards] = useState([]);
   const [savingSet, setSavingSet] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
-  const [accuracyModalOpen, setAccuracyModalOpen] = useState(false);
-
-  // --------------------------------------------------------------
-  // Flashcard Helper Functions
-  // --------------------------------------------------------------
+  const [accuracyModalOpen, setAccuracyModalOpen] =
+    useState(false);
 
   function handleCreateFlashcard(mistake) {
     setFlashcards((currentCards) => {
       const alreadyExists = currentCards.some(
         (card) =>
           card.original === mistake.original &&
-          card.corrected_text === mistake.corrected_text,
+          card.corrected_text ===
+            mistake.corrected_text,
       );
 
       if (alreadyExists) {
@@ -57,7 +43,9 @@ function Write() {
     });
   }
 
-  async function handleSaveFlashcardSet(cardsToSave = flashcards) {
+  async function handleSaveFlashcardSet(
+    cardsToSave = flashcards,
+  ) {
     if (!cardsToSave.length) {
       return;
     }
@@ -69,15 +57,20 @@ function Write() {
 
     const flashcardSet = {
       name: trimmedTitle,
-      language: cardsToSave[0]?.language ?? "Unknown",
+      language:
+        cardsToSave[0]?.language ?? "Unknown",
       source_type: "journal",
       journal_entry_id: journalEntryId,
       flashcards: cardsToSave.map((card) => ({
-        front: card.original_full ?? card.original,
-        back: `${card.corrected_full ?? card.corrected ?? ""}||${
-          card.explanation ?? ""
-        }`,
-        language: card.language ?? "Unknown",
+        front:
+          card.original_full ?? card.original,
+        back: `${
+          card.corrected_full ??
+          card.corrected ??
+          ""
+        }||${card.explanation ?? ""}`,
+        language:
+          card.language ?? "Unknown",
       })),
     };
 
@@ -87,33 +80,39 @@ function Write() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        throw new Error("User is not authenticated.");
+        throw new Error(
+          "User is not authenticated.",
+        );
       }
 
-      const response = await fetch(`${API_BASE_URL}/flashcard-sets`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
+      const response = await fetch(
+        `${API_BASE_URL}/flashcard-sets`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify(flashcardSet),
         },
-        body: JSON.stringify(flashcardSet),
-      });
+      );
 
       const result = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          result.detail || "Unable to save flashcard set.",
+          result.detail ||
+            "Unable to save flashcard set.",
         );
       }
 
       setSaveMessage(
-        result.message || "Flashcards saved successfully.",
+        result.message ||
+          "Flashcards saved successfully.",
       );
 
       return true;
     } catch (saveError) {
-      console.log(flashcardSet);
       console.error(saveError);
 
       setSaveMessage(
@@ -127,27 +126,28 @@ function Write() {
     }
   }
 
-  // --------------------------------------------------------------
-  // Render
-  // --------------------------------------------------------------
-
   return (
     <>
       {!reviewMode ? (
-       <JournalEditor />
+        <JournalEditor />
       ) : loading ? (
-       <AnalysisLoading />
+        <AnalysisLoading />
       ) : (
         <>
-          {corrections.length > 0 && accuracy && (
-            <AccuracySummary
-              onOpenDetails={() => setAccuracyModalOpen(true)}
-              score={accuracy.score}
-            />
-          )}
+          {corrections.length > 0 &&
+            accuracy && (
+              <AccuracySummary
+                onOpenDetails={() =>
+                  setAccuracyModalOpen(true)
+                }
+                score={accuracy.score}
+              />
+            )}
 
           <JournalText
-            onCreateFlashcard={handleCreateFlashcard}
+            onCreateFlashcard={
+              handleCreateFlashcard
+            }
           />
 
           <FlashcardStudy
@@ -159,7 +159,9 @@ function Write() {
 
           <AccuracyModal
             isOpen={accuracyModalOpen}
-            onClose={() => setAccuracyModalOpen(false)}
+            onClose={() =>
+              setAccuracyModalOpen(false)
+            }
             accuracy={accuracy}
           />
         </>

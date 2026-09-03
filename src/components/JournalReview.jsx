@@ -7,6 +7,7 @@ function JournalReview() {
     activeModal,
     setActiveModal,
     journalEntryData,
+    handleEditJournal,
   } = useJournal();
 
   const isOpen = activeModal === "journalEntries";
@@ -20,7 +21,9 @@ function JournalReview() {
   }
 
   const formattedDate = journalEntryData?.created_at
-    ? new Date(journalEntryData.created_at).toLocaleDateString()
+    ? new Date(
+        journalEntryData.created_at,
+      ).toLocaleDateString()
     : "";
 
   return (
@@ -58,7 +61,9 @@ function JournalReview() {
                   <span aria-hidden="true">|</span>
 
                   <span className="vault-language">
-                    {journalEntryData.target_language}
+                    {
+                      journalEntryData.target_language
+                    }
                   </span>
                 </>
               ) : null}
@@ -73,7 +78,17 @@ function JournalReview() {
         <footer className="journal-review-modal-footer">
           <button
             type="button"
-            className="journal-review-modal-done"
+            className="journal-review-modal-button"
+            onClick={() =>
+              handleEditJournal(journalEntryData)
+            }
+          >
+            Edit
+          </button>
+
+          <button
+            type="button"
+            className="journal-review-modal-button"
             onClick={handleClose}
           >
             Close

@@ -1,6 +1,12 @@
 import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+
 import { useJournal } from "./context/JournalContext";
+
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
 import AmbientBackground from "./components/background/AmbientBackground";
@@ -19,37 +25,41 @@ import SignInPage from "./pages/SignInPage.jsx";
 import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
 import SelectUserPresets from "./pages/SelectUserPresets.jsx";
+
 import "./App.css";
 
 function App() {
-  // --------------------------------------------------------------
-  // Journal State
-  // --------------------------------------------------------------
+  const {
+    setActiveModal,
+    resetJournal,
+  } = useJournal();
 
-  // Shared journal state is now provided by JournalContext.
-  // App only pulls the values it still needs directly.
-
-  const { setActiveModal } = useJournal();
   const location = useLocation();
-  const publicPaths = ["/", "/signup", "/signin", "/check-email"];
-  const isPublicPage = publicPaths.includes(location.pathname);
 
-  // Close modals on page change
+  const publicPaths = [
+    "/",
+    "/signup",
+    "/signin",
+    "/check-email",
+  ];
+
+  const isPublicPage = publicPaths.includes(
+    location.pathname,
+  );
+
+  // Close global modals whenever the route changes.
   useEffect(() => {
     setActiveModal(null);
   }, [location.pathname, setActiveModal]);
 
-  // --------------------------------------------------------------
-  // Helper functions
-  // --------------------------------------------------------------
+  // Clear the active journal when navigating away from /write.
+  useEffect(() => {
+    if (location.pathname === "/write") {
+      return;
+    }
 
-  // Journal helper functions such as analyzeJournal,
-  // updateMistake, and returnToEditor now live in JournalContext.
-  // Components that need them can access them directly with useJournal().
-
-  // --------------------------------------------------------------
-  // Render
-  // --------------------------------------------------------------
+    resetJournal();
+  }, [location.pathname, resetJournal]);
 
   return (
     <div className="App">
@@ -69,13 +79,25 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={<LandingPage />}
+          />
 
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route
+            path="/signup"
+            element={<SignUpPage />}
+          />
 
-          <Route path="/signin" element={<SignInPage />} />
+          <Route
+            path="/signin"
+            element={<SignInPage />}
+          />
 
-          <Route path="/check-email" element={<CheckEmailPage />} />
+          <Route
+            path="/check-email"
+            element={<CheckEmailPage />}
+          />
         </Route>
 
         {/* Protected Routes */}
@@ -85,11 +107,17 @@ function App() {
             element={<SelectUserPresets />}
           />
 
-          <Route path="/write" element={<Write />} />
+          <Route
+            path="/write"
+            element={<Write />}
+          />
 
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/profile"
+            element={<ProfilePage />}
+          />
 
-         <Route
+          <Route
             path="/flashcards"
             element={<FlashcardReviewPage />}
           />

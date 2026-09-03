@@ -4,9 +4,7 @@ import { Stack } from "@mui/material";
 import "./JournalEditor.css";
 
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
-
 import { specialCharacters } from "../utils/constants/specialCharacters";
-
 import { useJournal } from "../context/JournalContext";
 
 function JournalEditor() {
@@ -16,6 +14,8 @@ function JournalEditor() {
     journalTitle,
     setJournalTitle,
     analyzeJournal,
+    handleSaveEdit,
+    editingEntry,
     loading,
     loadingMessage,
     apiError,
@@ -24,27 +24,21 @@ function JournalEditor() {
     activeModal,
   } = useJournal();
 
-  const dictionaryOpen = activeModal === "dictionary";
-  // Keep local UI state local to this component
-  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-
-  const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
+  const [languageDropdownOpen, setLanguageDropdownOpen] =
+    useState(false);
+  const [showSpecialCharacters, setShowSpecialCharacters] =
+    useState(false);
 
   const textAreaRef = useRef(null);
 
-  // Alias shared context values so the existing component logic
-  // can continue using the same variable names.
+  const dictionaryOpen = activeModal === "dictionary";
+
   const text = journalText;
-
   const setText = setJournalText;
-
-  const onAnalyze = analyzeJournal;
-
   const error = apiError;
 
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
-
     setLanguageDropdownOpen(false);
   };
 
@@ -54,7 +48,6 @@ function JournalEditor() {
     if (!textarea) return;
 
     const start = textarea.selectionStart;
-
     const end = textarea.selectionEnd;
 
     const newText =
@@ -74,12 +67,15 @@ function JournalEditor() {
     });
   }
 
-  const characters = specialCharacters[targetLanguage] ?? [];
+  const characters =
+    specialCharacters[targetLanguage] ?? [];
 
   return (
     <div
       className={`journal-editor ${
-        dictionaryOpen ? "journal-editor--dictionary-open" : ""
+        dictionaryOpen
+          ? "journal-editor--dictionary-open"
+          : ""
       }`}
     >
       <Stack spacing={2}>
@@ -98,11 +94,14 @@ function JournalEditor() {
         </label>
 
         <div className="language-selector-wrapper">
-          {targetLanguage && !languageDropdownOpen ? (
+          {targetLanguage &&
+          !languageDropdownOpen ? (
             <button
               type="button"
               className="selected-language-button"
-              onClick={() => setLanguageDropdownOpen(true)}
+              onClick={() =>
+                setLanguageDropdownOpen(true)
+              }
               aria-label={`Change target language from ${targetLanguage}`}
             >
               {targetLanguage.toUpperCase()}
@@ -118,7 +117,8 @@ function JournalEditor() {
               }}
             >
               <p className="editor-subtitle">
-                Practice writing in your target language:
+                Practice writing in your target
+                language:
               </p>
 
               <LanguageSelectionDropdown
@@ -161,7 +161,9 @@ function JournalEditor() {
             type="button"
             className="special-character-toggle"
             onClick={() =>
-              setShowSpecialCharacters((current) => !current)
+              setShowSpecialCharacters(
+                (current) => !current,
+              )
             }
           >
             {showSpecialCharacters
@@ -179,10 +181,9 @@ function JournalEditor() {
                   type="button"
                   onMouseDown={(event) => {
                     event.preventDefault();
-
-                    insertSpecialCharacter(character);
-
-                    console.log(character);
+                    insertSpecialCharacter(
+                      character,
+                    );
                   }}
                 >
                   {character}
@@ -199,10 +200,22 @@ function JournalEditor() {
           <button
             type="button"
             className="analyze-button"
-            onClick={onAnalyze}
+            onClick={() => {
+              if (editingEntry) {
+                handleSaveEdit();
+              } else {
+                analyzeJournal();
+              }
+            }}
             disabled={loading}
           >
-            {loading ? "Analyzing..." : "Analyze Writing"}
+            {loading
+              ? editingEntry
+                ? "Saving..."
+                : "Analyzing..."
+              : editingEntry
+                ? "Save Changes"
+                : "Analyze Writing"}
           </button>
         </div>
 
