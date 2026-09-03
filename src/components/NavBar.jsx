@@ -20,8 +20,17 @@ function Navbar({
 }) {
   return (
     <div className="navbar">
-      <Stack direction="row" spacing={2}>
-        <span className="logo-icon">✍️</span>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{alignItems: "center" }}
+        className="navbar-logo"
+      >
+        <img
+          src="/WriteRightLogo.png"
+          alt="WriteRight logo"
+          className="navbar-logo-image"
+        />
         <span className="logo-text">WriteRight</span>
       </Stack>
 
