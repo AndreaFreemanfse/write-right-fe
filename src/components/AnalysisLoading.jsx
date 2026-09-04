@@ -1,14 +1,28 @@
 import { useMemo } from "react";
 import { vocabulary } from "../data/vocabulary.js";
+import { useJournal } from "../context/JournalContext";
 import "./AnalysisLoading.css";
 
-function AnalysisLoading({ targetLanguage, loadingMessage, isEditing }) {
+function AnalysisLoading() {
+  const {
+    targetLanguage,
+    loadingMessage,
+    editingEntry,
+  } = useJournal();
+
+  const isEditing = Boolean(editingEntry);
+
   const selectedWord = useMemo(() => {
-    const normalizedLanguage = targetLanguage?.toLowerCase() || "english";
+    const normalizedLanguage =
+      targetLanguage?.toLowerCase() || "english";
 
-    const availableWords = vocabulary[normalizedLanguage] || vocabulary.english;
+    const availableWords =
+      vocabulary[normalizedLanguage] ||
+      vocabulary.english;
 
-    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const randomIndex = Math.floor(
+      Math.random() * availableWords.length,
+    );
 
     return availableWords[randomIndex];
   }, [targetLanguage]);

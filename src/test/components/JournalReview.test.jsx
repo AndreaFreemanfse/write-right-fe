@@ -3,6 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import JournalReview from "../../components/JournalReview";
+import { useJournal } from "../../context/JournalContext";
+
+vi.mock("../../context/JournalContext", () => ({
+  useJournal: vi.fn(),
+}));
 
 const journalEntry = {
   title: "Truck Journal",
@@ -13,13 +18,13 @@ const journalEntry = {
 
 describe("JournalReview", () => {
   test("does not render when closed", () => {
-    render(
-      <JournalReview
-        isOpen={false}
-        onClose={vi.fn()}
-        journalEntryData={journalEntry}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: null,
+      setActiveModal: vi.fn(),
+      journalEntryData: journalEntry,
+    });
+
+    render(<JournalReview />);
 
     expect(
       screen.queryByRole("dialog"),
@@ -27,13 +32,13 @@ describe("JournalReview", () => {
   });
 
   test("renders journal entry details when open", () => {
-    render(
-      <JournalReview
-        isOpen={true}
-        onClose={vi.fn()}
-        journalEntryData={journalEntry}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "journalEntries",
+      setActiveModal: vi.fn(),
+      journalEntryData: journalEntry,
+    });
+
+    render(<JournalReview />);
 
     expect(
       screen.getByRole("heading", {
@@ -50,17 +55,17 @@ describe("JournalReview", () => {
     ).toBeVisible();
   });
 
-  test("clicking Close calls onClose", async () => {
+  test("clicking Close closes the modal", async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
+    const setActiveModal = vi.fn();
 
-    render(
-      <JournalReview
-        isOpen={true}
-        onClose={onClose}
-        journalEntryData={journalEntry}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "journalEntries",
+      setActiveModal,
+      journalEntryData: journalEntry,
+    });
+
+    render(<JournalReview />);
 
     await user.click(
       screen.getByRole("button", {
@@ -68,20 +73,20 @@ describe("JournalReview", () => {
       }),
     );
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setActiveModal).toHaveBeenCalledWith(null);
   });
 
   test("clicking the overlay closes the modal", async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
+    const setActiveModal = vi.fn();
 
-    const { container } = render(
-      <JournalReview
-        isOpen={true}
-        onClose={onClose}
-        journalEntryData={journalEntry}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "journalEntries",
+      setActiveModal,
+      journalEntryData: journalEntry,
+    });
+
+    const { container } = render(<JournalReview />);
 
     const overlay = container.querySelector(
       ".journal-review-modal-overlay",
@@ -89,25 +94,25 @@ describe("JournalReview", () => {
 
     await user.click(overlay);
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(setActiveModal).toHaveBeenCalledWith(null);
   });
 
   test("clicking inside the modal does not close it", async () => {
     const user = userEvent.setup();
-    const onClose = vi.fn();
+    const setActiveModal = vi.fn();
 
-    render(
-      <JournalReview
-        isOpen={true}
-        onClose={onClose}
-        journalEntryData={journalEntry}
-      />,
-    );
+    useJournal.mockReturnValue({
+      activeModal: "journalEntries",
+      setActiveModal,
+      journalEntryData: journalEntry,
+    });
+
+    render(<JournalReview />);
 
     await user.click(
       screen.getByRole("dialog"),
     );
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(setActiveModal).not.toHaveBeenCalled();
   });
 });

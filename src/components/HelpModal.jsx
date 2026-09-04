@@ -1,6 +1,18 @@
+import { useJournal } from "../context/JournalContext";
 import "./HelpModal.css";
 
-function HelpModal({ isOpen, onClose }) {
+function HelpModal() {
+  const {
+    activeModal,
+    setActiveModal,
+  } = useJournal();
+
+  const isOpen = activeModal === "help";
+
+  const onClose = () => {
+    setActiveModal(null);
+  };
+
   if (!isOpen) {
     return null;
   }

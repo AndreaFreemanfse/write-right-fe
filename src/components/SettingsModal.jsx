@@ -1,12 +1,21 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
+import { useJournal } from "../context/JournalContext";
 
-function SettingsModal({
-  isOpen,
-  onClose,
-  nativeLanguage,
-  setNativeLanguage,
-}) {
+function SettingsModal() {
+  const {
+    activeModal,
+    setActiveModal,
+    nativeLanguage,
+    setNativeLanguage,
+  } = useJournal();
+
+  const isOpen = activeModal === "settings";
+
+  const onClose = () => {
+    setActiveModal(null);
+  };
+
   return (
     <Dialog
       open={isOpen}

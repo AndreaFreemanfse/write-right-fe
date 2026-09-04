@@ -2,10 +2,18 @@ import { useEffect, useState } from "react";
 import { getJournalEntries, deleteJournalEntry } from "../services/api.js";
 import JournalStats from "../components/JournalStats.jsx";
 import Stack from "@mui/material/Stack";
-import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterListIcon from "@mui/icons-material/FilterList";
+
+import { useJournal } from "../context/JournalContext";
+
 import "./JournalEntriesTable.css";
 
-function JournalEntriesTable({ setActiveModal, setJournalEntryData }) {
+function JournalEntriesTable() {
+  const {
+    setActiveModal,
+    setJournalEntryData,
+  } = useJournal();
+
   const [entries, setEntries] = useState([]);
   const [search, setSearch] = useState("");
   const [languageFilter, setLanguageFilter] = useState([]);

@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
+import { useJournal } from "../context/JournalContext";
 import "./FlashcardStudy.css";
 
 function FlashcardStudy({
   mistakes,
-  corrections,
-  onCreateStudySet,
   onSaveSet,
   savingSet,
   saveMessage,
-  targetLanguage,
-  nativeLanguage,
 }) {
+  const {
+    corrections,
+    targetLanguage,
+    nativeLanguage,
+  } = useJournal();
+
   const [queue, setQueue] = useState([]);
   const [showAnswer, setShowAnswer] = useState(false);
   const [streak, setStreak] = useState(0);

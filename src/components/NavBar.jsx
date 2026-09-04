@@ -5,19 +5,7 @@ import DropDownMenu from "./DropDownMenu";
 
 import "./NavBar.css";
 
-function Navbar({
-  setNativeLanguage,
-  setTargetLanguage,
-  setJournalTitle,
-  setJournalText,
-  onOpenDictionary,
-  onOpenHelp,
-  onOpenSettings,
-  setCorrections,
-  setReviewMode,
-  nativeLanguage,
-  setActiveModal
-}) {
+function Navbar() {
   return (
     <div className="navbar">
       <Stack
@@ -51,6 +39,7 @@ function Navbar({
       >
         Flashcards
       </NavLink>
+
       <NavLink
         to="/journal-entries"
         className={({ isActive }) =>
@@ -59,19 +48,8 @@ function Navbar({
       >
         Journal Entries
       </NavLink>
-      <DropDownMenu
-        setNativeLanguage={setNativeLanguage}
-        onOpenDictionary={onOpenDictionary}
-        onOpenHelp={onOpenHelp}
-        onOpenSettings={onOpenSettings}
-        setJournalText={setJournalText}
-        setJournalTitle={setJournalTitle}
-        setTargetLanguage={setTargetLanguage}
-        setCorrections={setCorrections}
-        setReviewMode={setReviewMode}
-        nativeLanguage={nativeLanguage}
-        setActiveModal={setActiveModal}
-      />
+
+      <DropDownMenu />
     </div>
   );
 }
