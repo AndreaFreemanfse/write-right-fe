@@ -51,6 +51,7 @@ function Write() {
     journalTitle,
     journalEntryId,
     accuracy,
+    targetLanguage
   } = useJournal();
 
   const [flashcards, setFlashcards] = useState([]);
@@ -131,6 +132,14 @@ function Write() {
   }
 
   async function handleOpenQuests() {
+
+    if (!targetLanguage) {
+      alert("Please select a target language before starting Quest Mode.");
+      return;
+    }
+
+    setQuestLoading(true);
+    setQuestError("");
     setQuestLoading(true);
     setQuestError("");
 
@@ -143,20 +152,32 @@ function Write() {
         throw new Error("User is not authenticated.");
       }
 
-      const response = await fetch(`${API_BASE_URL}/quests/generate`, {
+      const response = await fetch(
+      `${API_BASE_URL}/quests/generate?target_language=${encodeURIComponent(
+        targetLanguage,
+      )}`,
+      {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
-      });
+      },
+    );
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.detail || "Unable to generate personalized quests.",
-        );
+      if (response.status === 400) {
+        alert(
+        `You don't have any corrections to practice in ${targetLanguage} yet. Please select a language you've practiced to generate a quest.`,
+      );
+        return;
       }
+
+  throw new Error(
+    result.detail || "Unable to generate personalized quests.",
+  );
+}
 
       resetGameState();
       setQuests(result);

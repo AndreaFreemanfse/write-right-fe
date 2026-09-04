@@ -1,7 +1,9 @@
 .quest-trigger {
   position: fixed;
-  top: 5.5rem;
-  left: 2rem;
+  top: auto;
+  left: 50%;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
   z-index: 20;
 
   display: flex;
@@ -26,8 +28,9 @@
     box-shadow 180ms ease;
 }
 
+
 .quest-trigger:hover {
-  transform: translateY(-2px);
+  transform: translateX(-50%) translateY(-2px);
   box-shadow:
     0 10px 28px rgba(65, 40, 110, 0.22),
     0 0 24px rgba(147, 112, 219, 0.3);
@@ -41,7 +44,7 @@
 .quest-trigger-icon {
   position: relative;
   z-index: 1;
-  font-size: 2rem;
+  font-size: 3rem;
   line-height: 1;
   animation: quest-journal-glow 2.6s ease-in-out infinite;
 }
@@ -107,4 +110,23 @@
 
 .quest-trigger:disabled {
   cursor: wait;
+}
+
+@media (max-width: 768px) {
+  .quest-trigger {
+    top: auto;
+    left: auto;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .quest-trigger-icon {
+    font-size: 1.6rem;
+  }
+
+  .quest-trigger-label {
+    font-size: 0.9rem;
+  }
 }
