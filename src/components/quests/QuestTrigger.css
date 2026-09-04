@@ -1,0 +1,110 @@
+.quest-trigger {
+  position: fixed;
+  top: 5.5rem;
+  left: 2rem;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  padding: 0.9rem 1.3rem;
+
+  border: 1px solid rgba(126, 87, 194, 0.35);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 8px 24px rgba(65, 40, 110, 0.16),
+    0 0 18px rgba(147, 112, 219, 0.18);
+
+  cursor: pointer;
+  overflow: hidden;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.quest-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 28px rgba(65, 40, 110, 0.22),
+    0 0 24px rgba(147, 112, 219, 0.3);
+}
+
+.quest-trigger:focus-visible {
+  outline: 3px solid rgba(126, 87, 194, 0.45);
+  outline-offset: 3px;
+}
+
+.quest-trigger-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 2rem;
+  line-height: 1;
+  animation: quest-journal-glow 2.6s ease-in-out infinite;
+}
+
+.quest-trigger-label {
+  position: relative;
+  z-index: 1;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #553c7b;
+}
+
+.quest-trigger-glow {
+  position: absolute;
+  top: -80%;
+  left: -45%;
+
+  width: 35%;
+  height: 260%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.85),
+    transparent
+  );
+
+  transform: rotate(20deg);
+  animation: quest-shimmer 3.2s ease-in-out infinite;
+}
+
+@keyframes quest-shimmer {
+  0%,
+  35% {
+    left: -45%;
+  }
+
+  70%,
+  100% {
+    left: 125%;
+  }
+}
+
+@keyframes quest-journal-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(126, 87, 194, 0.25));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 8px rgba(126, 87, 194, 0.75));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-trigger,
+  .quest-trigger-icon,
+  .quest-trigger-glow {
+    animation: none;
+    transition: none;
+  }
+}
+
+.quest-trigger:disabled {
+  cursor: wait;
+}

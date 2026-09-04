@@ -1,0 +1,179 @@
+.quest-hud {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+
+  padding: 0.55rem 1.4rem;
+
+  border: 1px solid rgba(126, 87, 194, 0.3);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 20px rgba(65, 40, 110, 0.15),
+    0 0 16px rgba(147, 112, 219, 0.12);
+
+  animation: hud-enter 300ms ease-out;
+}
+
+@keyframes hud-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.hud-hearts {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.hud-heart {
+  font-size: 1.1rem;
+  transition: transform 200ms ease;
+}
+
+.hud-heart.empty {
+  opacity: 0.5;
+  filter: grayscale(0.6);
+}
+
+.hud-heart.full {
+  animation: heart-beat 1.5s ease-in-out infinite;
+}
+
+@keyframes heart-beat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.hud-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+
+  background: rgba(255, 152, 0, 0.1);
+  color: #e65100;
+  font-size: 0.85rem;
+  font-weight: 800;
+
+  animation: streak-pop 300ms ease-out;
+}
+
+.hud-streak.hot {
+  background: rgba(255, 87, 34, 0.15);
+  color: #d84315;
+  box-shadow: 0 0 12px rgba(255, 87, 34, 0.2);
+}
+
+@keyframes streak-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.hud-streak-icon {
+  font-size: 0.9rem;
+}
+
+.hud-streak-multi {
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: rgba(255, 87, 34, 0.2);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.hud-timer {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+
+  background: rgba(126, 87, 194, 0.08);
+  color: #6b5290;
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-timer.warning {
+  background: rgba(255, 193, 7, 0.12);
+  color: #f57f17;
+}
+
+.hud-timer.danger {
+  background: rgba(244, 67, 54, 0.1);
+  color: #c62828;
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+.hud-timer.critical {
+  background: rgba(244, 67, 54, 0.2);
+  color: #b71c1c;
+  animation: timer-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.hud-timer-icon {
+  font-size: 0.85rem;
+}
+
+.hud-xp {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+
+  background: rgba(255, 193, 7, 0.1);
+  color: #f57f17;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.hud-xp-icon {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+  .quest-hud {
+    gap: 0.6rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.8rem;
+  }
+
+  .hud-streak-multi {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-hud,
+  .hud-streak,
+  .hud-timer,
+  .hud-heart.full {
+    animation: none;
+  }
+}
