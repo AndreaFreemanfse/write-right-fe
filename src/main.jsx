@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
+import { JournalProvider } from "./context/JournalContext";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter } from "react-router-dom";
@@ -17,8 +17,10 @@ createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <CssBaseline />
         <AuthProvider>
+        <JournalProvider>
           <App />
-        </AuthProvider>
+        </JournalProvider>
+      </AuthProvider>
       </BrowserRouter>
       {/* TODO: ReactQueryDevtools allows inspection of queries durring development
       remove before launch */}

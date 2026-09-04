@@ -1,5 +1,11 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import {
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+
+import { useJournal } from "./context/JournalContext";
 
 import LandingPage from "./pages/LandingPage.jsx";
 import AchievementOverlay from "./components/achievements/AchievementOverlay";
@@ -12,7 +18,6 @@ import JournalReview from "./components/JournalReview.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
-
 import FlashcardReviewPage from "./pages/FlashcardReviewPage.jsx";
 import CheckEmailPage from "./pages/CheckEmailPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
@@ -21,459 +26,105 @@ import Write from "./pages/Write.jsx";
 import JournalEntriesPage from "./pages/JournalEntriesPage.jsx";
 import SelectUserPresets from "./pages/SelectUserPresets.jsx";
 
-import { handleCorrectJournal } from "./services/api.js";
-import { updateJournalEntry } from "./services/api.js";
-import { celebrate } from "./utils/celebrate";
 import "./App.css";
 
 function App() {
-  // --------------------------------------------------------------
-  // Journal State
-  // --------------------------------------------------------------
-
-  const navigate = useNavigate();
-
-  // The user's journal text
-  const [journalText, setJournalText] = useState("");
-
-  // The analysis of the user's journal text
-  const [corrections, setCorrections] = useState([]);
-
-  // The user's current review mode
-  const [reviewMode, setReviewMode] = useState(false);
-
-  // Loading state
-  const [loading, setLoading] = useState(false);
-
-  // API error state to handle errors from the backend
-  const [apiError, setApiError] = useState(null);
-
-  // Win condition celebration
-  const [achievement, setAchievement] = useState(null);
-
-  // Global modal state
-  const [activeModal, setActiveModal] = useState(null);
-
-  // Dictionary modal state
-  const [dictionaryOpen, setDictionaryOpen] = useState(false);
-
-  // Help modal state
-  const [helpOpen, setHelpOpen] = useState(false);
-
-  // Sets the journal review in journal entries
-  const [journalEntryOpen, setJournalEntryOpen] = useState(false);
-  
-  const [journalEntryData, setJournalEntryData] = useState({});
-
-  // Set the content to be edited if a user selects edit journal
-  const [editingEntry, setEditingEntry] = useState(null);
-
-  // Sets the users native language
-  const [nativeLanguage, setNativeLanguage] = useState("English");
-
-  // Sets the user's target language
-  const [targetLanguage, setTargetLanguage] = useState("");
-
-  // Journal title
-  const [journalTitle, setJournalTitle] = useState("Untitled Journal");
-
-  // Journal ID state
-  const [journalEntryId, setJournalEntryId] = useState(null);
-
-  // Accuracy state
-  const [accuracy, setAccuracy] = useState(null);
-
-  // Loading messages
-  const loadingMessages = [
-    "Checking for mistakes...",
-    "Preparing corrected journal...",
-    "Calculating accuracy score...",
-    "Generating suggestions...",
-  ];
-
-  const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
+  const {
+    setActiveModal,
+    resetJournal,
+  } = useJournal();
 
   const location = useLocation();
 
-  const publicPaths = ["/", "/signup", "/signin", "/check-email"];
+  const publicPaths = [
+    "/",
+    "/signup",
+    "/signin",
+    "/check-email",
+  ];
 
-  const isPublicPage = publicPaths.includes(location.pathname);
+  const isPublicPage = publicPaths.includes(
+    location.pathname,
+  );
 
-  // Close modals on page change
+  // Close global modals whenever the route changes.
   useEffect(() => {
     setActiveModal(null);
-  }, [location.pathname]);
+  }, [location.pathname, setActiveModal]);
 
-  useEffect(() => {
-    if (!loading) return;
-
-    let i = 0;
-
-    const interval = setInterval(() => {
-      if (i < loadingMessages.length - 1) {
-        i++;
-        setLoadingMessage(loadingMessages[i]);
-      } else {
-        clearInterval(interval);
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [loading]);
-
-  // reset journal to a clear state if user navigates away
+  // Clear the active journal when navigating away from /write.
   useEffect(() => {
     if (location.pathname === "/write") {
       return;
     }
 
-    setJournalEntryId(null);
-    setTargetLanguage("");
-    setReviewMode(false);
-    setApiError(null);
-    setCorrections([]);
-    setAccuracy(null);
-    setEditingEntry(null);
-    setJournalText("");
-    setJournalTitle("Untitled Journal");
-  }, [location.pathname]);
-
-
-  // --------------------------------------------------------------
-  // Helper functions
-  // --------------------------------------------------------------
-
-  // Function to handle the journal analysis.
-  // Calls the backend and updates the correction state.
-  async function analyzeJournal() {
-    // Prevent empty submissions
-    if (!journalText.trim()) {
-      setApiError("Please enter some text first.");
-      return;
-    }
-
-    const trimmedTitle = journalTitle.trim();
-
-    if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
-      setApiError("Please rename your journal before analyzing your writing.");
-      return;
-    }
-
-    if (!targetLanguage) {
-      setApiError(
-        "Please select a target language before analyzing your writing.",
-      );
-      return;
-    }
-
-    // Clear previous results before starting a new analysis
-    setCorrections([]);
-    setAccuracy(null);
-    setApiError("");
-
-    // Immediately show the loading screen
-    setLoadingMessage("Checking for mistakes...");
-    setLoading(true);
-    setReviewMode(true);
-
-    try {
-      const response = await handleCorrectJournal(
-        trimmedTitle,
-        journalText,
-        nativeLanguage,
-        targetLanguage,
-      );
-
-      const mistakes = response.mistakes ?? [];
-      const accuracyResult = response.accuracy ?? null;
-      const savedJournalEntryId = response.journal_entry_id ?? null;
-
-      setCorrections(mistakes);
-      setAccuracy(accuracyResult);
-      setJournalEntryId(savedJournalEntryId);
-      setEditingEntry({
-        id: savedJournalEntryId,
-        title: trimmedTitle,
-        original_text: journalText,
-        native_language: nativeLanguage,
-        target_language: targetLanguage,
-      });
-
-      if (mistakes.length === 0) {
-        celebrate();
-
-        setAchievement({
-          title: "🏆 JOURNAL MASTER",
-          subtitle: "Perfect Journal",
-          description: "No corrections were needed!",
-        });
-
-        setTimeout(() => {
-          setAchievement(null);
-        }, 3500);
-      }
-    } catch (err) {
-      console.error(err);
-
-      setApiError(
-        err.message || "Something went wrong while analyzing your journal.",
-      );
-
-      // Return to the editor so the user can see the error
-      setReviewMode(false);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const handleEditJournal = (entry) => {
-    const confirmed = window.confirm(
-      "Editing this journal will remove its current corrections. Your flashcards will be kept. Do you want to continue?",
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    // Clear previous state
-    setApiError(null);
-    setReviewMode(false);
-    setCorrections([]);
-    setAccuracy(null);
-
-    setEditingEntry(entry);
-    setJournalEntryOpen(false);
-
-    setJournalText(entry.original_text);
-    setJournalTitle(entry.title);
-
-    setTargetLanguage(entry.target_language || "");
-
-    setNativeLanguage(entry.native_language || "English");
-
-    navigate("/write");
-  };
-
-  const handleSaveEdit = async () => {
-    const trimmedTitle = journalTitle.trim();
-
-    // Validate before making any API calls
-    if (!journalText.trim()) {
-      setApiError("Please enter some text first.");
-      return;
-    }
-
-    if (!trimmedTitle || trimmedTitle === "Untitled Journal") {
-      setApiError("Please rename your journal before saving your changes.");
-      return;
-    }
-
-    if (!targetLanguage) {
-      setApiError("Please select a target language before saving.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setReviewMode(true);
-      setApiError(null);
-      setLoadingMessage("Saving your journal...");
-
-      // Update and re-analyze the existing journal entry
-      const response = await updateJournalEntry(editingEntry.id, {
-        title: trimmedTitle,
-        original_text: journalText,
-        native_language: nativeLanguage,
-        target_language: targetLanguage,
-      });
-
-      const mistakes = response.mistakes ?? [];
-      const accuracyResult = response.accuracy ?? null;
-
-      setCorrections(mistakes);
-      setAccuracy(accuracyResult);
-      setJournalEntryId(response.id);
-
-      setEditingEntry({
-        ...editingEntry,
-        id: response.id,
-        title: trimmedTitle,
-        original_text: journalText,
-        native_language: nativeLanguage,
-        target_language: targetLanguage,
-      });
-
-      setReviewMode(true);
-
-      // Celebrate if there are no mistakes
-      if (mistakes.length === 0) {
-        celebrate();
-
-        setAchievement({
-          title: "🏆 JOURNAL MASTER",
-          subtitle: "Perfect Journal",
-          description: "No corrections were needed!",
-        });
-
-        setTimeout(() => {
-          setAchievement(null);
-        }, 3500);
-      }
-    } catch (error) {
-      console.error("Failed to update journal entry:", error);
-
-      setApiError("Something went wrong while saving your changes.");
-      setReviewMode(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  function updateMistake(updatedMistake) {
-    setCorrections((prev) =>
-      prev.map((m) =>
-        m.original_full === updatedMistake.original_full ? updatedMistake : m,
-      ),
-    );
-  }
-
-  function returnToEditor(entry) {
-    setReviewMode(false);
-    setApiError(null);
-    setCorrections([]);
-    setAccuracy(null);
-    if (entry) {
-      setEditingEntry(entry);
-      setJournalText(entry.original_text);
-      setJournalTitle(entry.title);
-      setTargetLanguage(entry.target_language || "");
-      setNativeLanguage(entry.native_language || "English");
-    }
-    navigate("/write");
-  }
-
-  function handleNewEntry() {
-    setJournalEntryId(null);
-    setTargetLanguage("");
-    setReviewMode(false);
-    setApiError(null);
-    setCorrections([]);
-    setAccuracy(null);
-    setEditingEntry(null);
-    setJournalText("");
-    setJournalTitle("Untitled Journal");
-    navigate("/write");
-  }
-
-  // --------------------------------------------------------------
-  // Render
-  // --------------------------------------------------------------
+    resetJournal();
+  }, [location.pathname, resetJournal]);
 
   return (
     <div className="App">
       <AmbientBackground />
+
       {!isPublicPage && (
         <>
-          <TopNav
-            nativeLanguage={nativeLanguage}
-            setNativeLanguage={setNativeLanguage}
-            onOpenDictionary={() => setActiveModal("dictionary")}
-            onOpenSettings={() => setActiveModal("settings")}
-            onOpenHelp={() => setActiveModal("help")}
-            setJournalText={setJournalText}
-            setJournalTitle={setJournalTitle}
-            setTargetLanguage={setTargetLanguage}
-            setCorrections={setCorrections}
-            setReviewMode={setReviewMode}
-            setActiveModal={setActiveModal}
-          />
-          <AchievementOverlay achievement={achievement} />
-          <DictionaryModal
-            isOpen={activeModal === "dictionary"}
-            onClose={() => setActiveModal(null)}
-            nativeLanguage={nativeLanguage}
-            targetLanguage={targetLanguage}
-          />
-          <HelpModal
-            isOpen={activeModal === "help"}
-            onClose={() => setActiveModal(null)}
-          />
-          <SettingsModal
-            isOpen={activeModal === "settings"}
-            onClose={() => setActiveModal(null)}
-            nativeLanguage={nativeLanguage}
-            setNativeLanguage={setNativeLanguage}
-          />
-          <JournalReview
-            handleEditJournal={handleEditJournal}
-            isOpen={activeModal === "journalEntries"}
-            journalEntryData={journalEntryData}
-            onClose={() => setActiveModal(null)}
-          />
+          <TopNav />
+          <AchievementOverlay />
+          <DictionaryModal />
+          <HelpModal />
+          <SettingsModal />
+          <JournalReview />
         </>
       )}
+
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route
+            path="/"
+            element={<LandingPage />}
+          />
 
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/check-email" element={<CheckEmailPage />} />
+          <Route
+            path="/signup"
+            element={<SignUpPage />}
+          />
+
+          <Route
+            path="/signin"
+            element={<SignInPage />}
+          />
+
+          <Route
+            path="/check-email"
+            element={<CheckEmailPage />}
+          />
         </Route>
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
             path="/select-presets"
-            element={
-              <SelectUserPresets
-                setNativeLanguage={setNativeLanguage}
-                nativeLanguage={nativeLanguage}
-              />
-            }
+            element={<SelectUserPresets />}
           />
+
           <Route
             path="/write"
-            element={
-              <Write
-                dictionaryOpen={activeModal === "dictionary"}
-                text={journalText}
-                setText={setJournalText}
-                onAnalyze={analyzeJournal}
-                journalTitle={journalTitle}
-                setJournalTitle={setJournalTitle}
-                loading={loading}
-                loadingMessage={loadingMessage}
-                corrections={corrections}
-                accuracy={accuracy}
-                journalEntryId={journalEntryId}
-                returnToEditor={returnToEditor}
-                onNewEntry={handleNewEntry}
-                error={apiError}
-                reviewMode={reviewMode}
-                targetLanguage={targetLanguage}
-                nativeLanguage={nativeLanguage}
-                setTargetLanguage={setTargetLanguage}
-                onUpdateMistake={updateMistake}
-                handleSaveEdit={handleSaveEdit}
-                editingEntry={editingEntry}
-              />
-            }
+            element={<Write />}
           />
-          <Route path="/profile" element={<ProfilePage />} />
+
+          <Route
+            path="/profile"
+            element={<ProfilePage />}
+          />
+
           <Route
             path="/flashcards"
-            element={<FlashcardReviewPage nativeLanguage={nativeLanguage} />}
+            element={<FlashcardReviewPage />}
           />
+
           <Route
             path="/journal-entries"
-            element={
-              <JournalEntriesPage
-                setActiveModal={setActiveModal}
-                setJournalEntryData={setJournalEntryData}
-              />
-            }
+            element={<JournalEntriesPage />}
           />
         </Route>
       </Routes>

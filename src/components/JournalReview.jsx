@@ -1,21 +1,36 @@
+import { useJournal } from "../context/JournalContext";
+
 import "./JournalReview.css";
 
-function JournalReview({
-  isOpen,
-  onClose,
-  journalEntryData,
-  handleEditJournal,
-}) {
+function JournalReview() {
+  const {
+    activeModal,
+    setActiveModal,
+    journalEntryData,
+    handleEditJournal,
+  } = useJournal();
+
+  const isOpen = activeModal === "journalEntries";
+
+  const handleClose = () => {
+    setActiveModal(null);
+  };
+
   if (!isOpen) {
     return null;
   }
 
   const formattedDate = journalEntryData?.created_at
-    ? new Date(journalEntryData.created_at).toLocaleDateString()
+    ? new Date(
+        journalEntryData.created_at,
+      ).toLocaleDateString()
     : "";
 
   return (
-    <div className="journal-review-modal-overlay" onClick={onClose}>
+    <div
+      className="journal-review-modal-overlay"
+      onClick={handleClose}
+    >
       <section
         className="journal-review-modal"
         role="dialog"
@@ -24,11 +39,16 @@ function JournalReview({
         onClick={(event) => event.stopPropagation()}
       >
         <header className="journal-review-modal-header">
-          <h2 id="journal-review-modal-title">{journalEntryData?.title}</h2>
+          <h2 id="journal-review-modal-title">
+            {journalEntryData?.title}
+          </h2>
         </header>
 
         <section className="journal-review-section">
-          <div className="journal-review-section-icon" aria-hidden="true">
+          <div
+            className="journal-review-section-icon"
+            aria-hidden="true"
+          >
             ✍️
           </div>
 
@@ -41,7 +61,9 @@ function JournalReview({
                   <span aria-hidden="true">|</span>
 
                   <span className="vault-language">
-                    {journalEntryData.target_language}
+                    {
+                      journalEntryData.target_language
+                    }
                   </span>
                 </>
               ) : null}
@@ -57,14 +79,17 @@ function JournalReview({
           <button
             type="button"
             className="journal-review-modal-button"
-            onClick={() => handleEditJournal(journalEntryData)}
+            onClick={() =>
+              handleEditJournal(journalEntryData)
+            }
           >
             Edit
           </button>
+
           <button
             type="button"
             className="journal-review-modal-button"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Close
           </button>

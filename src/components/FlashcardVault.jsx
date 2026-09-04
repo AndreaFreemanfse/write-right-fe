@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
+import { useJournal } from "../context/JournalContext";
 import "./FlashcardVault.css";
 
-function FlashcardVault({nativeLanguage}) {
+function FlashcardVault() {
+  const { nativeLanguage } = useJournal();
   const [flashcardSets, setFlashcardSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

@@ -37,8 +37,12 @@ function LandingPage() {
           }}
         />
 
-        <div className="landing-logo" aria-hidden="true">
-          {/* ✒️ */} ✍️
+        <div className="landing-logo">
+          <img
+            src="/WriteRightLogo.png"
+            alt="WriteRight logo"
+            className="landing-logo-image"
+          />
         </div>
 
         <div className="landing-title-wrap">

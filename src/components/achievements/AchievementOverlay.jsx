@@ -1,6 +1,9 @@
+import { useJournal } from "../../context/JournalContext";
 import "./AchievementOverlay.css";
 
-function AchievementOverlay({ achievement }) {
+function AchievementOverlay() {
+  const { achievement } = useJournal();
+
   if (!achievement) {
     return null;
   }
