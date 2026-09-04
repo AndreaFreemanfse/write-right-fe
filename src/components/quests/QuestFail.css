@@ -1,0 +1,138 @@
+.quest-fail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1.5rem;
+
+  background: rgba(27, 20, 42, 0.55);
+  backdrop-filter: blur(8px);
+
+  animation: quest-fail-fade-in 300ms ease-out;
+}
+
+@keyframes quest-fail-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.quest-fail-card {
+  width: min(92vw, 440px);
+  padding: 2.5rem 3rem;
+
+  text-align: center;
+
+  border: 1px solid rgba(196, 83, 83, 0.25);
+  border-radius: 28px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(252, 220, 220, 0.5),
+      transparent 45%
+    ),
+    rgba(255, 255, 255, 0.98);
+
+  box-shadow:
+    0 30px 80px rgba(55, 20, 20, 0.25),
+    0 0 30px rgba(196, 83, 83, 0.12);
+
+  animation: quest-fail-card-enter 400ms ease-out 100ms both;
+}
+
+@keyframes quest-fail-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.quest-fail-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+
+  animation: quest-fail-icon-shake 500ms ease-out 300ms both;
+}
+
+@keyframes quest-fail-icon-shake {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-12deg); }
+  30% { transform: rotate(10deg); }
+  45% { transform: rotate(-8deg); }
+  60% { transform: rotate(5deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+.quest-fail-eyebrow {
+  margin: 0.8rem 0 0.3rem;
+
+  color: #a13f3f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.quest-fail-card h2 {
+  margin: 0;
+
+  color: #7a3030;
+  font-size: 2rem;
+}
+
+.quest-fail-text {
+  margin: 0.8rem auto 1.5rem;
+  max-width: 300px;
+
+  color: #6b6275;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.quest-fail-btn {
+  padding: 0.85rem 1.8rem;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #7651a8, #9b73cf);
+  color: white;
+
+  font-size: 0.95rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.quest-fail-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 20px rgba(108, 75, 151, 0.3),
+    0 0 20px rgba(147, 112, 219, 0.15);
+}
+
+.quest-fail-btn:focus-visible {
+  outline: 3px solid rgba(126, 87, 194, 0.45);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-fail-overlay,
+  .quest-fail-card,
+  .quest-fail-icon {
+    animation: none;
+  }
+
+  .quest-fail-btn {
+    transition: none;
+  }
+}
