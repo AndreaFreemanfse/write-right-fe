@@ -1,7 +1,7 @@
 import "./QuestMap.css";
 
 const QUESTS = [
-  { id: "fill-blank", icon: "✍️", label: "Fill in the Blank" },
+  { id: "fill-blank", icon: "✍️", label: "Spot the Mistake" },
   { id: "spelling", icon: "✨", label: "Spelling Challenge" },
   { id: "matching", icon: "🧩", label: "Matching Game" },
 ];
@@ -61,7 +61,7 @@ function QuestMap({ quests, completedQuests, onClose, onSelectQuest }) {
           >
             <line
               x1="100" y1="60" x2="300" y2="60"
-              className={`quest-map-line ${completedQuests.includes("fill-blank") ? "filled" : ""}`}
+              className={`quest-map-line ${completedQuests.includes("spot-mistake") ? "filled" : ""}`}
             />
             <line
               x1="300" y1="60" x2="500" y2="60"

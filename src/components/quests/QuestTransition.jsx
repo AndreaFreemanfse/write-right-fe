@@ -1,7 +1,7 @@
 import "./QuestTransition.css";
 
 const QUEST_META = {
-  "fill-blank": { icon: "✍️", label: "Fill in the Blank" },
+  "fill-blank": { icon: "✍️", label: "Spot the Mistake" },
   spelling: { icon: "✨", label: "Spelling Challenge" },
   matching: { icon: "🧩", label: "Matching Game" },
 };

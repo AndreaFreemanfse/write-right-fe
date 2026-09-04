@@ -50,7 +50,7 @@ function QuestModal({ quests, onClose, onBegin }) {
         </div>
 
         <div className="quest-modal-quest-list">
-          <span>1. Fill in the Blank</span>
+          <span>1. Spot the Mistake</span>
           <span>2. Spelling Challenge</span>
           <span>3. Matching Game</span>
         </div>

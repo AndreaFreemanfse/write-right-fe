@@ -13,7 +13,7 @@ import QuestTrigger from "../components/quests/QuestTrigger.jsx";
 import QuestModal from "../components/quests/QuestModal";
 import QuestMap from "../components/quests/QuestMap";
 import QuestTransition from "../components/quests/QuestTransition";
-import FillBlankQuest from "../components/quests/FillBlankQuest";
+import SpotMistakeQuest from "../components/quests/SpotMistakeQuest";
 import SpellingQuest from "../components/quests/SpellingQuest";
 import MatchingQuest from "../components/quests/MatchingQuest";
 import QuestResults from "../components/quests/QuestResults";
@@ -465,11 +465,11 @@ function Write() {
       )}
 
       {quests && stage === "fill-blank" && !transitioning && (
-        <FillBlankQuest
-          quest={quests.fill_blank}
+        <SpotMistakeQuest
+          quest={quests.spot_mistake}
           onClose={handleCloseQuests}
           onComplete={handleQuestComplete}
-          onAttempt={(isCorrect) => recordQuestAttempt("fillBlank", isCorrect)}
+          onAttempt={(isCorrect) => recordQuestAttempt("spotMistake", isCorrect)}
           lives={lives}
           streak={streak}
           timer={timer}
