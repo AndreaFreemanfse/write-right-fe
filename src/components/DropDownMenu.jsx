@@ -1,32 +1,40 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { signOut } from "../services/auth";
+
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import "./DropDownMenu.css";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
+import { signOut } from "../services/auth";
+import { useJournal } from "../context/JournalContext";
+
+import "./DropDownMenu.css";
+
 // This component accepts an icon and menuOptions. MenuOptions can be a list of
-function DropDownMenu({
-  setNativeLanguage,
-  setTargetLanguage,
-  setJournalText,
-  setJournalTitle,
-  setActiveModal,
-  onOpenDictionary,
-  onOpenHelp,
-  onOpenSettings,
-  setCorrections,
-  setReviewMode,
-  nativeLanguage,
-}) {
+function DropDownMenu() {
+  const {
+    setNativeLanguage,
+    setTargetLanguage,
+    setJournalText,
+    setJournalTitle,
+    setCorrections,
+    setReviewMode,
+    setActiveModal,
+  } = useJournal();
+
   const id = React.useId();
+
   const buttonId = `${id}-button`;
+
   const menuId = `${id}-menu`;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const open = Boolean(anchorEl);
+
   const navigate = useNavigate();
+
   const location = useLocation();
 
   const isWritePage = location.pathname === "/write";
@@ -45,6 +53,7 @@ function DropDownMenu({
       setReviewMode(false);
       setNativeLanguage("english");
       setTargetLanguage("");
+      setActiveModal(null);
 
       navigate("/", { replace: true });
     } catch (error) {
@@ -55,8 +64,10 @@ function DropDownMenu({
   // manage opening and closing menu
   const handleClick = (event) => {
     setActiveModal(null);
+
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -66,21 +77,36 @@ function DropDownMenu({
     const handleResize = () => {
       setAnchorEl(null);
     };
+
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   // manage the settings dialog
-
   function openDictionary() {
     handleClose();
-    onOpenDictionary();
+
+    setActiveModal("dictionary");
+  }
+
+  function openSettings() {
+    handleClose();
+
+    setActiveModal("settings");
+  }
+
+  function openHelp() {
+    handleClose();
+
+    setActiveModal("help");
   }
 
   function openProfile() {
     handleClose();
+
     navigate("/profile");
   }
 
@@ -101,6 +127,7 @@ function DropDownMenu({
           }}
         />
       </Button>
+
       <Menu
         className="drop-down-menu"
         id={menuId}
@@ -136,6 +163,7 @@ function DropDownMenu({
         >
           Profile
         </MenuItem>
+
         <MenuItem
           className="drop-down-menu-item"
           key="dictionary"
@@ -151,13 +179,11 @@ function DropDownMenu({
         >
           Dictionary
         </MenuItem>
+
         <MenuItem
           className="drop-down-menu-item"
           key="settings"
-          onClick={() => {
-            handleClose();
-            onOpenSettings();
-          }}
+          onClick={openSettings}
           sx={{
             color: "#555555",
             "&:hover": {
@@ -168,13 +194,11 @@ function DropDownMenu({
         >
           Settings
         </MenuItem>
+
         <MenuItem
           className="drop-down-menu-item"
           key="help"
-          onClick={() => {
-            handleClose();
-            onOpenHelp();
-          }}
+          onClick={openHelp}
           sx={{
             color: "#555555",
             "&:hover": {
@@ -185,10 +209,9 @@ function DropDownMenu({
         >
           Help
         </MenuItem>
+
         <MenuItem
-          onClick={() => {
-            handleSignOut();
-          }}
+          onClick={handleSignOut}
           className="drop-down-menu-item"
           key="sign-out"
           sx={{

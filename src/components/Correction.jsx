@@ -5,7 +5,7 @@ import CorrectionTooltip from "./CorrectionTooltip";
 
 
 
-function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose, targetLanguage, nativeLanguage, onUpdateMistake }) {
+function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose,}) {
 
   // Ref for the wrapper element to detect outside clicks
   const wrapperRef = useRef(null);
@@ -48,9 +48,6 @@ function Correction({ mistake, onCreateFlashcard, isOpen, onClick, onClose, targ
         <CorrectionTooltip
           mistake={mistake}
           onCreateFlashcard={onCreateFlashcard}
-          nativeLanguage={nativeLanguage}
-          targetLanguage={targetLanguage}
-          onUpdateMistake={onUpdateMistake}
         />
       )}
     </span>

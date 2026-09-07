@@ -64,8 +64,8 @@
 }
 
 .landing-logo {
-  font-size: clamp(3.5rem, 8vw, 5.5rem);
-  line-height: 1;
+  display: flex;
+  justify-content: center;
   opacity: 0;
   transform:
     translateY(18px)
@@ -73,6 +73,16 @@
     scale(0.92);
   animation:
     landing-logo-rise 700ms ease-out forwards;
+}
+
+.landing-logo-image {
+  display: block;
+  width: clamp(120px, 20vw, 240px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(
+    0 12px 24px rgba(20, 10, 40, 0.28)
+  );
 }
 
 .landing-title-wrap {

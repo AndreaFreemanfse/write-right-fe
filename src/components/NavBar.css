@@ -71,3 +71,10 @@ color: #6d28d9;
  color: #6d28d9;
   border-bottom: 3px solid #6d28d9;
 }
+
+.navbar-logo-image {
+  width: 72px;
+  height: 62px;
+  object-fit: contain;
+  flex-shrink: 0;
+}

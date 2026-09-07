@@ -3,6 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import FlashcardStudy from "../../components/FlashcardStudy";
+import { useJournal } from "../../context/JournalContext";
+
+vi.mock("../../context/JournalContext", () => ({
+  useJournal: vi.fn(),
+}));
 
 const sampleCards = [
   {
@@ -26,16 +31,25 @@ const sampleCards = [
 ];
 
 function renderFlashcardStudy(overrides = {}) {
+  const {
+    corrections = sampleCards,
+    targetLanguage = "Spanish",
+    nativeLanguage = "English",
+    ...propOverrides
+  } = overrides;
+
+  useJournal.mockReturnValue({
+    corrections,
+    targetLanguage,
+    nativeLanguage,
+  });
+
   const props = {
     mistakes: sampleCards,
-    corrections: sampleCards,
-    onCreateStudySet: vi.fn(),
     onSaveSet: vi.fn(),
     savingSet: false,
     saveMessage: "",
-    targetLanguage: "Spanish",
-    nativeLanguage: "English",
-    ...overrides,
+    ...propOverrides,
   };
 
   render(<FlashcardStudy {...props} />);
@@ -103,267 +117,265 @@ describe("FlashcardStudy", () => {
     expect(onSaveSet).toHaveBeenCalledTimes(1);
     expect(onSaveSet).toHaveBeenCalledWith(sampleCards);
   });
-});
 
-test("shows correct feedback and advances to the next card", async () => {
-  const user = userEvent.setup();
+  test("shows correct feedback and advances to the next card", async () => {
+    const user = userEvent.setup();
 
-  renderFlashcardStudy();
+    renderFlashcardStudy();
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer cards/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer cards/i,
+      }),
+    );
 
-  const input = screen.getByPlaceholderText(
-    "Enter Correction...",
-  );
+    const input = screen.getByPlaceholderText(
+      "Enter Correction...",
+    );
 
-  await user.type(input, "Yo estoy feliz");
+    await user.type(input, "Yo estoy feliz");
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
 
-  expect(
-    screen.getByText("Correct!"),
-  ).toBeVisible();
+    expect(
+      screen.getByText("Correct!"),
+    ).toBeVisible();
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /next card/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /next card/i,
+      }),
+    );
 
-  expect(
-    screen.getByText("Remaining: 1"),
-  ).toBeVisible();
+    expect(
+      screen.getByText("Remaining: 1"),
+    ).toBeVisible();
 
-  expect(
-    screen.getByText("Yo tiene hambre"),
-  ).toBeVisible();
-});
-
-
-test("shows retry feedback after an incorrect answer", async () => {
-  const user = userEvent.setup();
-
-  renderFlashcardStudy();
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer cards/i,
-    }),
-  );
-
-  const input = screen.getByPlaceholderText(
-    "Enter Correction...",
-  );
-
-  await user.type(input, "Wrong answer");
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
-
-  expect(
-    screen.getByText("Not quite—try again."),
-  ).toBeVisible();
-
-  expect(
-    screen.getByRole("button", {
-      name: /reveal answer/i,
-    }),
-  ).toBeVisible();
-});
-
-
-test("reveals the correct answer after an incorrect attempt", async () => {
-  const user = userEvent.setup();
-
-  renderFlashcardStudy();
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer cards/i,
-    }),
-  );
-
-  await user.type(
-    screen.getByPlaceholderText("Enter Correction..."),
-    "Wrong answer",
-  );
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /reveal answer/i,
-    }),
-  );
-
-  expect(
-    screen.getByText("Correct version:"),
-  ).toBeVisible();
-
-  expect(
-    screen.getByText("Yo estoy feliz"),
-  ).toBeVisible();
-
-  expect(
-    screen.getByText(
-      "Use estar for temporary states.",
-    ),
-  ).toBeVisible();
-});
-
-
-test("practice again keeps the card in the study queue", async () => {
-  const user = userEvent.setup();
-
-  renderFlashcardStudy();
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer cards/i,
-    }),
-  );
-
-  await user.type(
-    screen.getByPlaceholderText("Enter Correction..."),
-    "Wrong answer",
-  );
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /reveal answer/i,
-    }),
-  );
-
-  await user.click(
-    screen.getByRole("button", {
-      name: /practice again/i,
-    }),
-  );
-
-  expect(
-    screen.getByText("Remaining: 2"),
-  ).toBeVisible();
-});
-
-test("shows the completion state after all cards are mastered", async () => {
-  const user = userEvent.setup();
-
-  renderFlashcardStudy({
-    mistakes: [sampleCards[0]],
-    corrections: [sampleCards[0]],
+    expect(
+      screen.getByText("Yo tiene hambre"),
+    ).toBeVisible();
   });
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer card/i,
-    }),
-  );
+  test("shows retry feedback after an incorrect answer", async () => {
+    const user = userEvent.setup();
 
-  await user.type(
-    screen.getByPlaceholderText("Enter Correction..."),
-    "Yo estoy feliz",
-  );
+    renderFlashcardStudy();
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer cards/i,
+      }),
+    );
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /next card/i,
-    }),
-  );
+    const input = screen.getByPlaceholderText(
+      "Enter Correction...",
+    );
 
-  expect(
-    screen.getByText("Final card conquered!"),
-  ).toBeVisible();
+    await user.type(input, "Wrong answer");
 
-  expect(
-    screen.getByText("Cards mastered: 1"),
-  ).toBeVisible();
-});
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
 
+    expect(
+      screen.getByText("Not quite—try again."),
+    ).toBeVisible();
 
-test("generates an explanation when one is missing", async () => {
-  const user = userEvent.setup();
-
-  const cardWithoutExplanation = {
-    ...sampleCards[0],
-    explanation: null,
-  };
-
-  const originalFetch = global.fetch;
-
-  global.fetch = vi.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({
-      explanation: "Generated explanation.",
-      category: "grammar",
-    }),
+    expect(
+      screen.getByRole("button", {
+        name: /reveal answer/i,
+      }),
+    ).toBeVisible();
   });
 
-  renderFlashcardStudy({
-    mistakes: [cardWithoutExplanation],
-    corrections: [cardWithoutExplanation],
+  test("reveals the correct answer after an incorrect attempt", async () => {
+    const user = userEvent.setup();
+
+    renderFlashcardStudy();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer cards/i,
+      }),
+    );
+
+    await user.type(
+      screen.getByPlaceholderText("Enter Correction..."),
+      "Wrong answer",
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /reveal answer/i,
+      }),
+    );
+
+    expect(
+      screen.getByText("Correct version:"),
+    ).toBeVisible();
+
+    expect(
+      screen.getByText("Yo estoy feliz"),
+    ).toBeVisible();
+
+    expect(
+      screen.getByText(
+        "Use estar for temporary states.",
+      ),
+    ).toBeVisible();
   });
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /conquer card/i,
-    }),
-  );
+  test("practice again keeps the card in the study queue", async () => {
+    const user = userEvent.setup();
 
-  await user.type(
-    screen.getByPlaceholderText("Enter Correction..."),
-    "Wrong answer",
-  );
+    renderFlashcardStudy();
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /check answer/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer cards/i,
+      }),
+    );
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /reveal answer/i,
-    }),
-  );
+    await user.type(
+      screen.getByPlaceholderText("Enter Correction..."),
+      "Wrong answer",
+    );
 
-  await user.click(
-    screen.getByRole("button", {
-      name: /generate explanation/i,
-    }),
-  );
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
 
-  expect(
-    await screen.findByText("Generated explanation."),
-  ).toBeVisible();
+    await user.click(
+      screen.getByRole("button", {
+        name: /reveal answer/i,
+      }),
+    );
 
-  expect(global.fetch).toHaveBeenCalledTimes(1);
+    await user.click(
+      screen.getByRole("button", {
+        name: /practice again/i,
+      }),
+    );
 
-  global.fetch = originalFetch;
+    expect(
+      screen.getByText("Remaining: 2"),
+    ).toBeVisible();
+  });
+
+  test("shows the completion state after all cards are mastered", async () => {
+    const user = userEvent.setup();
+
+    renderFlashcardStudy({
+      mistakes: [sampleCards[0]],
+      corrections: [sampleCards[0]],
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer card/i,
+      }),
+    );
+
+    await user.type(
+      screen.getByPlaceholderText("Enter Correction..."),
+      "Yo estoy feliz",
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /next card/i,
+      }),
+    );
+
+    expect(
+      screen.getByText("Final card conquered!"),
+    ).toBeVisible();
+
+    expect(
+      screen.getByText("Cards mastered: 1"),
+    ).toBeVisible();
+  });
+
+  test("generates an explanation when one is missing", async () => {
+    const user = userEvent.setup();
+
+    const cardWithoutExplanation = {
+      ...sampleCards[0],
+      explanation: null,
+    };
+
+    const originalFetch = global.fetch;
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        explanation: "Generated explanation.",
+        category: "grammar",
+      }),
+    });
+
+    renderFlashcardStudy({
+      mistakes: [cardWithoutExplanation],
+      corrections: [cardWithoutExplanation],
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /conquer card/i,
+      }),
+    );
+
+    await user.type(
+      screen.getByPlaceholderText("Enter Correction..."),
+      "Wrong answer",
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /check answer/i,
+      }),
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /reveal answer/i,
+      }),
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /generate explanation/i,
+      }),
+    );
+
+    expect(
+      await screen.findByText(
+        "Generated explanation.",
+      ),
+    ).toBeVisible();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    global.fetch = originalFetch;
+  });
 });

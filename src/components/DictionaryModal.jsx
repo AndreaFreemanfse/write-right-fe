@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { API_BASE_URL } from "../config/api";
-
+import { useJournal } from "../context/JournalContext";
 import "./DictionaryModal.css";
 
 const LANGUAGE_CODES = {
@@ -60,7 +60,19 @@ function normalizeWord(word = "") {
   return word.trim().toLocaleLowerCase();
 }
 
-function DictionaryModal({ isOpen, onClose, nativeLanguage, targetLanguage }) {
+function DictionaryModal() {
+  const {
+    activeModal,
+    setActiveModal,
+    nativeLanguage,
+    targetLanguage,
+  } = useJournal();
+
+  const isOpen = activeModal === "dictionary";
+
+  const onClose = () => {
+    setActiveModal(null);
+  };
   const [searchTerm, setSearchTerm] = useState("");
   const currentNativeLanguage = nativeLanguage || "english";
   const currentTargetLanguage = targetLanguage || "english";

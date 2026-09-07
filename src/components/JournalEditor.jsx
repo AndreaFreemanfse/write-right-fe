@@ -1,31 +1,43 @@
 import { useState, useRef } from "react";
-import "./JournalEditor.css";
-import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { Stack } from "@mui/material";
+
+import "./JournalEditor.css";
+
+import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { specialCharacters } from "../utils/constants/specialCharacters";
+import { useJournal } from "../context/JournalContext";
 
-function JournalEditor({
-  dictionaryOpen,
-  text,
-  setText,
-  journalTitle,
-  setJournalTitle,
-  onAnalyze,
-  handleSaveEdit,
-  editingEntry,
-  loading,
-  loadingMessage,
-  error,
-  targetLanguage,
-  setTargetLanguage,
-  francWarning,
-  setFrancWarning,
-}) {
-  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+function JournalEditor() {
+  const {
+    journalText,
+    setJournalText,
+    journalTitle,
+    setJournalTitle,
+    analyzeJournal,
+    handleSaveEdit,
+    editingEntry,
+    loading,
+    loadingMessage,
+    apiError,
+    targetLanguage,
+    setTargetLanguage,
+    activeModal,
+    francWarning,
+    setFrancWarning,
+  } = useJournal();
 
-  const [showSpecialCharacters, setShowSpecialCharacters] = useState(false);
+  const [languageDropdownOpen, setLanguageDropdownOpen] =
+    useState(false);
+  const [showSpecialCharacters, setShowSpecialCharacters] =
+    useState(false);
 
   const textAreaRef = useRef(null);
+
+  const dictionaryOpen = activeModal === "dictionary";
+
+  const text = journalText;
+  const setText = setJournalText;
+  const error = apiError;
 
   const handleLanguageChange = (language) => {
     setTargetLanguage(language);
@@ -40,12 +52,16 @@ function JournalEditor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
-    const newText = text.slice(0, start) + character + text.slice(end);
+    const newText =
+      text.slice(0, start) +
+      character +
+      text.slice(end);
 
     setText(newText);
 
     requestAnimationFrame(() => {
       textarea.focus();
+
       textarea.setSelectionRange(
         start + character.length,
         start + character.length,
@@ -53,12 +69,15 @@ function JournalEditor({
     });
   }
 
-  const characters = specialCharacters[targetLanguage] ?? [];
+  const characters =
+    specialCharacters[targetLanguage] ?? [];
 
   return (
     <div
       className={`journal-editor ${
-        dictionaryOpen ? "journal-editor--dictionary-open" : ""
+        dictionaryOpen
+          ? "journal-editor--dictionary-open"
+          : ""
       }`}
     >
       <Stack spacing={2}>
@@ -67,18 +86,24 @@ function JournalEditor({
             type="text"
             className="journal-title-input"
             value={journalTitle}
-            onChange={(event) => setJournalTitle(event.target.value)}
+            onChange={(event) =>
+              setJournalTitle(event.target.value)
+            }
             size={Math.max(journalTitle.length, 1)}
             placeholder="Name your journal"
             maxLength={80}
           />
         </label>
+
         <div className="language-selector-wrapper">
-          {targetLanguage && !languageDropdownOpen ? (
+          {targetLanguage &&
+          !languageDropdownOpen ? (
             <button
               type="button"
               className="selected-language-button"
-              onClick={() => setLanguageDropdownOpen(true)}
+              onClick={() =>
+                setLanguageDropdownOpen(true)
+              }
               aria-label={`Change target language from ${targetLanguage}`}
             >
               {targetLanguage.toUpperCase()}
@@ -88,17 +113,21 @@ function JournalEditor({
               direction="row"
               spacing={2}
               className="fade-in"
-              sx={{ alignItems: "center", width: "100%" }}
+              sx={{
+                alignItems: "center",
+                width: "100%",
+              }}
             >
               <p className="editor-subtitle">
-                Practice writing in your target language:
+                Practice writing in your target
+                language:
               </p>
 
               <LanguageSelectionDropdown
                 value={targetLanguage}
                 onChange={handleLanguageChange}
                 displayText="Target Language"
-                languageType={"target"}
+                languageType="target"
               />
             </Stack>
           )}
@@ -109,7 +138,9 @@ function JournalEditor({
             className="journal-textarea"
             value={text}
             ref={textAreaRef}
-            onChange={(event) => setText(event.target.value)}
+            onChange={(event) =>
+              setText(event.target.value)
+            }
             placeholder="Write about your day..."
             disabled={loading}
             style={{
@@ -121,40 +152,52 @@ function JournalEditor({
           {loading && (
             <div className="loading-overlay">
               <div className="spinner"></div>
+
               <p>{loadingMessage}</p>
             </div>
           )}
         </div>
+
         {characters.length > 0 && (
           <button
             type="button"
             className="special-character-toggle"
-            onClick={() => setShowSpecialCharacters((current) => !current)}
+            onClick={() =>
+              setShowSpecialCharacters(
+                (current) => !current,
+              )
+            }
           >
             {showSpecialCharacters
               ? "Hide Special Characters"
               : "View Special Characters"}
           </button>
         )}
-        {showSpecialCharacters && characters.length > 0 && (
-          <div className="special-character-bar">
-            {characters.map((character) => (
-              <button
-                key={character}
-                type="button"
-                onMouseDown={(event) => {
-                  event.preventDefault();
-                  insertSpecialCharacter(character);
-                }}
-              >
-                {character}
-              </button>
-            ))}
-          </div>
-        )}
+
+        {showSpecialCharacters &&
+          characters.length > 0 && (
+            <div className="special-character-bar">
+              {characters.map((character) => (
+                <button
+                  key={character}
+                  type="button"
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    insertSpecialCharacter(
+                      character,
+                    );
+                  }}
+                >
+                  {character}
+                </button>
+              ))}
+            </div>
+          )}
 
         <div className="editor-footer">
-          <span className="character-count">{text.length} characters</span>
+          <span className="character-count">
+            {text.length} characters
+          </span>
 
           <button
             type="button"
@@ -163,7 +206,7 @@ function JournalEditor({
               if (editingEntry) {
                 handleSaveEdit();
               } else {
-                onAnalyze();
+                analyzeJournal();
               }
             }}
             disabled={loading}
@@ -178,7 +221,11 @@ function JournalEditor({
           </button>
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
       </Stack>
       {francWarning && (
         <div className="franc-error-overlay">
@@ -194,7 +241,13 @@ function JournalEditor({
 
               <button 
                 className="continue-button"
-                onClick={onAnalyze}
+                onClick={() => {
+                  if (editingEntry) {
+                    handleSaveEdit();
+                  } else {
+                    analyzeJournal();
+                  }
+                }}
                 disabled={loading}
               >
                 Try Analysis

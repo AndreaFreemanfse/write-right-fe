@@ -1,15 +1,7 @@
 import JournalEntriesTable from "../components/JournalEntriesTable.jsx";
 
-function JournalEntriesPage({setActiveModal, setJournalEntryData}) {
-
-  return (
-    <>
-      <JournalEntriesTable
-        setActiveModal={setActiveModal}
-        setJournalEntryData={setJournalEntryData}
-      />
-    </>
-  );
+function JournalEntriesPage() {
+  return <JournalEntriesTable />;
 }
 
 export default JournalEntriesPage;
