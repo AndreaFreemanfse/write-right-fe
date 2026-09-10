@@ -1,0 +1,89 @@
+.quest-transition-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(27, 20, 42, 0.6);
+  backdrop-filter: blur(8px);
+
+  animation: transition-fade-in 300ms ease-out;
+}
+
+@keyframes transition-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.quest-transition-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+
+  padding: 3rem 4rem;
+
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 20px 60px rgba(32, 20, 55, 0.3);
+
+  animation: transition-slide-in 500ms ease-out;
+}
+
+@keyframes transition-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(80px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.quest-transition-next-label {
+  color: #8b68bd;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.quest-transition-icon {
+  font-size: 4rem;
+  line-height: 1;
+
+  animation: transition-icon-bounce 600ms ease-out 200ms both;
+}
+
+@keyframes transition-icon-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(20px);
+  }
+  60% {
+    transform: scale(1.15) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.quest-transition-title {
+  margin: 0;
+
+  color: #44305f;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-transition-backdrop,
+  .quest-transition-card,
+  .quest-transition-icon {
+    animation: none;
+  }
+}
