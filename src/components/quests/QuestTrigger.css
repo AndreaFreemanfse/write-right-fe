@@ -1,4 +1,4 @@
-.quest-trigger {
+/* .quest-trigger {
   position: fixed;
   right: 1.5rem;
   bottom: calc(1.5rem + env(safe-area-inset-bottom));
@@ -140,5 +140,166 @@
 
   .quest-trigger-label {
     font-size: 0.9rem;
+  }
+} */
+
+.quest-trigger {
+  position: fixed;
+
+  top: 50%;
+  right: -0.35rem;
+  left: auto;
+  bottom: auto;
+
+  transform: translateY(-50%);
+
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  padding: 0.9rem 1.1rem 0.9rem 0.9rem;
+
+  border: 1px solid rgba(126, 87, 194, 0.35);
+  border-right: none;
+
+  border-radius: 1rem 0 0 1rem;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow:
+    0 8px 24px rgba(65, 40, 110, 0.18),
+    0 0 18px rgba(147, 112, 219, 0.18);
+
+  cursor: pointer;
+  overflow: hidden;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    right 180ms ease;
+}
+
+/* Pull the tab farther into the page */
+.quest-trigger:hover {
+  right: 0;
+
+  transform: translateY(-50%);
+
+  box-shadow:
+    0 10px 28px rgba(65, 40, 110, 0.24),
+    0 0 24px rgba(147, 112, 219, 0.3);
+}
+
+.quest-trigger:focus-visible {
+  outline: 3px solid rgba(126, 87, 194, 0.45);
+  outline-offset: 3px;
+}
+
+.quest-trigger-icon {
+  position: relative;
+  z-index: 1;
+
+  font-size: 2.2rem;
+  line-height: 1;
+
+  animation: quest-journal-glow 2.6s ease-in-out infinite;
+}
+
+.quest-trigger-label {
+  position: relative;
+  z-index: 1;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  color: #553c7b;
+}
+
+.quest-trigger-glow {
+  position: absolute;
+
+  top: -80%;
+  left: -45%;
+
+  width: 35%;
+  height: 260%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.85),
+    transparent
+  );
+
+  transform: rotate(20deg);
+
+  animation: quest-shimmer 3.2s ease-in-out infinite;
+}
+
+@keyframes quest-shimmer {
+  0%,
+  35% {
+    left: -45%;
+  }
+
+  70%,
+  100% {
+    left: 125%;
+  }
+}
+
+@keyframes quest-journal-glow {
+  0%,
+  100% {
+    filter: drop-shadow(
+      0 0 2px rgba(126, 87, 194, 0.25)
+    );
+  }
+
+  50% {
+    filter: drop-shadow(
+      0 0 8px rgba(126, 87, 194, 0.75)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quest-trigger,
+  .quest-trigger-icon,
+  .quest-trigger-glow {
+    animation: none;
+    transition: none;
+  }
+}
+
+.quest-trigger:disabled {
+  cursor: wait;
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+  .quest-trigger {
+    right: -0.25rem;
+
+    padding: 0.7rem 0.9rem 0.7rem 0.7rem;
+
+    gap: 0.45rem;
+
+    border-radius: 0.85rem 0 0 0.85rem;
+  }
+
+  .quest-trigger:hover {
+    right: 0;
+  }
+
+  .quest-trigger-icon {
+    font-size: 1.6rem;
+  }
+
+  .quest-trigger-label {
+    font-size: 0.85rem;
   }
 }
