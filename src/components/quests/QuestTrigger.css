@@ -1,9 +1,9 @@
 .quest-trigger {
   position: fixed;
-  top: auto;
-  left: 50%;
+  right: 1.5rem;
   bottom: calc(1.5rem + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
+  left: auto;
+  top: auto;
   z-index: 20;
 
   display: flex;
@@ -16,6 +16,7 @@
   border-radius: 999px;
 
   background: rgba(255, 255, 255, 0.94);
+
   box-shadow:
     0 8px 24px rgba(65, 40, 110, 0.16),
     0 0 18px rgba(147, 112, 219, 0.18);
@@ -28,9 +29,20 @@
     box-shadow 180ms ease;
 }
 
+.quest-trigger:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .quest-trigger {
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
 
 .quest-trigger:hover {
-  transform: translateX(-50%) translateY(-2px);
+  transform: translateY(-2px);
   box-shadow:
     0 10px 28px rgba(65, 40, 110, 0.22),
     0 0 24px rgba(147, 112, 219, 0.3);
