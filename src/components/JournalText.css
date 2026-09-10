@@ -38,9 +38,9 @@
 
 /* Edit Entry */
 .review-button--edit {
-    background: #f3f4f6;
-    color: #4b5563;
-    border: 1px solid #e5e7eb;
+    background: var(--background);
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 .review-button--edit:hover {
@@ -70,13 +70,13 @@
 
 .journal-content {
 
-    background: white;
+    background: var(--background);
 
     padding: 30px;
 
     border-radius: 12px;
 
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--border);
 
     font-size: 20px;
 

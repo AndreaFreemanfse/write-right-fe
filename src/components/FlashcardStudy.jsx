@@ -341,7 +341,7 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
                 Next card
               </button>
             ) : (
-              <button type="submit" disabled={!attempt.trim()}>
+              <button className="check-answer" type="submit" disabled={!attempt.trim()}>
                 Check answer
               </button>
             )}
@@ -350,7 +350,7 @@ async function explain(original, corrected, nativeLanguage, targetLanguage) {
               <div className="answer-feedback-incorrect-feedback">
                 <div className="reveal-button">
                   <strong>Not quite—try again.</strong>
-                  <button type="button" onClick={() => setShowAnswer(true)}>
+                  <button className="reveal-answer" type="button" onClick={() => setShowAnswer(true)}>
                     Reveal answer
                   </button>
                 </div>

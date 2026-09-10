@@ -14,7 +14,7 @@
 .vault-header h2 {
   margin: 0;
   font-size: clamp(1.8rem, 4vw, 2.5rem);
-  color: #111827;
+  color: var(--text);
 }
 
 .vault-eyebrow {
@@ -60,9 +60,9 @@
 .vault-card {
   min-height: 280px;
   padding: 1.25rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--input-background);
   box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
@@ -117,21 +117,21 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .vault-card-content h3 {
   margin: 0;
   font-size: 1.35rem;
   line-height: 1.4;
-  color: #111827;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .vault-card-back {
   margin: 0;
   line-height: 1.6;
-  color: #374151;
+  color: var(--text-secondary);
   overflow-wrap: anywhere;
 }
 
@@ -158,6 +158,9 @@
 .edit-card-button {
   background: #e0e7ff;
   color: #3730a3;
+  padding: 4px;
+  font-size: 16px;
+  border-radius: 8px;
 }
 
 .delete-card-button {
@@ -168,10 +171,10 @@
 .vault-empty-state,
 .vault-message {
   padding: 3rem 1.5rem;
-  border: 1px dashed #9ca3af;
+  border: 1px dashed var(--border);
   border-radius: 22px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--input-background);
 }
 
 .vault-empty-state h3,
@@ -452,18 +455,18 @@
   justify-content: center;
   min-height: 220px;
   padding: 2rem;
-  border: #1118279e 1px solid;
+  border: var(--border) 1px solid;
   border-radius: 16px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .study-card-front {
-  background: white;
+  background: var(--background);
 }
 
 .study-card-back {
-  background: rgb(240, 253, 235);
+  background: var(--input-background);
   transform: rotateY(180deg);
 }
 
@@ -494,10 +497,10 @@
 
 .study-navigation button {
   padding: 0.7rem 1.2rem;
-  border: none;
+  border: 2px solid var(--border);
   border-radius: 10px;
-  background: #111827;
-  color: white;
+  background: var(--background);
+  color: var(--text);
   cursor: pointer;
 }
 

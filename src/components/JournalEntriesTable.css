@@ -18,7 +18,7 @@
   margin: 7px;
   padding:12px;
   border-radius:10px;
-  border:1px solid #ddd;
+  border:1px solid var(--border);
   font-size: 17px;
   font-family: inherit;
  color:#666
@@ -38,8 +38,8 @@
   padding: 9px;
 
   border-radius: 10px;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--border);
+  background: var(--background);
   cursor: pointer;
   color:#666
 }
@@ -56,8 +56,8 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px;
   min-width: 200px;
@@ -67,6 +67,13 @@
 }
 
 .journal-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.journal-filter-section-dropdown {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -101,8 +108,8 @@
 
 .journal-filter-section label {
   font-size: 12px;
-  font-weight: 600;
-  color: #666;
+  font-weight: 550;
+  color: var(--text-secondary);
 }
 
 .journal-active-filters {
@@ -169,8 +176,8 @@
 .journal-filter-section select {
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--border);
+  background: var(--background);
   cursor: pointer;
   width: 100%;
 }
@@ -179,7 +186,7 @@
 .journal-table {
   width:100%;
   border-collapse:collapse;
-  background:white;
+  background:var(--input-background);
   border-radius:12px;
   overflow:hidden;
   box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
@@ -190,12 +197,12 @@
 .journal-table td {
   padding:1rem;
   text-align:left;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid var(--border);
 }
 
 
 .journal-table tbody tr:hover {
-  background:#fafafa;
+  background: var(--background);
 }
 
 

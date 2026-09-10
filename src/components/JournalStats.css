@@ -5,8 +5,8 @@
 
   padding: 1rem 1.25rem;
 
-  background: white;
-  border: 1px solid #e5e5e5;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,.08);
 }
@@ -60,14 +60,14 @@
 .stat-content p {
   margin: 0;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .stat-content h3 {
   margin: 0.35rem 0 0;
   font-size: 1.6rem;
   font-weight: 700;
-  color: #222;
+  color: var(--text);
 }
 
 .journal-stats {

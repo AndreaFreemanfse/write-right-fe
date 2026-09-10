@@ -9,16 +9,16 @@
 
   background: linear-gradient(
     180deg,
-    #edf6ff 0%,
-    #f8fbff 50%,
-    #ffffff 100%
+    var(--input-background) 0%,
+    var(--input-background) 50%,
+    var(--background) 100%
   );
 }
 
 .auth-modal {
   width: min(420px, 100%);
 
-  background: white;
+  background: var(--background);
 
   padding: 2.5rem;
 
@@ -27,7 +27,7 @@
   box-shadow:
     0 20px 40px rgba(32, 64, 128, 0.12);
 
-  border: 1px solid #dce9f8;
+  border: 1px solid var(--border);
 }
 
 .auth-modal h2 {
@@ -55,7 +55,7 @@
 
   padding: .9rem 1rem;
 
-  border: 1px solid #c8d8ec;
+  border: 1px solid var(--border);
 
   border-radius: 12px;
 

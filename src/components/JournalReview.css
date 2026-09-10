@@ -24,7 +24,7 @@
 
   overflow: hidden;
 
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid var(--border);
   border-radius: 24px;
 
   background:
@@ -35,8 +35,8 @@
     ),
     linear-gradient(
       180deg,
-      #ffffff 0%,
-      #f8fafc 100%
+      var(--background) 0%,
+      var(--input-background) 100%
     );
 
   box-shadow:
@@ -54,13 +54,13 @@
 
   padding: 28px 30px 22px;
 
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .journal-review-modal-header h2 {
   margin: 0;
 
-  color: #0f172a;
+  color: var(--text-secondary);
 
   font-size: clamp(1.8rem, 4vw, 2.35rem);
   line-height: 1.1;
@@ -115,7 +115,7 @@
 .journal-review-text {
   margin: 0;
 
-  color: #334155;
+  color: var(--text-secondary);
 
   line-height: 1.75;
 
@@ -131,9 +131,9 @@
 
   padding: 18px 30px;
 
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
 
-  background: rgba(248, 250, 252, 0.92);
+  background: var(--background);
 }
 
 .journal-review-modal-button {
