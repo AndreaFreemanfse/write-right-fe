@@ -1,6 +1,8 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { useJournal } from "../context/JournalContext";
+import { useState } from "react";
+import "./SettingsModal.css";
 
 function SettingsModal() {
   const {
@@ -8,6 +10,8 @@ function SettingsModal() {
     setActiveModal,
     nativeLanguage,
     setNativeLanguage,
+    darkMode,
+    setDarkMode,
   } = useJournal();
 
   const isOpen = activeModal === "settings";
@@ -35,6 +39,17 @@ function SettingsModal() {
           onChange={setNativeLanguage}
           displayText="Native Language"
         />
+        <div className="dark-mode-toggle">
+          <span>Dark Mode</span>
+
+          <button
+            className={`toggle ${darkMode ? "active" : ""}`}
+            onClick={() => setDarkMode(!darkMode)}
+            aria-label="Toggle dark mode"
+          >
+            <span className="toggle-circle"></span>
+          </button>
+        </div>
       </DialogContent>
     </Dialog>
   );

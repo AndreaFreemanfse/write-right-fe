@@ -32,6 +32,7 @@ function App() {
   const {
     setActiveModal,
     resetJournal,
+    darkMode,
   } = useJournal();
 
   const location = useLocation();
@@ -62,7 +63,7 @@ function App() {
   }, [location.pathname, resetJournal]);
 
   return (
-    <div className="App">
+    <div className={darkMode ? "App dark-mode" : "App"}>
       <AmbientBackground />
 
       {!isPublicPage && (

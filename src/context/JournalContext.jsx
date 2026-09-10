@@ -34,6 +34,8 @@ export function JournalProvider({ children }) {
   const [corrections, setCorrections] = useState([]);
   const [reviewMode, setReviewMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  const [darkMode, setDarkMode] = useState(false);
 
   const [loadingMessage, setLoadingMessage] = useState(
     loadingMessages[0],
@@ -386,6 +388,8 @@ function handleNewEntry() {
   editingEntry,
   setEditingEntry,
 
+  darkMode,
+  setDarkMode,
   francWarning,
   setFrancWarning,
 

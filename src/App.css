@@ -2,6 +2,8 @@
   position: relative;
   z-index: 1;
   min-height: 100vh;
+  background-color: var(--background);
+  color: var(--text);
 }
 
 .ambient-background {

@@ -11,8 +11,9 @@
   gap: 1.5rem;
   padding: 2rem;
   border-radius: 18px;
-  background: #ffffff;
+  background: var(--background);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  color: var(--text);
 }
 
 .profile-avatar {
@@ -43,6 +44,7 @@
 
 .profile-section {
   margin-top: 2rem;
+  color: var(--text);
 }
 
 .profile-section h2 {
@@ -61,9 +63,10 @@
   gap: 0.4rem;
   padding: 1.5rem;
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--input-background);
   text-align: center;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  color: var(--text);
 }
 
 .profile-stat-card strong {
@@ -76,7 +79,7 @@
   place-items: center;
   gap: 0.4rem;
   padding: 2.5rem 1rem;
-  border: 2px dashed #d8d0e8;
+  border: 2px dashed var(--border);
   border-radius: 16px;
   text-align: center;
 }
@@ -123,9 +126,9 @@
   background:
     radial-gradient(
       circle at 35% 30%,
-      #ffffff,
-      #f5f0ff 55%,
-      #e4d5ff 100%
+      var(--background),
+      var(--input-background) 55%,
+      var(--input-background) 100%
     );
 
   font-size: 3.5rem;
@@ -220,8 +223,8 @@
 }
 
 .profile-error-state {
-  border-color: #f3b8b8;
-  background: #fff7f7;
+  border-color: var(--border);
+  background: var(--background);
   color: #991b1b;
 }
 

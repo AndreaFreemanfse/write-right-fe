@@ -7,15 +7,15 @@
 
     background: linear-gradient(
         180deg,
-        #edf6ff 0%,
-        #f8fbff 50%,
-        #ffffff 100%
+        var(--surface) 0%,
+        var(--input-background) 50%,
+        var(--background) 100%
     );
     padding: 2rem;
 }
 
 .check-email-card {
-  background: white;
+  background: var(--background);
   width: 100%;
   max-width: 420px;
   padding: 2.5rem;

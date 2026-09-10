@@ -4,11 +4,11 @@
 
   font: inherit;
   font-weight: 500;
-  color: #334155;
+  color: var(--text);
 
   background: linear-gradient(180deg, #ffffff, #f8fafc);
 
-  border: 2px solid #dbe4ef;
+  border: 2px solid var(--border);
   border-radius: 14px;
 
   cursor: pointer;

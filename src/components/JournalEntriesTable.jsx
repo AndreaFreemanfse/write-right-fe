@@ -149,7 +149,7 @@ function JournalEntriesTable() {
                   ))}
                 </div>
               </div>
-              <div className="journal-filter-section">
+              <div className="journal-filter-section-dropdown">
                 <label>Date</label>
                 <select
                   value={dateSort}
