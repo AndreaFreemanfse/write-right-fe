@@ -23,6 +23,7 @@
     "@tanstack/react-query-devtools": "^5.101.2",
     "canvas-confetti": "^1.9.4",
     "fontsource-roboto": "^4.0.0",
+    "franc": "^6.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1"

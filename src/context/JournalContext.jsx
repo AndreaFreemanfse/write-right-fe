@@ -15,6 +15,9 @@ import {
 
 import { celebrate } from "../utils/celebrate";
 
+import {franc, francAll} from 'franc'
+import { franc_languages } from "../utils/constants/languages.js";
+
 const JournalContext = createContext();
 
 const loadingMessages = [
@@ -58,6 +61,7 @@ export function JournalProvider({ children }) {
   const [editingEntry, setEditingEntry] =
     useState(null);
 
+  const [francWarning, setFrancWarning] = useState(null);
 
   useEffect(() => {
     if (!loading) return;
@@ -98,9 +102,16 @@ export function JournalProvider({ children }) {
     return;
   }
 
+  const lang = franc(journalText, {minLength: 50});
+  if (!francWarning && lang != 'und' && franc_languages[lang] != targetLanguage) {
+    setFrancWarning(`Warning: Expected ${targetLanguage} but found ${franc_languages[lang]}`);
+    return;
+  }
+
   setCorrections([]);
   setAccuracy(null);
   setApiError("");
+  setFrancWarning(null);
 
   setLoadingMessage("Checking for mistakes...");
   setLoading(true);
@@ -173,6 +184,7 @@ export function JournalProvider({ children }) {
   setApiError(null);
   setCorrections([]);
   setAccuracy(null);
+  setFrancWarning(null);
 
   if (entry) {
     setEditingEntry(entry);
@@ -200,6 +212,7 @@ function handleEditJournal(entry) {
   setReviewMode(false);
   setCorrections([]);
   setAccuracy(null);
+  setFrancWarning(null);
 
   setEditingEntry(entry);
   setActiveModal(null);
@@ -324,6 +337,7 @@ function handleNewEntry() {
   setAccuracy(null);
   setApiError(null);
   setEditingEntry(null);
+  setFrancWarning(null);
 }, []);
 
   const value = {
@@ -371,6 +385,9 @@ function handleNewEntry() {
 
   editingEntry,
   setEditingEntry,
+
+  francWarning,
+  setFrancWarning,
 
   analyzeJournal,
   updateMistake,

@@ -22,6 +22,8 @@ function JournalEditor() {
     targetLanguage,
     setTargetLanguage,
     activeModal,
+    francWarning,
+    setFrancWarning,
   } = useJournal();
 
   const [languageDropdownOpen, setLanguageDropdownOpen] =
@@ -225,6 +227,35 @@ function JournalEditor() {
           </p>
         )}
       </Stack>
+      {francWarning && (
+        <div className="franc-error-overlay">
+          <div className="franc-error-popup">
+            <p>{francWarning}</p>
+
+            <div className="franc-error-buttons">
+              <button
+                className="return-button"
+                onClick={() => setFrancWarning(null)}>
+                Return to Journal
+              </button>
+
+              <button 
+                className="continue-button"
+                onClick={() => {
+                  if (editingEntry) {
+                    handleSaveEdit();
+                  } else {
+                    analyzeJournal();
+                  }
+                }}
+                disabled={loading}
+              >
+                Try Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
