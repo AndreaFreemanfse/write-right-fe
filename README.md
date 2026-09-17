@@ -26,6 +26,8 @@
 
 Navigate to the frontend project.
 
+#### Use Node 22.23.2
+
 ```bash
 npm install
 npm install react-router-dom
