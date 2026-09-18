@@ -23,7 +23,7 @@ function Navbar() {
       </Stack>
 
       <NavLink
-        to="/"
+        to="/write"
         className={({ isActive }) =>
           isActive ? "nav-item active" : "nav-item"
         }
