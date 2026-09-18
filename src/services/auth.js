@@ -15,10 +15,14 @@ export async function signUp(email, password) {
 }
 
 export async function signIn(email, password) {
-  const { data } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
+
+  if (error) {
+    throw error;
+  }
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
