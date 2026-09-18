@@ -21,7 +21,8 @@
   border:1px solid var(--border);
   font-size: 17px;
   font-family: inherit;
- color:#666
+  color:#666;
+  background: var(--background);
 }
 
 .journal-search-row {

@@ -166,7 +166,7 @@
 
   border-radius: 1rem 0 0 1rem;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--quest-button-background);
 
   box-shadow:
     0 8px 24px rgba(65, 40, 110, 0.18),
@@ -214,7 +214,7 @@
   font-size: 1rem;
   font-weight: 700;
 
-  color: #553c7b;
+  color: var(--badge-text);
 }
 
 .quest-trigger-glow {
@@ -235,7 +235,7 @@
 
   transform: rotate(20deg);
 
-  animation: quest-shimmer 3.2s ease-in-out infinite;
+  /* animation: quest-shimmer 3.2s ease-in-out infinite; */
 }
 
 @keyframes quest-shimmer {
