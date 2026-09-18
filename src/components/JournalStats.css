@@ -25,22 +25,22 @@
 
 /* Purple */
 .entries-icon {
-  background: #ede9fe;
+  background: var(--badge-background);
 }
 
 /* Green */
 .corrections-icon {
-  background: #dcfce7;
+  background: var(--badge-background-green);
 }
 
 /* Yellow */
 .streak-icon {
-  background: #fef9c3;
+  background: var(--badge-backgound-yellow);
 }
 
 /* Blue */
 .improvement-icon {
-  background: #dbeafe;
+  background: var(--badge-text-blue);
 }
 
 .stat-content {
