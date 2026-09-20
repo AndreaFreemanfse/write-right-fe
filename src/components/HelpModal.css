@@ -170,7 +170,7 @@
 
   border-radius: 14px;
 
- background: var(--badge-background);
+ background: var(--badge-background-purple);
 
   font-size: 1.45rem;
 }
@@ -369,7 +369,7 @@
   .help-section-icon {
     width: 40px;
     height: 40px;
-    background: var(--badge-background);
+    background: var(--badge-background-purple);
 
     border-radius: 12px;
 

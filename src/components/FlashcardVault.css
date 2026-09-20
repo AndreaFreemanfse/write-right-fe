@@ -93,7 +93,7 @@
 }
 
 .vault-language {
-  background: var(--badge-background);
+  background: var(--badge-background-purple);
   color: var(--badge-text);
 }
 
@@ -103,7 +103,7 @@
 }
 
 .vault-status.learning {
-  background: var(--badge-backgound-yellow);
+  background: var(--badge-background-yellow);
   color: var(--text-red);
 }
 
@@ -156,7 +156,7 @@
 }
 
 .edit-card-button {
-  background: var(--badge-background);
+  background: var(--badge-background-purple);
   color: var(--badge-text);
   padding: 4px;
   font-size: 16px;

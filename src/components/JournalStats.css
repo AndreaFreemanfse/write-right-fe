@@ -25,7 +25,7 @@
 
 /* Purple */
 .entries-icon {
-  background: var(--badge-background);
+  background: var(--badge-background-purple);
 }
 
 /* Green */
@@ -35,7 +35,7 @@
 
 /* Yellow */
 .streak-icon {
-  background: var(--badge-backgound-yellow);
+  background: var(--badge-background-yellow);
 }
 
 /* Blue */
