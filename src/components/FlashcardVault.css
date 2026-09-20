@@ -93,8 +93,8 @@
 }
 
 .vault-language {
-  background: #ede9fe;
-  color: #5b21b6;
+  background: var(--badge-background-purple);
+  color: var(--badge-text);
 }
 
 .vault-status.mastered {
@@ -103,8 +103,8 @@
 }
 
 .vault-status.learning {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--badge-background-yellow);
+  color: var(--text-red);
 }
 
 .vault-card-content {
@@ -156,16 +156,16 @@
 }
 
 .edit-card-button {
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--badge-background-purple);
+  color: var(--badge-text);
   padding: 4px;
   font-size: 16px;
   border-radius: 8px;
 }
 
 .delete-card-button {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--flashcard-delete-background);
+  color: var(--flashcard-delete-color);
 }
 
 .vault-empty-state,

@@ -56,8 +56,8 @@
   margin: 1rem auto 2rem;
   padding: 1.75rem;
   border-radius: 18px;
-  background: var(--opposite);
-  color: var(--background);
+  background: var(--background);
+  color: var(--opposite);
 }
 
 .vocabulary-card__label {

@@ -9,6 +9,15 @@
   --button-hover: #dddddd;
   --input-background: #f7f7f7;
   --opposite: #000000;
+  --badge-text: #5b21b6;
+  --badge-background-purple: #ede9fe;
+  --badge-background-green: #dcfce7;;
+  --badge-background-yellow: #fef9c3;
+  --badge-text-blue: #dbeafe;
+  --text-red:#92400e;
+  --flashcard-delete-background: #fee2e2;
+  --flashcard-delete-color:#991b1b;
+  --quest-button-background: rgba(255, 255, 255, 0.96);
 }
 
 .dark-mode {
@@ -22,6 +31,16 @@
   --button-hover: #3a3a3a;
   --input-background: #1e1e1e;
   --opposite: #ffffff;
+  --badge-text: #ede9fe;
+  --badge-background-purple: #3e346d;
+  --badge-background-green: #517070;
+  --badge-background-yellow: #bfbc94;
+  --badge-text-blue: #556881;
+  --text-red:#611810;
+  --flashcard-delete-background: #682b2b;
+  --flashcard-delete-color:#fee2e2;
+  --quest-button-background: rgba(21, 21, 22, 0.96);
+
 }
 
 body {
