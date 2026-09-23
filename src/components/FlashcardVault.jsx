@@ -15,9 +15,7 @@ function FlashcardVault() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [changingCard, setChangingCard] = useState(false);
   const [exp_loading, setExpLoading] = useState(false);
-
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const [filterType, setFilterType] = useState("all");
 
 
   async function loadFlashcardSets() {
@@ -53,6 +51,15 @@ function FlashcardVault() {
     loadFlashcardSets();
   }, []);
 
+  // Filters flashcard sets by source type while keeping "all" as the default view.
+  const filteredFlashcardSets = flashcardSets.filter((flashcardSet) => {
+    if (filterType === "all") {
+      return true;
+    }
+
+    return (flashcardSet.source_type || "manual") === filterType;
+  });
+  
   if (loading) {
     return (
       <section className="flashcard-vault">
@@ -143,7 +150,7 @@ function FlashcardVault() {
   }
 
   function studyAllCards() {
-    const allCards = flashcardSets.flatMap(
+    const allCards = filteredFlashcardSets.flatMap(
       (flashcardSet) => flashcardSet.flashcards || []
     );
 
@@ -421,6 +428,20 @@ function FlashcardVault() {
         </button>
       </header>
 
+      <div className="vault-filter">
+        <label htmlFor="flashcard-type-filter">Filter by type:</label>
+
+        <select
+          id="flashcard-type-filter"
+          value={filterType}
+          onChange={(event) => setFilterType(event.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="journal">Journal</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+
       {flashcardSets.length === 0 ? (
         <div className="vault-empty-state">
           <div className="vault-empty-icon">📚</div>
@@ -432,9 +453,14 @@ function FlashcardVault() {
             first flashcard set.
           </p>
         </div>
+      ) : filteredFlashcardSets.length === 0 ? (
+        <div className="vault-empty-state">
+          <h3>No matching flashcard sets</h3>
+          <p>No {filterType} flashcard sets were found.</p>
+        </div>
       ) : (
         <div className="vault-grid">
-          {flashcardSets.map((flashcardSet) => (
+          {filteredFlashcardSets.map((flashcardSet) => (
             <article className="vault-card" key={flashcardSet.id}>
               <div className="vault-card-top">
                 <span className="vault-language">{flashcardSet.language}</span>
