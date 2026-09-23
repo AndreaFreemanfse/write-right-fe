@@ -15,9 +15,6 @@ import "./DropDownMenu.css";
 function DropDownMenu() {
   const {
     setNativeLanguage,
-    setTargetLanguage,
-    setJournalText,
-    setJournalTitle,
     setCorrections,
     setReviewMode,
     setActiveModal,
@@ -47,12 +44,9 @@ function DropDownMenu() {
       await signOut();
 
       // Reset user-specific app state
-      setJournalText("");
-      setJournalTitle("Untitled Journal");
       setCorrections([]);
       setReviewMode(false);
-      setNativeLanguage("english");
-      setTargetLanguage("");
+      setNativeLanguage("English");
       setActiveModal(null);
 
       navigate("/", { replace: true });

@@ -15,6 +15,7 @@ function JournalEditor() {
     setJournalTitle,
     analyzeJournal,
     handleSaveEdit,
+    handleNewEntry,
     editingEntry,
     loading,
     loadingMessage,
@@ -195,9 +196,20 @@ function JournalEditor() {
           )}
 
         <div className="editor-footer">
-          <span className="character-count">
-            {text.length} characters
-          </span>
+          <div className="editor-footer-left">
+            <span className="character-count">
+              {text.length} characters
+            </span>
+
+            <button
+              type="button"
+              className="new-journal-button"
+              onClick={handleNewEntry}
+              disabled={loading}
+            >
+              + New Journal
+            </button>
+          </div>
 
           <button
             type="button"

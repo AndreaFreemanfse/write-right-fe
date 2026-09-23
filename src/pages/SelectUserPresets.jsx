@@ -25,29 +25,40 @@ function SelectUserPresets() {
   };
 
   return (
-    <div className="select-user-presets">
-      <div className="select-user-presets-content">
-        <h1>Choose Your Native Language</h1>
+    <div className="select-presets-page">
+      <div className="select-presets-card">
+        <div className="select-presets-header">
+          <h1>Choose Your Native Language</h1>
 
-        <p>
-          Select the language you are most comfortable
-          speaking.
-        </p>
+          <p>
+            Select the language you are most comfortable
+            speaking.
+          </p>
+        </div>
 
-        <LanguageSelectionDropdown
-          value={nativeLanguage}
-          onChange={setNativeLanguage}
-          displayText="Select your native language"
-          languageType="native"
-        />
+        <div className="select-presets-form">
+          <div className="language-field">
+            <label htmlFor="language-selection">
+              Native Language
+            </label>
 
-        <button
-          type="button"
-          onClick={handleContinue}
-          disabled={!nativeLanguage}
-        >
-          Continue
-        </button>
+            <LanguageSelectionDropdown
+              value={nativeLanguage}
+              onChange={setNativeLanguage}
+              displayText="Select your native language"
+              languageType="native"
+            />
+          </div>
+
+          <button
+            type="button"
+            className="select-presets-button"
+            onClick={handleContinue}
+            disabled={!nativeLanguage}
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </div>
   );
