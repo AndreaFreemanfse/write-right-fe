@@ -17,9 +17,6 @@ function FlashcardVault() {
   const [exp_loading, setExpLoading] = useState(false);
   const [filterType, setFilterType] = useState("all");
 
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8000";
-
 
   async function loadFlashcardSets() {
     try {
