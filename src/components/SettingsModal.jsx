@@ -1,6 +1,7 @@
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import LanguageSelectionDropdown from "./LanguageSelectionDropdown";
 import { useJournal } from "../context/JournalContext";
+import { SKINS } from "../utils/constants/skins";
 import { useState } from "react";
 import "./SettingsModal.css";
 
@@ -12,6 +13,8 @@ function SettingsModal() {
     setNativeLanguage,
     darkMode,
     setDarkMode,
+    skin,
+    setSkin,
   } = useJournal();
 
   const isOpen = activeModal === "settings";
@@ -49,6 +52,25 @@ function SettingsModal() {
           >
             <span className="toggle-circle"></span>
           </button>
+        </div>
+
+        <div className="skin-selector">
+          <span>Skin</span>
+
+          <select
+            className="language-select skin-select"
+            id="skin-selection"
+            name="skin"
+            value={skin}
+            onChange={(event) => setSkin(event.target.value)}
+            aria-label="Select a skin"
+          >
+            {SKINS.map(({ id, label }) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
       </DialogContent>
     </Dialog>

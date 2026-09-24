@@ -13,10 +13,14 @@ import {
   updateJournalEntry,
 } from "../services/api";
 
+import { fetchNativeLanguage } from "../services/auth";
+import { useAuth } from "./AuthContext";
+
 import { celebrate } from "../utils/celebrate";
 
 import {franc, francAll} from 'franc'
 import { franc_languages } from "../utils/constants/languages.js";
+import { DEFAULT_SKIN } from "../utils/constants/skins.js";
 
 const JournalContext = createContext();
 
@@ -27,15 +31,63 @@ const loadingMessages = [
   "Generating suggestions...",
 ];
 
+const SKIN_STORAGE_KEY = "writeright-skin";
+const TARGET_LANGUAGE_STORAGE_KEY = "writeright-target-language";
+const JOURNAL_TEXT_STORAGE_KEY = "writeright-journal-text";
+const JOURNAL_TITLE_STORAGE_KEY = "writeright-journal-title";
+
 export function JournalProvider({ children }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // One-time cleanup: these keys used to store a single, unscoped draft
+  // shared by every account on this browser. Discard them so a leftover
+  // draft can never surface under a different signed-in user.
+  useEffect(() => {
+    try {
+      localStorage.removeItem(JOURNAL_TEXT_STORAGE_KEY);
+      localStorage.removeItem(JOURNAL_TITLE_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors (e.g. private browsing).
+    }
+  }, []);
 
   const [journalText, setJournalText] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+
+    try {
+      localStorage.setItem(
+        `${JOURNAL_TEXT_STORAGE_KEY}-${user.id}`,
+        journalText,
+      );
+    } catch {
+      // Ignore storage errors (e.g. private browsing).
+    }
+  }, [journalText, user]);
+
   const [corrections, setCorrections] = useState([]);
   const [reviewMode, setReviewMode] = useState(false);
   const [loading, setLoading] = useState(false);
   
   const [darkMode, setDarkMode] = useState(false);
+
+  const [skin, setSkin] = useState(() => {
+    try {
+      return localStorage.getItem(SKIN_STORAGE_KEY) || DEFAULT_SKIN;
+    } catch {
+      return DEFAULT_SKIN;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SKIN_STORAGE_KEY, skin);
+    } catch {
+      // Ignore storage errors (e.g. private browsing).
+    }
+  }, [skin]);
 
   const [loadingMessage, setLoadingMessage] = useState(
     loadingMessages[0],
@@ -49,11 +101,87 @@ export function JournalProvider({ children }) {
   const [nativeLanguage, setNativeLanguage] =
     useState("English");
 
-  const [targetLanguage, setTargetLanguage] = useState("");
+  useEffect(() => {
+    if (!user) return;
+
+    let cancelled = false;
+
+    fetchNativeLanguage(user.id)
+      .then((savedNativeLanguage) => {
+        if (!cancelled) {
+          setNativeLanguage(savedNativeLanguage || "English");
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load native language:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const [targetLanguage, setTargetLanguage] = useState(() => {
+    try {
+      return localStorage.getItem(TARGET_LANGUAGE_STORAGE_KEY) || "";
+    } catch {
+      return "";
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (targetLanguage) {
+        localStorage.setItem(
+          TARGET_LANGUAGE_STORAGE_KEY,
+          targetLanguage,
+        );
+      }
+    } catch {
+      // Ignore storage errors (e.g. private browsing).
+    }
+  }, [targetLanguage]);
 
   const [journalTitle, setJournalTitle] = useState(
     "Untitled Journal",
   );
+
+  useEffect(() => {
+    if (!user) return;
+
+    try {
+      localStorage.setItem(
+        `${JOURNAL_TITLE_STORAGE_KEY}-${user.id}`,
+        journalTitle,
+      );
+    } catch {
+      // Ignore storage errors (e.g. private browsing).
+    }
+  }, [journalTitle, user]);
+
+  // Load the signed-in user's own draft (or clear it back to blank when
+  // signing out) so one account's draft can never appear under another.
+  useEffect(() => {
+    if (!user) {
+      setJournalText("");
+      setJournalTitle("Untitled Journal");
+      return;
+    }
+
+    try {
+      setJournalText(
+        localStorage.getItem(`${JOURNAL_TEXT_STORAGE_KEY}-${user.id}`) ||
+          "",
+      );
+      setJournalTitle(
+        localStorage.getItem(`${JOURNAL_TITLE_STORAGE_KEY}-${user.id}`) ||
+          "Untitled Journal",
+      );
+    } catch {
+      setJournalText("");
+      setJournalTitle("Untitled Journal");
+    }
+  }, [user]);
 
   const [journalEntryId, setJournalEntryId] =
     useState(null);
@@ -325,14 +453,13 @@ async function handleSaveEdit() {
 }
 
 function handleNewEntry() {
+  setJournalText("");
+  setJournalTitle("Untitled Journal");
   resetJournal();
   navigate("/write");
 }
 
  const resetJournal = useCallback(() => {
-  setJournalText("");
-  setJournalTitle("Untitled Journal");
-  setTargetLanguage("");
   setCorrections([]);
   setReviewMode(false);
   setJournalEntryId(null);
@@ -390,6 +517,9 @@ function handleNewEntry() {
 
   darkMode,
   setDarkMode,
+
+  skin,
+  setSkin,
   francWarning,
   setFrancWarning,
 

@@ -24,19 +24,11 @@ export async function signIn(email, password) {
     throw error;
   }
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("native_language")
-    .eq("id", data.user.id)
-    .single();
-
-  if (profileError) {
-    throw profileError;
-  }
+  const nativeLanguage = await fetchNativeLanguage(data.user.id);
 
   return {
     ...data,
-    native_language: profile.native_language,
+    native_language: nativeLanguage,
   };
 }
 
@@ -49,6 +41,20 @@ export async function signOut() {
 }
 
 // User Profile ---------------------------------
+
+export async function fetchNativeLanguage(userId) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("native_language")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data.native_language;
+}
 
 export async function updateNativeLanguage(nativeLanguage) {
   const {

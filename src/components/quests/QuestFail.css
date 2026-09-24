@@ -9,7 +9,7 @@
 
   padding: 1.5rem;
 
-  background: rgba(27, 20, 42, 0.55);
+  background: rgba(var(--quest-backdrop-rgb), 0.55);
   backdrop-filter: blur(8px);
 
   animation: quest-fail-fade-in 300ms ease-out;
@@ -102,8 +102,8 @@
   border: 0;
   border-radius: 999px;
 
-  background: linear-gradient(135deg, #7651a8, #9b73cf);
-  color: white;
+  background: linear-gradient(135deg, var(--quest-button-grad-start), var(--quest-button-grad-end));
+  color: var(--quest-button-text);
 
   font-size: 0.95rem;
   font-weight: 800;
@@ -116,12 +116,12 @@
 .quest-fail-btn:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 20px rgba(108, 75, 151, 0.3),
-    0 0 20px rgba(147, 112, 219, 0.15);
+    0 8px 20px rgba(var(--quest-button-shadow-rgb), 0.3),
+    0 0 20px rgba(var(--quest-glow-rgb), 0.15);
 }
 
 .quest-fail-btn:focus-visible {
-  outline: 3px solid rgba(126, 87, 194, 0.45);
+  outline: 3px solid rgba(var(--quest-accent-rgb), 0.45);
   outline-offset: 3px;
 }
 

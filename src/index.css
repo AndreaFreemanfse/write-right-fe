@@ -18,6 +18,32 @@
   --flashcard-delete-background: #fee2e2;
   --flashcard-delete-color:#991b1b;
   --quest-button-background: rgba(255, 255, 255, 0.96);
+
+  --quest-accent-rgb: 126, 87, 194;
+  --quest-glow-rgb: 147, 112, 219;
+  --quest-backdrop-rgb: 27, 20, 42;
+  --quest-panel-rgb: 255, 255, 255;
+  --quest-panel-highlight-rgb: 226, 210, 255;
+  --quest-panel-shadow-rgb: 32, 20, 55;
+  --quest-chrome-shadow-rgb: 65, 40, 110;
+  --quest-button-shadow-rgb: 108, 75, 151;
+  --quest-soft-bg-rgb: 244, 239, 251;
+  --quest-panel-solid: #ffffff;
+  --quest-button-grad-start: #7651a8;
+  --quest-button-grad-end: #9b73cf;
+  --quest-button-text: #ffffff;
+  --quest-heading: #44305f;
+  --quest-heading-secondary: #553c7b;
+  --quest-label: #8b68bd;
+  --quest-subtitle: #7555a3;
+  --quest-text-strong: #3f3550;
+  --quest-text-body: #6b6275;
+  --quest-text-hint: #7b7085;
+  --quest-close-btn: #695b7e;
+  --quest-close-btn-hover: #3f2b5f;
+  --quest-score-accent: #674594;
+  --quest-score-accent-border: #8765b5;
+  --quest-accent-border-alpha: 0.35;
 }
 
 .dark-mode {
@@ -41,6 +67,209 @@
   --flashcard-delete-color:#fee2e2;
   --quest-button-background: rgba(21, 21, 22, 0.96);
 
+}
+
+/*
+  Skins: named palettes layered on top of the base :root / .dark-mode
+  variables above. Each skin overrides the same variable set so every
+  component that already consumes var(--...) picks up the new look
+  automatically. "Classic" is the default appearance and intentionally
+  has no rules here. Midnight/Lavender/Forest/High Contrast are fixed
+  palettes, so they're paired with ".dark-mode" too (higher specificity)
+  to win regardless of the separate Dark Mode toggle.
+*/
+
+.skin-midnight,
+.skin-midnight.dark-mode {
+  --background: #0d1128;
+  --surface: #161b3d;
+  --surface-secondary: #1f254d;
+  --text: #e6e6fa;
+  --text-secondary: #a5a8d6;
+  --border: #33396b;
+  --button: #232a5c;
+  --button-hover: #2f386f;
+  --input-background: #161b3d;
+  --opposite: #ffffff;
+  --badge-text: #e0d4ff;
+  --badge-background-purple: #4c3a8f;
+  --badge-background-green: #2f5d62;
+  --badge-background-yellow: #6b5f2e;
+  --badge-text-blue: #33417a;
+  --text-red: #f2b8b5;
+  --flashcard-delete-background: #4a2038;
+  --flashcard-delete-color: #ffd7d7;
+  --quest-button-background: rgba(13, 17, 40, 0.96);
+
+  --quest-accent-rgb: 108, 99, 255;
+  --quest-glow-rgb: 130, 140, 255;
+  --quest-backdrop-rgb: 4, 6, 18;
+  --quest-panel-rgb: 22, 27, 61;
+  --quest-panel-highlight-rgb: 70, 60, 140;
+  --quest-panel-shadow-rgb: 2, 3, 10;
+  --quest-chrome-shadow-rgb: 10, 12, 40;
+  --quest-button-shadow-rgb: 40, 35, 100;
+  --quest-soft-bg-rgb: 31, 37, 77;
+  --quest-panel-solid: #161b3d;
+  --quest-button-grad-start: #3730a3;
+  --quest-button-grad-end: #6d5fe0;
+  --quest-button-text: #ffffff;
+  --quest-heading: #e6e6fa;
+  --quest-heading-secondary: #c7c9f2;
+  --quest-label: #a5a8d6;
+  --quest-subtitle: #b9bbe8;
+  --quest-text-strong: #eef0ff;
+  --quest-text-body: #c2c4e8;
+  --quest-text-hint: #9294c0;
+  --quest-close-btn: #9fa2d6;
+  --quest-close-btn-hover: #e6e6fa;
+  --quest-score-accent: #a89cf5;
+  --quest-score-accent-border: #6d5fe0;
+}
+
+.skin-lavender,
+.skin-lavender.dark-mode {
+  --background: #f6f1fb;
+  --surface: #eee5fa;
+  --surface-secondary: #e4d7f5;
+  --text: #382a54;
+  --text-secondary: #6f5f8f;
+  --border: #d4c2ee;
+  --button: #e6d9f7;
+  --button-hover: #d8c3f2;
+  --input-background: #f1e9fa;
+  --opposite: #1b0c34;
+  --badge-text: #4c1d95;
+  --badge-background-purple: #ded0f7;
+  --badge-background-green: #d8ecdf;
+  --badge-background-yellow: #f6ecd2;
+  --badge-text-blue: #dce4fb;
+  --text-red: #92400e;
+  --flashcard-delete-background: #f8dede;
+  --flashcard-delete-color: #8a1f2b;
+  --quest-button-background: rgba(246, 241, 251, 0.96);
+
+  --quest-accent-rgb: 155, 120, 210;
+  --quest-glow-rgb: 196, 168, 235;
+  --quest-backdrop-rgb: 70, 50, 100;
+  --quest-panel-rgb: 255, 255, 255;
+  --quest-panel-highlight-rgb: 243, 230, 255;
+  --quest-panel-shadow-rgb: 120, 90, 160;
+  --quest-chrome-shadow-rgb: 150, 110, 190;
+  --quest-button-shadow-rgb: 170, 130, 210;
+  --quest-soft-bg-rgb: 238, 229, 250;
+  --quest-panel-solid: #ffffff;
+  --quest-button-grad-start: #9b73cf;
+  --quest-button-grad-end: #c9a8ec;
+  --quest-button-text: #ffffff;
+  --quest-heading: #3a2a58;
+  --quest-heading-secondary: #5b3f85;
+  --quest-label: #8a5fc2;
+  --quest-subtitle: #7d5aa8;
+  --quest-text-strong: #3d2e57;
+  --quest-text-body: #6a5680;
+  --quest-text-hint: #8a7898;
+  --quest-close-btn: #8a72a8;
+  --quest-close-btn-hover: #5b3f85;
+  --quest-score-accent: #7d5aa8;
+  --quest-score-accent-border: #a884d4;
+}
+
+.skin-forest,
+.skin-forest.dark-mode {
+  --background: #f3f6ee;
+  --surface: #e6ede0;
+  --surface-secondary: #d9e4d0;
+  --text: #223421;
+  --text-secondary: #5c6b53;
+  --border: #b7cba8;
+  --button: #dbe6cf;
+  --button-hover: #c8dab8;
+  --input-background: #edf2e6;
+  --opposite: #17240f;
+  --badge-text: #234d20;
+  --badge-background-purple: #e0d6c3;
+  --badge-background-green: #cfe3c0;
+  --badge-background-yellow: #eee3b0;
+  --badge-text-blue: #c9dfe0;
+  --text-red: #7a3b12;
+  --flashcard-delete-background: #f3d9c9;
+  --flashcard-delete-color: #7a2e14;
+  --quest-button-background: rgba(243, 246, 238, 0.96);
+
+  --quest-accent-rgb: 74, 124, 89;
+  --quest-glow-rgb: 140, 184, 120;
+  --quest-backdrop-rgb: 18, 30, 18;
+  --quest-panel-rgb: 255, 255, 255;
+  --quest-panel-highlight-rgb: 220, 235, 200;
+  --quest-panel-shadow-rgb: 28, 42, 24;
+  --quest-chrome-shadow-rgb: 38, 58, 34;
+  --quest-button-shadow-rgb: 58, 88, 48;
+  --quest-soft-bg-rgb: 230, 237, 217;
+  --quest-panel-solid: #ffffff;
+  --quest-button-grad-start: #4a7c59;
+  --quest-button-grad-end: #8fbf7a;
+  --quest-button-text: #ffffff;
+  --quest-heading: #223421;
+  --quest-heading-secondary: #2f4a2c;
+  --quest-label: #5c7a4e;
+  --quest-subtitle: #3f6b3a;
+  --quest-text-strong: #28361f;
+  --quest-text-body: #4d5c46;
+  --quest-text-hint: #6d7a63;
+  --quest-close-btn: #5c7a4e;
+  --quest-close-btn-hover: #2f4a2c;
+  --quest-score-accent: #3f6b3a;
+  --quest-score-accent-border: #6a9a5a;
+}
+
+.skin-high-contrast,
+.skin-high-contrast.dark-mode {
+  --background: #000000;
+  --surface: #0a0a0a;
+  --surface-secondary: #141414;
+  --text: #ffffff;
+  --text-secondary: #e0e0e0;
+  --border: #ffffff;
+  --button: #262626;
+  --button-hover: #3a3a3a;
+  --input-background: #1a1a1a;
+  --opposite: #ffffff;
+  --badge-text: #000000;
+  --badge-background-purple: #d9b3ff;
+  --badge-background-green: #a3ffb3;
+  --badge-background-yellow: #fff36b;
+  --badge-text-blue: #9fdfff;
+  --text-red: #7a0000;
+  --flashcard-delete-background: #5c0000;
+  --flashcard-delete-color: #ffffff;
+  --quest-button-background: rgba(38, 38, 38, 0.96);
+
+  --quest-accent-border-alpha: 1;
+  --quest-accent-rgb: 255, 255, 255;
+  --quest-glow-rgb: 255, 255, 255;
+  --quest-backdrop-rgb: 0, 0, 0;
+  --quest-panel-rgb: 30, 30, 30;
+  --quest-panel-highlight-rgb: 40, 40, 40;
+  --quest-panel-shadow-rgb: 255, 255, 255;
+  --quest-chrome-shadow-rgb: 255, 255, 255;
+  --quest-button-shadow-rgb: 255, 255, 255;
+  --quest-soft-bg-rgb: 45, 45, 45;
+  --quest-panel-solid: #1e1e1e;
+  --quest-button-grad-start: #fff36b;
+  --quest-button-grad-end: #fff36b;
+  --quest-button-text: #000000;
+  --quest-heading: #ffffff;
+  --quest-heading-secondary: #ffffff;
+  --quest-label: #fff36b;
+  --quest-subtitle: #e0e0e0;
+  --quest-text-strong: #ffffff;
+  --quest-text-body: #e0e0e0;
+  --quest-text-hint: #cfcfcf;
+  --quest-close-btn: #ffffff;
+  --quest-close-btn-hover: #fff36b;
+  --quest-score-accent: #fff36b;
+  --quest-score-accent-border: #ffffff;
 }
 
 body {

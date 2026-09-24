@@ -86,11 +86,61 @@
 }
 
 
+.editor-footer-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+}
+
+
 .character-count {
 
     color: #888;
 
     font-size: 14px;
+
+}
+
+
+.new-journal-button {
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    padding: 8px 14px;
+
+    background: var(--background);
+
+    color: var(--text);
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+
+.new-journal-button:hover:not(:disabled) {
+
+    background: var(--button-hover);
+
+}
+
+
+.new-journal-button:disabled {
+
+    opacity: .5;
+
+    cursor: not-allowed;
 
 }
 
